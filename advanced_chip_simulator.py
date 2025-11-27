@@ -86,9 +86,9 @@ class DesignParameters:
 
     These are the "knobs" that designers turn to optimize their chip.
     """
-    # Clock and voltage
-    clock_freq_ghz: float = 3.0  # Clock frequency (GHz)
-    supply_voltage: float = 0.8  # Supply voltage Vdd (V)
+    # Clock and voltage - HIGH PERFORMANCE config
+    clock_freq_ghz: float = 4.0  # Clock frequency (GHz) - Start at minimum spec
+    supply_voltage: float = 0.85  # Supply voltage Vdd (V) - Higher for performance
 
     # Microarchitecture
     pipeline_stages: int = 14  # Number of pipeline stages
@@ -127,18 +127,21 @@ class ConstraintLimits:
     Hard limits on constraints.
 
     These represent physical limits, requirements, or specifications.
-    TIGHTENED CONSTRAINTS for more challenging optimization.
+    CONFIGURED FOR HIGH-PERFORMANCE DESKTOP/WORKSTATION CPU:
+    - Tight frequency requirement (must hit 4GHz+)
+    - Generous power/thermal/area budgets (performance at any cost)
+    - Relaxed yield (premium product, can tolerate waste)
     """
-    max_power_watts: float = 120.0  # TDP (Thermal Design Power) - reduced from 150W
-    max_area_mm2: float = 175.0  # Maximum die area - reduced from 200mm²
-    max_temperature_c: float = 90.0  # Maximum junction temperature - reduced from 95°C
-    min_frequency_ghz: float = 2.0  # Minimum performance requirement
-    min_timing_slack_ps: float = 60.0  # Minimum timing margin (picoseconds) - increased from 50ps
-    max_ir_drop_mv: float = 45.0  # Maximum IR drop (millivolts) - reduced from 50mV
-    min_yield: float = 0.84  # Minimum manufacturing yield - slightly below initial 0.86
-    max_wire_delay_ps: float = 175.0  # Maximum wire delay - reduced from 200ps
-    min_signal_integrity: float = 0.91  # Minimum signal integrity metric - increased from 0.90
-    max_power_density_w_mm2: float = 1.3  # Max power density - reduced from 1.5 W/mm²
+    max_power_watts: float = 250.0  # TDP - High for performance (desktop PSU can handle it)
+    max_area_mm2: float = 400.0  # Large die allowed (willing to pay for performance)
+    max_temperature_c: float = 100.0  # Can run hot (good tower cooler available)
+    min_frequency_ghz: float = 4.0  # CRITICAL: Must hit 4GHz minimum (marketing requirement!)
+    min_timing_slack_ps: float = 50.0  # Timing margin
+    max_ir_drop_mv: float = 60.0  # IR drop - relaxed (good power delivery)
+    min_yield: float = 0.70  # Relaxed yield (premium product, low volume)
+    max_wire_delay_ps: float = 200.0  # Wire delay
+    min_signal_integrity: float = 0.88  # Signal integrity - relaxed
+    max_power_density_w_mm2: float = 2.0  # Higher density allowed (good cooling)
 
     def clone(self) -> 'ConstraintLimits':
         """Create a deep copy"""
