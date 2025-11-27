@@ -123,13 +123,15 @@ def create_glass_box_visualization(greedy_data, jam_data, result, output_file='c
 
     ax3 = fig.add_subplot(gs[0, 2])
     ax3.set_title('Performance Comparison', fontsize=12, fontweight='bold')
-    ax3.plot(greedy_data['steps'], greedy_data['performance'], color=greedy_color, linewidth=2, label='Greedy', marker='o', markevery=10)
-    ax3.plot(jam_data['steps'], jam_data['performance'], color=jam_color, linewidth=2, label='JAM', marker='s', markevery=10)
-    ax3.axvline(shift_step, color=shift_color, linestyle='--', linewidth=2, alpha=0.7)
-    ax3.set_xlabel('Step')
-    ax3.set_ylabel('Performance')
+    ax3.plot(greedy_data['steps'], greedy_data['performance'], color=greedy_color, linewidth=3,
+             label='Greedy (red)', linestyle='-', marker='o', markevery=max(1, len(greedy_data['steps'])//10), markersize=5)
+    ax3.plot(jam_data['steps'], jam_data['performance'], color=jam_color, linewidth=3,
+             label='JAM (blue)', linestyle='--', marker='s', markevery=max(1, len(jam_data['steps'])//10), markersize=5)
+    ax3.axvline(shift_step, color=shift_color, linestyle='--', linewidth=2, alpha=0.7, label='Shift')
+    ax3.set_xlabel('Step', fontsize=11)
+    ax3.set_ylabel('Performance', fontsize=11)
     ax3.grid(True, alpha=0.3)
-    ax3.legend()
+    ax3.legend(fontsize=9)
 
     # ========================================================================
     # ROW 2: CHIP PARAMETERS (Design Knobs)
@@ -137,33 +139,35 @@ def create_glass_box_visualization(greedy_data, jam_data, result, output_file='c
 
     ax4 = fig.add_subplot(gs[1, 0])
     ax4.set_title('Clock Frequency Evolution', fontsize=11, fontweight='bold')
-    ax4.plot(greedy_data['steps'], greedy_data['frequency'], color=greedy_color, linewidth=2, label='Greedy')
-    ax4.plot(jam_data['steps'], jam_data['frequency'], color=jam_color, linewidth=2, label='JAM')
+    ax4.plot(greedy_data['steps'], greedy_data['frequency'], color=greedy_color, linewidth=3, label='Greedy (red)', linestyle='-')
+    ax4.plot(jam_data['steps'], jam_data['frequency'], color=jam_color, linewidth=3, label='JAM (blue)', linestyle='--')
     ax4.axvline(shift_step, color=shift_color, linestyle='--', linewidth=2, alpha=0.7)
-    ax4.set_xlabel('Step')
-    ax4.set_ylabel('Frequency (GHz)')
+    ax4.set_xlabel('Step', fontsize=10)
+    ax4.set_ylabel('Frequency (GHz)', fontsize=10)
     ax4.grid(True, alpha=0.3)
-    ax4.legend()
+    ax4.legend(fontsize=9)
 
     ax5 = fig.add_subplot(gs[1, 1])
     ax5.set_title('Supply Voltage Evolution', fontsize=11, fontweight='bold')
-    ax5.plot(greedy_data['steps'], greedy_data['voltage'], color=greedy_color, linewidth=2, label='Greedy')
-    ax5.plot(jam_data['steps'], jam_data['voltage'], color=jam_color, linewidth=2, label='JAM')
+    ax5.plot(greedy_data['steps'], greedy_data['voltage'], color=greedy_color, linewidth=3, label='Greedy (red)', linestyle='-')
+    ax5.plot(jam_data['steps'], jam_data['voltage'], color=jam_color, linewidth=3, label='JAM (blue)', linestyle='--')
     ax5.axvline(shift_step, color=shift_color, linestyle='--', linewidth=2, alpha=0.7)
-    ax5.set_xlabel('Step')
-    ax5.set_ylabel('Voltage (V)')
+    ax5.set_xlabel('Step', fontsize=10)
+    ax5.set_ylabel('Voltage (V)', fontsize=10)
     ax5.grid(True, alpha=0.3)
-    ax5.legend()
+    ax5.legend(fontsize=9)
 
     ax6 = fig.add_subplot(gs[1, 2])
     ax6.set_title('Number of Cores', fontsize=11, fontweight='bold')
-    ax6.plot(greedy_data['steps'], greedy_data['cores'], color=greedy_color, linewidth=2, label='Greedy', marker='o', markevery=5)
-    ax6.plot(jam_data['steps'], jam_data['cores'], color=jam_color, linewidth=2, label='JAM', marker='s', markevery=5)
+    ax6.plot(greedy_data['steps'], greedy_data['cores'], color=greedy_color, linewidth=3, label='Greedy (red)',
+             linestyle='-', marker='o', markevery=max(1, len(greedy_data['steps'])//15), markersize=4)
+    ax6.plot(jam_data['steps'], jam_data['cores'], color=jam_color, linewidth=3, label='JAM (blue)',
+             linestyle='--', marker='s', markevery=max(1, len(jam_data['steps'])//15), markersize=4)
     ax6.axvline(shift_step, color=shift_color, linestyle='--', linewidth=2, alpha=0.7)
-    ax6.set_xlabel('Step')
-    ax6.set_ylabel('Core Count')
+    ax6.set_xlabel('Step', fontsize=10)
+    ax6.set_ylabel('Core Count', fontsize=10)
     ax6.grid(True, alpha=0.3)
-    ax6.legend()
+    ax6.legend(fontsize=9)
 
     # ========================================================================
     # ROW 3: DERIVED CONSTRAINTS (Physics)
@@ -171,37 +175,37 @@ def create_glass_box_visualization(greedy_data, jam_data, result, output_file='c
 
     ax7 = fig.add_subplot(gs[2, 0])
     ax7.set_title('Power Consumption (Physics)', fontsize=11, fontweight='bold')
-    ax7.plot(greedy_data['steps'], greedy_data['power'], color=greedy_color, linewidth=2, label='Greedy')
-    ax7.plot(jam_data['steps'], jam_data['power'], color=jam_color, linewidth=2, label='JAM')
+    ax7.plot(greedy_data['steps'], greedy_data['power'], color=greedy_color, linewidth=3, label='Greedy (red)', linestyle='-')
+    ax7.plot(jam_data['steps'], jam_data['power'], color=jam_color, linewidth=3, label='JAM (blue)', linestyle='--')
     ax7.axvline(shift_step, color=shift_color, linestyle='--', linewidth=2, alpha=0.7)
-    ax7.axhline(150, color='red', linestyle=':', linewidth=1, alpha=0.5, label='TDP Limit')
-    ax7.set_xlabel('Step')
-    ax7.set_ylabel('Power (W)')
+    ax7.axhline(150, color='darkred', linestyle=':', linewidth=2, alpha=0.7, label='TDP Limit')
+    ax7.set_xlabel('Step', fontsize=10)
+    ax7.set_ylabel('Power (W)', fontsize=10)
     ax7.grid(True, alpha=0.3)
-    ax7.legend()
+    ax7.legend(fontsize=9)
 
     ax8 = fig.add_subplot(gs[2, 1])
     ax8.set_title('Temperature (Thermal Physics)', fontsize=11, fontweight='bold')
-    ax8.plot(greedy_data['steps'], greedy_data['temperature'], color=greedy_color, linewidth=2, label='Greedy')
-    ax8.plot(jam_data['steps'], jam_data['temperature'], color=jam_color, linewidth=2, label='JAM')
+    ax8.plot(greedy_data['steps'], greedy_data['temperature'], color=greedy_color, linewidth=3, label='Greedy (red)', linestyle='-')
+    ax8.plot(jam_data['steps'], jam_data['temperature'], color=jam_color, linewidth=3, label='JAM (blue)', linestyle='--')
     ax8.axvline(shift_step, color=shift_color, linestyle='--', linewidth=2, alpha=0.7)
-    ax8.axhline(95, color='red', linestyle=':', linewidth=1, alpha=0.5, label='Thermal Limit')
-    ax8.set_xlabel('Step')
-    ax8.set_ylabel('Temperature (°C)')
+    ax8.axhline(95, color='darkred', linestyle=':', linewidth=2, alpha=0.7, label='Thermal Limit')
+    ax8.set_xlabel('Step', fontsize=10)
+    ax8.set_ylabel('Temperature (°C)', fontsize=10)
     ax8.grid(True, alpha=0.3)
-    ax8.legend()
+    ax8.legend(fontsize=9)
 
     ax9 = fig.add_subplot(gs[2, 2])
     ax9.set_title('Timing Slack (Can we close timing?)', fontsize=11, fontweight='bold')
-    ax9.plot(greedy_data['steps'], greedy_data['timing_slack'], color=greedy_color, linewidth=2, label='Greedy')
-    ax9.plot(jam_data['steps'], jam_data['timing_slack'], color=jam_color, linewidth=2, label='JAM')
+    ax9.plot(greedy_data['steps'], greedy_data['timing_slack'], color=greedy_color, linewidth=3, label='Greedy (red)', linestyle='-')
+    ax9.plot(jam_data['steps'], jam_data['timing_slack'], color=jam_color, linewidth=3, label='JAM (blue)', linestyle='--')
     ax9.axvline(shift_step, color=shift_color, linestyle='--', linewidth=2, alpha=0.7)
-    ax9.axhline(50, color='red', linestyle=':', linewidth=1, alpha=0.5, label='Min Slack')
-    ax9.axhline(0, color='darkred', linestyle='-', linewidth=1, alpha=0.7)
-    ax9.set_xlabel('Step')
-    ax9.set_ylabel('Timing Slack (ps)')
+    ax9.axhline(50, color='darkred', linestyle=':', linewidth=2, alpha=0.7, label='Min Slack')
+    ax9.axhline(0, color='darkred', linestyle='-', linewidth=2, alpha=0.9, label='Violation')
+    ax9.set_xlabel('Step', fontsize=10)
+    ax9.set_ylabel('Timing Slack (ps)', fontsize=10)
     ax9.grid(True, alpha=0.3)
-    ax9.legend()
+    ax9.legend(fontsize=9)
 
     # ========================================================================
     # ROW 4: HEADROOM ANALYSIS (JAM's Glass Box Property)
@@ -210,19 +214,35 @@ def create_glass_box_visualization(greedy_data, jam_data, result, output_file='c
     ax10 = fig.add_subplot(gs[3, :2])
     ax10.set_title('JAM GLASS BOX: All Constraint Headrooms (Interpretable!)', fontsize=12, fontweight='bold')
 
-    # Plot all headrooms for JAM
-    for hr_name, hr_values in jam_data['headrooms'].items():
-        ax10.plot(jam_data['steps'], hr_values, linewidth=1.5, label=hr_name, alpha=0.7)
+    # Define unique colors for each constraint
+    constraint_colors = {
+        'power': '#E74C3C',           # Red
+        'area': '#3498DB',            # Blue
+        'temperature': '#F39C12',     # Orange
+        'frequency': '#2ECC71',       # Green
+        'timing_slack': '#9B59B6',    # Purple
+        'ir_drop': '#1ABC9C',         # Turquoise
+        'yield': '#E67E22',           # Dark Orange
+        'signal_integrity': '#34495E', # Dark Gray
+        'power_density': '#E91E63',   # Pink
+        'wire_delay': '#00BCD4',      # Cyan
+    }
 
-    # Highlight the minimum
+    # Plot all headrooms for JAM with distinct colors
+    for hr_name, hr_values in jam_data['headrooms'].items():
+        color = constraint_colors.get(hr_name, None)
+        ax10.plot(jam_data['steps'], hr_values, linewidth=2, label=hr_name,
+                 color=color, alpha=0.8, linestyle='-')
+
+    # Highlight the minimum with thick black dashed line
     ax10.plot(jam_data['steps'], jam_data['min_headroom'],
-              color='black', linewidth=3, label='MIN (what JAM optimizes)', linestyle='--')
-    ax10.axvline(shift_step, color=shift_color, linestyle='--', linewidth=2, alpha=0.7)
-    ax10.axhline(0, color='red', linestyle='-', linewidth=1, alpha=0.7, label='Constraint Violated')
-    ax10.set_xlabel('Step')
-    ax10.set_ylabel('Headroom (positive = safe)')
+              color='black', linewidth=4, label='MIN (JAM optimizes this)', linestyle='--', zorder=10)
+    ax10.axvline(shift_step, color=shift_color, linestyle='--', linewidth=2, alpha=0.7, label='Requirement Shift')
+    ax10.axhline(0, color='darkred', linestyle='-', linewidth=2, alpha=0.9, label='Violation Threshold', zorder=5)
+    ax10.set_xlabel('Step', fontsize=11)
+    ax10.set_ylabel('Headroom (positive = safe)', fontsize=11)
     ax10.grid(True, alpha=0.3)
-    ax10.legend(loc='upper right', fontsize=8, ncol=2)
+    ax10.legend(loc='upper right', fontsize=7, ncol=3, framealpha=0.9)
     ax10.text(0.02, 0.98, 'You can SEE what JAM is doing:\nIt keeps all margins positive\nand maximizes the weakest one',
               transform=ax10.transAxes, ha='left', va='top', fontsize=10,
               bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8))
@@ -268,8 +288,8 @@ def create_glass_box_visualization(greedy_data, jam_data, result, output_file='c
 def main():
     import argparse
     parser = argparse.ArgumentParser(description='Visualize chip complexity for Greedy vs JAM')
-    parser.add_argument('--design-steps', type=int, default=50, help='Design phase steps')
-    parser.add_argument('--adapt-steps', type=int, default=20, help='Adaptation phase steps')
+    parser.add_argument('--design-steps', type=int, default=100, help='Design phase steps (default: 100 for more detail)')
+    parser.add_argument('--adapt-steps', type=int, default=30, help='Adaptation phase steps (default: 30 for more detail)')
     parser.add_argument('--output', type=str, default='chip_complexity.png', help='Output image file')
     parser.add_argument('--seed', type=int, default=42, help='Random seed')
     parser.add_argument('--shift-type', type=str, default='tighten_power',
@@ -288,10 +308,12 @@ def main():
     print("="*80)
 
     # Run simulation
+    # Use more frequent checkpoints for smoother graphs (every 2 steps)
+    checkpoint_freq = 2
     sim = AdvancedSimulation(
         design_steps=args.design_steps,
         adaptation_steps=args.adapt_steps,
-        checkpoint_frequency=5,
+        checkpoint_frequency=checkpoint_freq,
         shift_type=ShiftType(args.shift_type),
         process=ProcessTechnology.create_7nm(),
         seed=args.seed,
