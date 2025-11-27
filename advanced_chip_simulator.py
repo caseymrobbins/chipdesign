@@ -760,10 +760,21 @@ class AdvancedDesignSpace:
         # Pipeline benefit (deeper = higher freq but worse IPC due to branches)
         pipeline_factor = 1.0 - 0.01 * abs(self.params.pipeline_stages - 14)
 
-        # Cache benefit
-        cache_factor = 1.0 + 0.0001 * (self.params.l1_cache_kb + self.params.l2_cache_kb/10)
+        # Cache benefit - L3 is CRITICAL for memory-bound workloads!
+        # L1: Fast but small - big impact per KB
+        # L2: Medium - moderate impact
+        # L3: Large - crucial for avoiding DRAM (100+ cycle penalty)
+        l1_benefit = 0.001 * self.params.l1_cache_kb  # Strong impact
+        l2_benefit = 0.0002 * self.params.l2_cache_kb  # Moderate impact
+        l3_benefit = 0.00005 * self.params.l3_cache_kb  # Large capacity, crucial for memory latency
 
-        ipc = ipc_width * pipeline_factor * cache_factor
+        cache_factor = 1.0 + l1_benefit + l2_benefit + l3_benefit
+
+        # L3 cache ALSO reduces memory stall time (avoid DRAM accesses)
+        # Cutting L3 in half significantly increases memory stalls
+        l3_stall_reduction = 1.0 + 0.00003 * self.params.l3_cache_kb  # More L3 = fewer stalls
+
+        ipc = ipc_width * pipeline_factor * cache_factor * l3_stall_reduction
 
         # Single-threaded performance
         single_thread_perf = ipc * self.params.clock_freq_ghz
