@@ -127,17 +127,18 @@ class ConstraintLimits:
     Hard limits on constraints.
 
     These represent physical limits, requirements, or specifications.
+    TIGHTENED CONSTRAINTS for more challenging optimization.
     """
-    max_power_watts: float = 150.0  # TDP (Thermal Design Power)
-    max_area_mm2: float = 200.0  # Maximum die area
-    max_temperature_c: float = 95.0  # Maximum junction temperature
+    max_power_watts: float = 120.0  # TDP (Thermal Design Power) - reduced from 150W
+    max_area_mm2: float = 175.0  # Maximum die area - reduced from 200mm²
+    max_temperature_c: float = 90.0  # Maximum junction temperature - reduced from 95°C
     min_frequency_ghz: float = 2.0  # Minimum performance requirement
-    min_timing_slack_ps: float = 50.0  # Minimum timing margin (picoseconds)
-    max_ir_drop_mv: float = 50.0  # Maximum IR drop (millivolts)
-    min_yield: float = 0.85  # Minimum manufacturing yield
-    max_wire_delay_ps: float = 200.0  # Maximum wire delay
-    min_signal_integrity: float = 0.90  # Minimum signal integrity metric
-    max_power_density_w_mm2: float = 1.5  # Max power density
+    min_timing_slack_ps: float = 60.0  # Minimum timing margin (picoseconds) - increased from 50ps
+    max_ir_drop_mv: float = 45.0  # Maximum IR drop (millivolts) - reduced from 50mV
+    min_yield: float = 0.84  # Minimum manufacturing yield - slightly below initial 0.86
+    max_wire_delay_ps: float = 175.0  # Maximum wire delay - reduced from 200ps
+    min_signal_integrity: float = 0.91  # Minimum signal integrity metric - increased from 0.90
+    max_power_density_w_mm2: float = 1.3  # Max power density - reduced from 1.5 W/mm²
 
     def clone(self) -> 'ConstraintLimits':
         """Create a deep copy"""
