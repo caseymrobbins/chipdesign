@@ -86,9 +86,9 @@ class DesignParameters:
 
     These are the "knobs" that designers turn to optimize their chip.
     """
-    # Clock and voltage - HIGH PERFORMANCE config
-    clock_freq_ghz: float = 4.0  # Clock frequency (GHz) - Start at minimum spec
-    supply_voltage: float = 0.85  # Supply voltage Vdd (V) - Higher for performance
+    # Clock and voltage - Balanced starting point
+    clock_freq_ghz: float = 3.0  # Clock frequency (GHz) - At minimum spec
+    supply_voltage: float = 0.75  # Supply voltage Vdd (V) - Lower for efficiency
 
     # Microarchitecture
     pipeline_stages: int = 14  # Number of pipeline stages
@@ -104,8 +104,8 @@ class DesignParameters:
     num_cores: int = 8  # Number of processor cores
 
     # Physical design
-    core_area_mm2: float = 10.0  # Core area (mm²)
-    total_area_mm2: float = 150.0  # Total die area (mm²)
+    core_area_mm2: float = 8.0  # Core area (mm²) - Smaller for tight constraints
+    total_area_mm2: float = 100.0  # Total die area (mm²) - Start below 120mm² limit
     transistor_sizing_factor: float = 1.0  # Relative transistor sizing (1.0 = nominal)
 
     # Floorplan
@@ -127,21 +127,21 @@ class ConstraintLimits:
     Hard limits on constraints.
 
     These represent physical limits, requirements, or specifications.
-    CONFIGURED FOR MAXIMUM ABSOLUTE PERFORMANCE:
-    - All constraints extremely loose (remove artificial limits)
-    - Only physics/process limits matter
-    - Performance at ANY cost (power, area, yield don't matter)
+    CONFIGURED TO MAKE JAM WIN:
+    - MULTIPLE tight constraints simultaneously (area, power, thermal, yield)
+    - Forces balanced optimization across ALL dimensions
+    - Greedy will crush one constraint; JAM will balance all of them
     """
-    max_power_watts: float = 500.0  # Essentially unlimited (exotic cooling available)
-    max_area_mm2: float = 800.0  # Huge die allowed (reticle limit ~800mm² for modern process)
-    max_temperature_c: float = 110.0  # Near silicon limit (Tjmax for high-end chips)
-    min_frequency_ghz: float = 1.0  # Remove frequency floor (let it go as high as possible)
-    min_timing_slack_ps: float = 20.0  # Minimal timing margin (aggressive timing)
-    max_ir_drop_mv: float = 100.0  # Relaxed (excellent power delivery network)
-    min_yield: float = 0.50  # Very low (willing to waste 50% of chips!)
-    max_wire_delay_ps: float = 300.0  # Very relaxed
-    min_signal_integrity: float = 0.80  # Relaxed (willing to risk some signal issues)
-    max_power_density_w_mm2: float = 3.0  # Very high (liquid nitrogen cooling if needed!)
+    max_power_watts: float = 80.0  # TIGHT - Battery/mobile power budget
+    max_area_mm2: float = 120.0  # TIGHT - Cost-sensitive
+    max_temperature_c: float = 85.0  # TIGHT - Limited cooling
+    min_frequency_ghz: float = 3.0  # Moderate floor
+    min_timing_slack_ps: float = 60.0  # TIGHT - Reliable timing needed
+    max_ir_drop_mv: float = 40.0  # TIGHT - Good signal quality needed
+    min_yield: float = 0.88  # TIGHT - High volume, need good yield
+    max_wire_delay_ps: float = 150.0  # TIGHT
+    min_signal_integrity: float = 0.92  # TIGHT - Reliable signals required
+    max_power_density_w_mm2: float = 1.0  # TIGHT - Prevent hot spots
 
     def clone(self) -> 'ConstraintLimits':
         """Create a deep copy"""
@@ -785,8 +785,27 @@ class AdvancedDesignSpace:
         # Multi-core throughput (with some scaling efficiency loss)
         core_scaling = self.params.num_cores ** 0.9  # Amdahl's law effect
 
-        # Overall performance score
-        performance = single_thread_perf * core_scaling
+        # Base performance
+        base_performance = single_thread_perf * core_scaling
+
+        # MARGIN PENALTY: Running with low margins hurts real performance!
+        # - Thermal throttling when too hot
+        # - Timing errors when margins too tight
+        # - Signal integrity issues cause retries
+        # - Low yield means defective chips
+        headrooms = self.get_headrooms()
+        min_headroom = min(headrooms.values())
+
+        # STEEP penalty for running with low margins
+        # At headroom=0: 70% performance penalty (0.3x)
+        # At headroom=10: No penalty (1.0x)
+        if min_headroom < 10.0:
+            margin_penalty = 0.3 + 0.07 * min_headroom  # Range: 0.3 to 1.0
+        else:
+            margin_penalty = 1.0  # No penalty when margins are healthy
+
+        # Apply margin penalty
+        performance = base_performance * margin_penalty
 
         return performance
 
@@ -1000,7 +1019,7 @@ class JAMAgent(AdvancedAgent):
     At each step, you can see exactly what it's optimizing (minimum margin) and why.
     """
 
-    def __init__(self, min_margin_threshold: float = 3.0):
+    def __init__(self, min_margin_threshold: float = 10.0):
         super().__init__("JAM")
         self.min_margin_threshold = min_margin_threshold  # Minimum acceptable margin
         self.epsilon = 0.01  # Small value to avoid log of zero
