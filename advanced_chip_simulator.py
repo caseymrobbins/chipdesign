@@ -937,16 +937,19 @@ class AdvancedGreedyPerformanceAgent(AdvancedAgent):
         return best_action
 
 
-class AdvancedLogMinHeadroomAgent(AdvancedAgent):
+class JAMAgent(AdvancedAgent):
     """
-    Agent 2: Log-Min-Headroom Optimizer
+    Agent 2: JAM (Just Add Margin)
 
     Optimizes log(min(headroom)) to preserve margins in the most constrained dimension.
     Uses performance as a tiebreaker.
+
+    This is a GLASS BOX strategy: the decision logic is transparent and interpretable.
+    At each step, you can see exactly what it's optimizing (minimum margin) and why.
     """
 
     def __init__(self, epsilon: float = 0.1):
-        super().__init__("LogMinHeadroom")
+        super().__init__("JAM")
         self.epsilon = epsilon  # Small value to avoid log of negative or zero
 
     def select_action(self) -> Optional[DesignAction]:
@@ -1082,7 +1085,7 @@ class AdvancedSimulation:
         agent1 = AdvancedGreedyPerformanceAgent()
         agent1.initialize(space1)
 
-        agent2 = AdvancedLogMinHeadroomAgent()
+        agent2 = JAMAgent()
         agent2.initialize(space2)
 
         checkpoints = []
