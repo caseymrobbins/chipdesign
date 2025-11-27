@@ -288,7 +288,7 @@ def create_glass_box_visualization(greedy_data, jam_data, result, output_file='c
 def main():
     import argparse
     parser = argparse.ArgumentParser(description='Visualize chip complexity for Greedy vs JAM')
-    parser.add_argument('--design-steps', type=int, default=100, help='Design phase steps (default: 100 for more detail)')
+    parser.add_argument('--design-steps', type=int, default=50, help='Design phase steps (default: 50, realistic for reaching optimum)')
     parser.add_argument('--adapt-steps', type=int, default=30, help='Adaptation phase steps (default: 30 for more detail)')
     parser.add_argument('--output', type=str, default='chip_complexity.png', help='Output image file')
     parser.add_argument('--seed', type=int, default=42, help='Random seed')

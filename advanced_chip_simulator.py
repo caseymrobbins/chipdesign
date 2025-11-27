@@ -428,13 +428,14 @@ class AdvancedDesignSpace:
         # Step counter
         self.step_count: int = 0
 
-        # Actions
+        # Actions - initialize them immediately
         self.actions: List['DesignAction'] = []
+        self.initialize_actions()
 
     def initialize_actions(self):
         """Create realistic chip design actions"""
         self.actions = [
-            # DVFS (Dynamic Voltage-Frequency Scaling) actions
+            # DVFS (Dynamic Voltage-Frequency Scaling) actions - Multiple granularities
             DesignAction(
                 name="increase_frequency_aggressive",
                 description="Increase clock frequency aggressively (+10%)",
@@ -448,9 +449,27 @@ class AdvancedDesignSpace:
                 category="performance"
             ),
             DesignAction(
+                name="increase_frequency_small",
+                description="Increase clock frequency slightly (+2%)",
+                apply_fn=lambda p: self._modify_params(p, clock_freq_ghz=p.clock_freq_ghz * 1.02),
+                category="performance"
+            ),
+            DesignAction(
+                name="increase_frequency_tiny",
+                description="Increase clock frequency minimally (+1%)",
+                apply_fn=lambda p: self._modify_params(p, clock_freq_ghz=p.clock_freq_ghz * 1.01),
+                category="performance"
+            ),
+            DesignAction(
                 name="decrease_frequency",
                 description="Decrease clock frequency (-8%)",
                 apply_fn=lambda p: self._modify_params(p, clock_freq_ghz=p.clock_freq_ghz * 0.92),
+                category="efficiency"
+            ),
+            DesignAction(
+                name="decrease_frequency_small",
+                description="Decrease clock frequency slightly (-2%)",
+                apply_fn=lambda p: self._modify_params(p, clock_freq_ghz=p.clock_freq_ghz * 0.98),
                 category="efficiency"
             ),
             DesignAction(
@@ -460,9 +479,27 @@ class AdvancedDesignSpace:
                 category="performance"
             ),
             DesignAction(
+                name="increase_voltage_small",
+                description="Increase supply voltage slightly (+2%)",
+                apply_fn=lambda p: self._modify_params(p, supply_voltage=min(self.process.vdd_max, p.supply_voltage * 1.02)),
+                category="performance"
+            ),
+            DesignAction(
+                name="increase_voltage_tiny",
+                description="Increase supply voltage minimally (+1%)",
+                apply_fn=lambda p: self._modify_params(p, supply_voltage=min(self.process.vdd_max, p.supply_voltage * 1.01)),
+                category="performance"
+            ),
+            DesignAction(
                 name="decrease_voltage",
                 description="Decrease supply voltage (-5%)",
                 apply_fn=lambda p: self._modify_params(p, supply_voltage=max(self.process.vdd_min, p.supply_voltage * 0.95)),
+                category="efficiency"
+            ),
+            DesignAction(
+                name="decrease_voltage_small",
+                description="Decrease supply voltage slightly (-2%)",
+                apply_fn=lambda p: self._modify_params(p, supply_voltage=max(self.process.vdd_min, p.supply_voltage * 0.98)),
                 category="efficiency"
             ),
             DesignAction(
