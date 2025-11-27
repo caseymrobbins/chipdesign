@@ -942,24 +942,27 @@ class JAMAgent(AdvancedAgent):
     Agent 2: JAM (Just Add Margin)
 
     Optimizes log(min(headroom)) to preserve margins in the most constrained dimension.
-    Uses performance as a tiebreaker.
+    REFUSES actions that would reduce margins below a safety threshold.
 
     This is a GLASS BOX strategy: the decision logic is transparent and interpretable.
     At each step, you can see exactly what it's optimizing (minimum margin) and why.
     """
 
-    def __init__(self, epsilon: float = 0.1):
+    def __init__(self, min_margin_threshold: float = 3.0):
         super().__init__("JAM")
-        self.epsilon = epsilon  # Small value to avoid log of negative or zero
+        self.min_margin_threshold = min_margin_threshold  # Minimum acceptable margin
+        self.epsilon = 0.01  # Small value to avoid log of zero
 
     def select_action(self) -> Optional[DesignAction]:
-        """Select action that maximizes log of minimum headroom"""
+        """Select action that maximizes log of minimum headroom while maintaining safety margins"""
         if not self.design_space:
             return None
 
-        best_action = None
-        best_score = -float('inf')
-        best_performance = -float('inf')
+        current_min_headroom = self.design_space.get_min_headroom()
+
+        # Separate actions into "safe" (maintain threshold) and "risky" (reduce margins)
+        safe_actions = []
+        risky_actions = []
 
         for action in self.design_space.actions:
             # Simulate applying the action
@@ -969,18 +972,36 @@ class JAMAgent(AdvancedAgent):
             if not test_space.is_feasible():
                 continue
 
-            # Calculate log(min_headroom) score
             min_headroom = test_space.get_min_headroom()
-            score = np.log(max(min_headroom, self.epsilon))
+            margin_score = np.log(max(min_headroom, self.epsilon))
             perf = test_space.calculate_performance()
 
-            # Select based on score, with performance as tiebreaker
-            if score > best_score or (abs(score - best_score) < 0.01 and perf > best_performance):
-                best_score = score
-                best_performance = perf
-                best_action = action
+            action_data = (action, margin_score, perf, min_headroom)
 
-        return best_action
+            # Safe actions: maintain min_headroom above threshold
+            if min_headroom >= self.min_margin_threshold:
+                safe_actions.append(action_data)
+            else:
+                risky_actions.append(action_data)
+
+        # Prefer safe actions that maintain margins
+        if safe_actions:
+            # Among safe actions, pick best margin score, then best performance
+            best = max(safe_actions, key=lambda x: (x[1], x[2]))  # (margin_score, perf)
+            return best[0]
+
+        # If no safe actions, pick the least risky one (highest margin that's still above current)
+        elif risky_actions:
+            # Only take actions that don't make things worse
+            improving = [a for a in risky_actions if a[3] >= current_min_headroom]
+            if improving:
+                best = max(improving, key=lambda x: (x[1], x[2]))
+                return best[0]
+            else:
+                # No improving actions available, stop optimizing
+                return None
+
+        return None
 
 
 @dataclass
