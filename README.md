@@ -109,8 +109,9 @@ Design decisions that modify multiple dimensions simultaneously, creating realis
 - May fall into "trap" actions that crush one dimension
 - Maximizes short-term performance
 - Representative of traditional design practices
+- **More black-box**: harder to predict which margins will be sacrificed
 
-### Agent 2: Log-Min-Headroom Optimizer
+### Agent 2: JAM (Just Add Margin) - GLASS BOX Strategy
 
 **Objective**: `max(log(min(headroom_1, headroom_2, ...headroom_n)))`
 
@@ -123,6 +124,9 @@ Design decisions that modify multiple dimensions simultaneously, creating realis
 - Maintains balanced headroom across all constraints
 - Hypothetically more adaptable to requirement changes
 - May sacrifice some short-term performance for long-term flexibility
+- **GLASS BOX**: Fully interpretable - you can see what it optimizes and why
+- **Transparent reasoning**: Every decision can be traced to improving the weakest margin
+- **Predictable behavior**: Will systematically avoid crushing any single constraint
 
 ## Simulation Structure
 
@@ -251,6 +255,25 @@ python run_experiments.py --runs 5 --design-steps 20 --adapt-steps 10 --verbose
 python run_experiments.py --runs 20 --design-steps 40 --adapt-steps 15
 ```
 
+### Visualizing JAM's Glass-Box Property
+
+```bash
+# Generate chip complexity visualization showing JAM interpretability
+python visualize_chip_complexity.py --design-steps 30 --adapt-steps 15 --shift-type tighten_power
+
+# This creates chip_complexity.png showing:
+# - What each agent optimizes (objective functions)
+# - How chip parameters evolve (frequency, voltage, cores, etc.)
+# - All constraint headrooms over time (JAM's transparent reasoning)
+# - Comparison of adaptability after requirement shift
+```
+
+The visualization demonstrates that **JAM is a GLASS BOX**:
+- You can see exactly what it optimizes: `log(min(headroom))`
+- You can trace every decision to improving the weakest margin
+- All constraint headrooms are visible throughout the design process
+- The strategy is fully interpretable and predictable
+
 ## Output Format
 
 ### JSON Structure
@@ -289,7 +312,7 @@ Results are saved to a JSON file with the following structure:
   "results": [
     {
       "run_id": 0,
-      "winner": "LogMinHeadroom",
+      "winner": "JAM",
       "agent1_survived_shift": true,
       "agent2_survived_shift": true,
       "checkpoints": [ ... ]
@@ -321,16 +344,16 @@ AGGREGATE RESULTS (100 runs)
 
 SURVIVAL RATES:
   GreedyPerformance:   45/100 (45.0%)
-  LogMinHeadroom:      78/100 (78.0%)
+  JAM:                 78/100 (78.0%)
 
 WIN RATES:
   GreedyPerformance:   22/100 (22.0%)
-  LogMinHeadroom:      68/100 (68.0%)
+  JAM:                 68/100 (68.0%)
   Ties:                10/100
 
 PERFORMANCE (Design Phase):
   GreedyPerformance:   450.23 ± 45.12
-  LogMinHeadroom:      380.45 ± 38.67
+  JAM:                 380.45 ± 38.67
 
 ...
 ```
@@ -340,12 +363,12 @@ PERFORMANCE (Design Phase):
 ### What to Look For
 
 1. **Survival Rate Difference**
-   - Is Agent 2 (LogMinHeadroom) surviving at higher rates?
+   - Is Agent 2 (JAM) surviving at higher rates?
    - Confirms/refutes adaptability hypothesis
 
 2. **Performance vs Adaptability Tradeoff**
-   - Agent 1 should have higher performance in design phase
-   - But Agent 2 should survive better after shifts
+   - Agent 1 (Greedy) should have higher performance in design phase
+   - But Agent 2 (JAM) should survive better after shifts
    - Classic tradeoff: immediate performance vs future flexibility
 
 3. **Shift Type Sensitivity**
@@ -353,7 +376,7 @@ PERFORMANCE (Design Phase):
    - Do agents perform differently on different shift types?
 
 4. **Headroom Statistics**
-   - Agent 2 should maintain higher minimum headroom
+   - JAM should maintain higher minimum headroom
    - This "safety margin" is the key to adaptability
 
 ### Success Criteria
@@ -369,15 +392,15 @@ The hypothesis is supported if:
 ```
 SURVIVAL RATES:
   GreedyPerformance:   45/100 (45.0%)
-  LogMinHeadroom:      78/100 (78.0%)
+  JAM:                 78/100 (78.0%)
 ```
 
-**Interpretation**: Agent 2 survives 73% more often! Strong support for the hypothesis that maintaining headroom creates adaptable designs.
+**Interpretation**: JAM survives 73% more often! Strong support for the hypothesis that maintaining headroom creates adaptable designs.
 
 ```
 PERFORMANCE (Design Phase):
   GreedyPerformance:   450.23 ± 45.12
-  LogMinHeadroom:      380.45 ± 38.67
+  JAM:                 380.45 ± 38.67
 ```
 
 **Interpretation**: Agent 1 achieves 18% higher performance in the design phase, but this comes at the cost of fragility.
@@ -478,7 +501,7 @@ chmod +x run_experiments.py
 
 - `chip_design_simulator.py`: Core simulation engine
   - DesignSpace class: Manages constraints and state
-  - Agent classes: GreedyPerformanceAgent and LogMinHeadroomAgent
+  - Agent classes: GreedyPerformanceAgent and JAMAgent
   - Simulation class: Orchestrates experiments
   - Analysis functions: Statistics and reporting
 

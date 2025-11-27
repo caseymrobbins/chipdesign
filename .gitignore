@@ -24,6 +24,11 @@ wheels/
 *_results.json
 *.json
 
+# Generated visualizations
+*.png
+*.pdf
+*.svg
+
 # IDE
 .vscode/
 .idea/

@@ -231,7 +231,7 @@ The Advanced Simulator's physics models are calibrated to match real chip behavi
 ## Code Organization
 
 Both simulators share:
-- Agent base classes (Greedy, LogMinHeadroom)
+- Agent base classes (Greedy, JAM)
 - Simulation orchestration structure
 - Three-phase execution (Design, Shift, Adaptation)
 - JSON output format
