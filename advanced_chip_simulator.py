@@ -545,27 +545,27 @@ class AdvancedDesignSpace:
                 category="area"
             ),
 
-            # Core count modifications
-            DesignAction(
-                name="add_core",
-                description="TRAP: Add processor core (+1) - more throughput but power/area explosion",
-                apply_fn=lambda p: self._modify_params(
-                    p,
-                    num_cores=p.num_cores + 1,
-                    total_area_mm2=p.total_area_mm2 + p.core_area_mm2
-                ),
-                category="trap"
-            ),
-            DesignAction(
-                name="remove_core",
-                description="Remove processor core (-1)",
-                apply_fn=lambda p: self._modify_params(
-                    p,
-                    num_cores=max(4, p.num_cores - 1),
-                    total_area_mm2=p.total_area_mm2 - p.core_area_mm2
-                ),
-                category="area"
-            ),
+            # Core count modifications - DISABLED to compare agents with same core count
+            # DesignAction(
+            #     name="add_core",
+            #     description="TRAP: Add processor core (+1) - more throughput but power/area explosion",
+            #     apply_fn=lambda p: self._modify_params(
+            #         p,
+            #         num_cores=p.num_cores + 1,
+            #         total_area_mm2=p.total_area_mm2 + p.core_area_mm2
+            #     ),
+            #     category="trap"
+            # ),
+            # DesignAction(
+            #     name="remove_core",
+            #     description="Remove processor core (-1)",
+            #     apply_fn=lambda p: self._modify_params(
+            #         p,
+            #         num_cores=max(4, p.num_cores - 1),
+            #         total_area_mm2=p.total_area_mm2 - p.core_area_mm2
+            #     ),
+            #     category="area"
+            # ),
 
             # Transistor sizing
             DesignAction(
