@@ -127,21 +127,21 @@ class ConstraintLimits:
     Hard limits on constraints.
 
     These represent physical limits, requirements, or specifications.
-    CONFIGURED FOR HIGH-PERFORMANCE DESKTOP/WORKSTATION CPU:
-    - Tight frequency requirement (must hit 4GHz+)
-    - Generous power/thermal/area budgets (performance at any cost)
-    - Relaxed yield (premium product, can tolerate waste)
+    CONFIGURED FOR MAXIMUM ABSOLUTE PERFORMANCE:
+    - All constraints extremely loose (remove artificial limits)
+    - Only physics/process limits matter
+    - Performance at ANY cost (power, area, yield don't matter)
     """
-    max_power_watts: float = 250.0  # TDP - High for performance (desktop PSU can handle it)
-    max_area_mm2: float = 400.0  # Large die allowed (willing to pay for performance)
-    max_temperature_c: float = 100.0  # Can run hot (good tower cooler available)
-    min_frequency_ghz: float = 4.0  # CRITICAL: Must hit 4GHz minimum (marketing requirement!)
-    min_timing_slack_ps: float = 50.0  # Timing margin
-    max_ir_drop_mv: float = 60.0  # IR drop - relaxed (good power delivery)
-    min_yield: float = 0.70  # Relaxed yield (premium product, low volume)
-    max_wire_delay_ps: float = 200.0  # Wire delay
-    min_signal_integrity: float = 0.88  # Signal integrity - relaxed
-    max_power_density_w_mm2: float = 2.0  # Higher density allowed (good cooling)
+    max_power_watts: float = 500.0  # Essentially unlimited (exotic cooling available)
+    max_area_mm2: float = 800.0  # Huge die allowed (reticle limit ~800mm² for modern process)
+    max_temperature_c: float = 110.0  # Near silicon limit (Tjmax for high-end chips)
+    min_frequency_ghz: float = 1.0  # Remove frequency floor (let it go as high as possible)
+    min_timing_slack_ps: float = 20.0  # Minimal timing margin (aggressive timing)
+    max_ir_drop_mv: float = 100.0  # Relaxed (excellent power delivery network)
+    min_yield: float = 0.50  # Very low (willing to waste 50% of chips!)
+    max_wire_delay_ps: float = 300.0  # Very relaxed
+    min_signal_integrity: float = 0.80  # Relaxed (willing to risk some signal issues)
+    max_power_density_w_mm2: float = 3.0  # Very high (liquid nitrogen cooling if needed!)
 
     def clone(self) -> 'ConstraintLimits':
         """Create a deep copy"""
