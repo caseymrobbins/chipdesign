@@ -44,6 +44,13 @@ def extract_timeseries(checkpoints, agent_name):
         'area': [],
         'headrooms': {},
         'action': [],
+        # Chip design parameters (microarchitecture)
+        'l1_cache': [],
+        'l2_cache': [],
+        'l3_cache': [],
+        'issue_width': [],
+        'pipeline_stages': [],
+        'core_area': [],
     }
 
     for cp in agent_data:
@@ -54,6 +61,13 @@ def extract_timeseries(checkpoints, agent_name):
         data['frequency'].append(cp['parameters']['clock_freq_ghz'])
         data['voltage'].append(cp['parameters']['supply_voltage'])
         data['cores'].append(cp['parameters']['num_cores'])
+        # Collect chip design parameters
+        data['l1_cache'].append(cp['parameters'].get('l1_cache_kb', 0))
+        data['l2_cache'].append(cp['parameters'].get('l2_cache_kb', 0))
+        data['l3_cache'].append(cp['parameters'].get('l3_cache_kb', 0))
+        data['issue_width'].append(cp['parameters'].get('issue_width', 0))
+        data['pipeline_stages'].append(cp['parameters'].get('pipeline_stages', 0))
+        data['core_area'].append(cp['parameters'].get('core_area_mm2', 0))
         data['power'].append(cp['constraints']['total_power_w'])
         data['temperature'].append(cp['constraints']['temperature_c'])
         data['timing_slack'].append(cp['constraints']['timing_slack_ps'])
@@ -134,40 +148,56 @@ def create_glass_box_visualization(greedy_data, jam_data, result, output_file='c
     ax3.legend(fontsize=9)
 
     # ========================================================================
-    # ROW 2: CHIP PARAMETERS (Design Knobs)
+    # ROW 2: THE ACTUAL CHIP DESIGN (Microarchitecture Parameters)
     # ========================================================================
 
     ax4 = fig.add_subplot(gs[1, 0])
-    ax4.set_title('Clock Frequency Evolution', fontsize=11, fontweight='bold')
-    ax4.plot(greedy_data['steps'], greedy_data['frequency'], color=greedy_color, linewidth=3, label='Greedy (red)', linestyle='-')
-    ax4.plot(jam_data['steps'], jam_data['frequency'], color=jam_color, linewidth=3, label='JAM (blue)', linestyle='--')
+    ax4.set_title('L3 Cache Size (KEY TRADEOFF!)', fontsize=11, fontweight='bold')
+    greedy_l3 = [x / 1024 for x in greedy_data['l3_cache']]  # Convert to MB
+    jam_l3 = [x / 1024 for x in jam_data['l3_cache']]
+    ax4.plot(greedy_data['steps'], greedy_l3, color=greedy_color, linewidth=3, label='Greedy (red)', linestyle='-',
+             marker='o', markevery=max(1, len(greedy_data['steps'])//10), markersize=5)
+    ax4.plot(jam_data['steps'], jam_l3, color=jam_color, linewidth=3, label='JAM (blue)', linestyle='--',
+             marker='s', markevery=max(1, len(jam_data['steps'])//10), markersize=5)
     ax4.axvline(shift_step, color=shift_color, linestyle='--', linewidth=2, alpha=0.7)
     ax4.set_xlabel('Step', fontsize=10)
-    ax4.set_ylabel('Frequency (GHz)', fontsize=10)
+    ax4.set_ylabel('L3 Cache (MB)', fontsize=10)
     ax4.grid(True, alpha=0.3)
     ax4.legend(fontsize=9)
+    ax4.text(0.5, 0.05, 'JAM cuts cache in HALF to reduce area!',
+             transform=ax4.transAxes, ha='center', va='bottom',
+             bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.7), fontsize=9)
 
     ax5 = fig.add_subplot(gs[1, 1])
-    ax5.set_title('Supply Voltage Evolution', fontsize=11, fontweight='bold')
-    ax5.plot(greedy_data['steps'], greedy_data['voltage'], color=greedy_color, linewidth=3, label='Greedy (red)', linestyle='-')
-    ax5.plot(jam_data['steps'], jam_data['voltage'], color=jam_color, linewidth=3, label='JAM (blue)', linestyle='--')
+    ax5.set_title('Total Die Area (mm²)', fontsize=11, fontweight='bold')
+    ax5.plot(greedy_data['steps'], greedy_data['area'], color=greedy_color, linewidth=3, label='Greedy (red)', linestyle='-',
+             marker='o', markevery=max(1, len(greedy_data['steps'])//10), markersize=5)
+    ax5.plot(jam_data['steps'], jam_data['area'], color=jam_color, linewidth=3, label='JAM (blue)', linestyle='--',
+             marker='s', markevery=max(1, len(jam_data['steps'])//10), markersize=5)
     ax5.axvline(shift_step, color=shift_color, linestyle='--', linewidth=2, alpha=0.7)
+    ax5.axhline(175, color='darkred', linestyle=':', linewidth=2, alpha=0.7, label='Area Limit')
     ax5.set_xlabel('Step', fontsize=10)
-    ax5.set_ylabel('Voltage (V)', fontsize=10)
+    ax5.set_ylabel('Die Area (mm²)', fontsize=10)
     ax5.grid(True, alpha=0.3)
     ax5.legend(fontsize=9)
+    ax5.text(0.5, 0.05, 'JAM: Small cache = Small die!',
+             transform=ax5.transAxes, ha='center', va='bottom',
+             bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.7), fontsize=9)
 
     ax6 = fig.add_subplot(gs[1, 2])
-    ax6.set_title('Number of Cores', fontsize=11, fontweight='bold')
-    ax6.plot(greedy_data['steps'], greedy_data['cores'], color=greedy_color, linewidth=3, label='Greedy (red)',
-             linestyle='-', marker='o', markevery=max(1, len(greedy_data['steps'])//15), markersize=4)
-    ax6.plot(jam_data['steps'], jam_data['cores'], color=jam_color, linewidth=3, label='JAM (blue)',
-             linestyle='--', marker='s', markevery=max(1, len(jam_data['steps'])//15), markersize=4)
+    ax6.set_title('Issue Width (IPC)', fontsize=11, fontweight='bold')
+    ax6.plot(greedy_data['steps'], greedy_data['issue_width'], color=greedy_color, linewidth=3, label='Greedy (red)',
+             linestyle='-', marker='o', markevery=max(1, len(greedy_data['steps'])//10), markersize=5)
+    ax6.plot(jam_data['steps'], jam_data['issue_width'], color=jam_color, linewidth=3, label='JAM (blue)',
+             linestyle='--', marker='s', markevery=max(1, len(jam_data['steps'])//10), markersize=5)
     ax6.axvline(shift_step, color=shift_color, linestyle='--', linewidth=2, alpha=0.7)
     ax6.set_xlabel('Step', fontsize=10)
-    ax6.set_ylabel('Core Count', fontsize=10)
+    ax6.set_ylabel('Instructions / Cycle', fontsize=10)
     ax6.grid(True, alpha=0.3)
     ax6.legend(fontsize=9)
+    ax6.text(0.5, 0.05, 'JAM compensates with WIDER pipeline!',
+             transform=ax6.transAxes, ha='center', va='bottom',
+             bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.7), fontsize=9)
 
     # ========================================================================
     # ROW 3: DERIVED CONSTRAINTS (Physics)
