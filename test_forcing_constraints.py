@@ -17,26 +17,29 @@ from advanced_chip_simulator import (
 )
 
 
-def run_comparison(steps: int = 50):
-    """Run four-way comparison with forcing constraints."""
+def run_comparison(steps: int = 200):
+    """Run comprehensive comparison testing different optimization strategies."""
 
     process = ProcessTechnology.create_7nm()
 
-    # Create four design spaces (one per agent)
-    # Limits are created internally with forcing constraints
+    # Create design spaces for all agent variants
     spaces = {
         'GreedyPerf': AdvancedDesignSpace(process=process),
         'JAM': AdvancedDesignSpace(process=process),
-        'AdaptiveJAM': AdvancedDesignSpace(process=process),
-        'HybridJAM': AdvancedDesignSpace(process=process),
+        'Hybrid_0.05': AdvancedDesignSpace(process=process),
+        'Hybrid_0.10': AdvancedDesignSpace(process=process),
+        'Hybrid_0.15': AdvancedDesignSpace(process=process),
+        'Hybrid_0.20': AdvancedDesignSpace(process=process),
     }
 
-    # Create agents
+    # Create agents with different configurations
     agents = {
         'GreedyPerf': AdvancedGreedyPerformanceAgent(),
         'JAM': JAMAgent(),
-        'AdaptiveJAM': AdaptiveJAM(margin_target=10.0),
-        'HybridJAM': HybridJAM(performance_weight=0.05),
+        'Hybrid_0.05': HybridJAM(performance_weight=0.05),  # Baseline
+        'Hybrid_0.10': HybridJAM(performance_weight=0.10),  # Option 1a
+        'Hybrid_0.15': HybridJAM(performance_weight=0.15),  # Option 1b
+        'Hybrid_0.20': HybridJAM(performance_weight=0.20),  # Option 1c
     }
 
     # Assign agents to spaces
@@ -44,7 +47,7 @@ def run_comparison(steps: int = 50):
         agents[name].design_space = spaces[name]
 
     print("=" * 80)
-    print("FOUR-WAY COMPARISON WITH FORCING CONSTRAINTS")
+    print("COMPREHENSIVE COMPARISON: Testing Different HybridJAM Weights")
     print("=" * 80)
     print(f"\nConstraints:")
     print(f"  Power: {spaces['JAM'].limits.min_power_watts:.1f}W - {spaces['JAM'].limits.max_power_watts:.1f}W")
@@ -67,7 +70,9 @@ def run_comparison(steps: int = 50):
 
     # Run optimization
     print(f"Running {steps} optimization steps...")
-    print(f"{'Step':>5s}  {'Greedy':>6s}  {'JAM':>6s}  {'Adaptive':>6s}  {'Hybrid':>6s}")
+    agent_names = list(spaces.keys())
+    header = f"{'Step':>5s}  " + "  ".join([f"{name:>8s}" for name in agent_names])
+    print(header)
 
     for step in range(steps):
         # Each agent takes a step
@@ -76,10 +81,11 @@ def run_comparison(steps: int = 50):
             if action:
                 spaces[name].apply_action(action)
 
-        # Print progress
-        if step % 10 == 0 or step == steps - 1:
-            perfs = [spaces[name].calculate_performance() for name in ['GreedyPerf', 'JAM', 'AdaptiveJAM', 'HybridJAM']]
-            print(f"{step:5d}:  {perfs[0]:6.1f}  {perfs[1]:6.1f}  {perfs[2]:6.1f}  {perfs[3]:6.1f}")
+        # Print progress every 20 steps for 200-step run
+        if step % 20 == 0 or step == steps - 1:
+            perfs = [spaces[name].calculate_performance() for name in agent_names]
+            perf_str = "  ".join([f"{p:8.1f}" for p in perfs])
+            print(f"{step:5d}:  {perf_str}")
 
     print()
     print("=" * 80)
@@ -89,7 +95,7 @@ def run_comparison(steps: int = 50):
 
     # Print detailed results
     results = []
-    for name in ['GreedyPerf', 'JAM', 'AdaptiveJAM', 'HybridJAM']:
+    for name in agent_names:
         space = spaces[name]
         perf = space.calculate_performance()
         constraints = space.calculate_constraints()
@@ -116,28 +122,31 @@ def run_comparison(steps: int = 50):
 
     print()
 
-    # Compare metrics
-    print("COMPARISONS:")
+    # Compare all agents vs GreedyPerf
+    print("COMPARISONS VS GREEDYPERF:")
     print()
 
     greedy = next(r for r in results if r['name'] == 'GreedyPerf')
-    jam = next(r for r in results if r['name'] == 'JAM')
 
-    print(f"JAM vs GreedyPerf:")
-    perf_ratio = (jam['perf'] / greedy['perf']) * 100 if greedy['perf'] > 0 else 0
-    eff_ratio = (jam['efficiency'] / greedy['efficiency']) * 100 if greedy['efficiency'] > 0 else 0
-    print(f"  Performance: JAM = {perf_ratio:.1f}% of GreedyPerf")
-    print(f"  Efficiency:  JAM = {eff_ratio:.1f}% of GreedyPerf")
-    print()
+    for result in results:
+        if result['name'] == 'GreedyPerf':
+            continue
 
-    if perf_ratio > 90 and eff_ratio > 110:
-        print("🎯 SUCCESS! JAM achieves both high performance (>90%) AND better efficiency (>110%)!")
-    elif perf_ratio > 90:
-        print("✓ JAM matches performance but not efficiency advantage")
-    elif eff_ratio > 110:
-        print("✓ JAM has efficiency advantage but not performance")
-    else:
-        print("⚠ JAM doesn't beat GreedyPerf on both metrics yet")
+        name = result['name']
+        perf_ratio = (result['perf'] / greedy['perf']) * 100 if greedy['perf'] > 0 else 0
+        eff_ratio = (result['efficiency'] / greedy['efficiency']) * 100 if greedy['efficiency'] > 0 else 0
+        perf_diff = result['perf'] - greedy['perf']
+        eff_diff = result['efficiency'] - greedy['efficiency']
+
+        print(f"{name:12s}:")
+        print(f"  Performance: {result['perf']:6.2f} vs {greedy['perf']:6.2f} = {perf_ratio:5.1f}% ({perf_diff:+5.2f})")
+        print(f"  Efficiency:  {result['efficiency']:6.2f} vs {greedy['efficiency']:6.2f} = {eff_ratio:5.1f}% ({eff_diff:+4.2f})")
+
+        if perf_diff > 0 and eff_diff > 0:
+            print(f"  ✓✓ WINS on BOTH metrics!")
+        elif perf_ratio > 95 and eff_diff > 0:
+            print(f"  ✓ Very close perf + better efficiency")
+        print()
 
     print()
 
@@ -153,4 +162,4 @@ def run_comparison(steps: int = 50):
 
 
 if __name__ == "__main__":
-    run_comparison(steps=50)
+    run_comparison(steps=200)
