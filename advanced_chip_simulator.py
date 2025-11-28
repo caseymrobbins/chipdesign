@@ -161,12 +161,12 @@ class ConstraintLimits:
         Set constraint weights to push JAM to high-performance equilibrium.
 
         STRATEGY: Raise the floor threshold!
-        - Target min_weighted_headroom = 2.0 (not 1.0) at desired config
+        - Target min_weighted_headroom = 4.0 at desired config
         - This pushes JAM toward high power/area usage and high performance
-        - JAM will seek synergies to raise all weighted headrooms to 2.0+
+        - JAM will seek synergies to raise all weighted headrooms to 4.0+
 
         At target (power=11W, area=46mm², high performance):
-        - All weighted headrooms should equal 2.0 (the raised floor)
+        - All weighted headrooms should equal 4.0 (the raised floor)
         - This defines our high-performance equilibrium point
         """
         if self.constraint_weights is None:
@@ -175,24 +175,24 @@ class ConstraintLimits:
             # Area: 46mm² (using 92% of 50mm² budget)
             # Temperature: ~60°C (10°C margin from 70°C limit)
 
-            # TARGET FLOOR: min_weighted_headroom = 2.0
+            # TARGET FLOOR: min_weighted_headroom = 4.0 (doubled from 2.0!)
 
             self.constraint_weights = {
                 # Power: Critical bottleneck - expect 1W headroom at 11W usage
-                # weight * 1.0 = 2.0 → weight = 2.0
-                'power_max': 2.0 / 1.0,             # = 2.0
+                # weight * 1.0 = 4.0 → weight = 4.0
+                'power_max': 4.0 / 1.0,             # = 4.0
 
                 # Area: Moderate - expect 4mm² headroom at 46mm² usage
-                # weight * 4.0 = 2.0 → weight = 0.5
-                'area_max': 2.0 / 4.0,              # = 0.5
+                # weight * 4.0 = 4.0 → weight = 1.0
+                'area_max': 4.0 / 4.0,              # = 1.0
 
-                # Physics constraints: weighted for floor = 2.0 at high-perf config
-                'temperature': 2.0 / 10.0,          # = 0.20  (10°C headroom expected)
-                'frequency': 2.0 / 0.2,             # = 10.0  (tight - 0.2GHz above min)
-                'timing_slack': 2.0 / 20.0,         # = 0.10  (20ps slack expected)
-                'ir_drop': 2.0 / 10.0,              # = 0.20  (10mV headroom expected)
-                'power_density': 2.0 / 0.1,         # = 20.0  (very tight - 0.1 W/mm² margin)
-                'wire_delay': 2.0 / 20.0,           # = 0.10  (20ps headroom expected)
+                # Physics constraints: weighted for floor = 4.0 at high-perf config
+                'temperature': 4.0 / 10.0,          # = 0.40  (10°C headroom expected)
+                'frequency': 4.0 / 0.2,             # = 20.0  (tight - 0.2GHz above min)
+                'timing_slack': 4.0 / 20.0,         # = 0.20  (20ps slack expected)
+                'ir_drop': 4.0 / 10.0,              # = 0.40  (10mV headroom expected)
+                'power_density': 4.0 / 0.1,         # = 40.0  (very tight - 0.1 W/mm² margin)
+                'wire_delay': 4.0 / 20.0,           # = 0.20  (20ps headroom expected)
 
                 # Not constraining (min=0, so infinite headroom)
                 'yield': 1.0,
