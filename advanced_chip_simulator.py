@@ -126,25 +126,26 @@ class ConstraintLimits:
     """
     Hard limits on constraints.
 
-    These represent physical limits, requirements, or specifications.
-    CONFIGURED TO ALLOW MARGIN BUILDING:
-    - Relaxed bottleneck constraints (yield, signal_integrity, power_density, freq)
-    - JAM can now build margins beyond 0.04 plateau
-    - Should unlock margin bonus and enable AdaptiveJAM Phase 2!
+    CONFIGURED TO FORCE RESOURCE UTILIZATION:
+    - Set HIGH minimums to prevent JAM from being ultra-conservative
+    - Force JAM to actually USE the power/area budget
+    - JAM will find the most EFFICIENT way to meet high performance targets!
 
-    The goal: Let JAM use power/area budget to build real margins (>10 headroom)!
+    The insight: JAM can achieve high performance - we just need to REQUIRE it!
     """
-    max_power_watts: float = 12.0  # Tight but achievable
-    max_area_mm2: float = 50.0  # Tight but achievable
-    max_temperature_c: float = 70.0  # Tight thermal budget
-    min_frequency_ghz: float = 4.5  # Moderate requirement
-    min_performance_score: float = 0.0  # No hard floor - margin bonus drives performance
-    min_timing_slack_ps: float = 80.0  # Important - timing must be met
-    max_ir_drop_mv: float = 40.0  # Important - power delivery quality
-    min_yield: float = 0.0  # REMOVED - margin penalty handles this!
-    max_wire_delay_ps: float = 120.0  # Important - interconnect performance
-    min_signal_integrity: float = 0.0  # REMOVED - margin penalty handles this!
-    max_power_density_w_mm2: float = 0.70  # Important - hotspot prevention
+    max_power_watts: float = 12.0  # Maximum power budget
+    min_power_watts: float = 8.0   # FORCE JAM to use at least 67% power!
+    max_area_mm2: float = 50.0  # Maximum area budget
+    min_area_mm2: float = 35.0  # FORCE JAM to use at least 70% area!
+    max_temperature_c: float = 70.0  # Thermal limit
+    min_frequency_ghz: float = 5.0  # FORCE high performance (raised from 4.5!)
+    min_performance_score: float = 40.0  # FORCE real performance (not 0!)
+    min_timing_slack_ps: float = 85.0  # Timing requirement
+    max_ir_drop_mv: float = 40.0  # Power delivery quality
+    min_yield: float = 0.0  # Removed - margin penalty handles this
+    max_wire_delay_ps: float = 120.0  # Interconnect performance
+    min_signal_integrity: float = 0.0  # Removed - margin penalty handles this
+    max_power_density_w_mm2: float = 0.70  # Hotspot prevention
 
     # Constraint weights: Lower weight = higher priority (more important to maintain)
     # JAM will work harder to keep weighted headroom higher
@@ -851,8 +852,10 @@ class AdvancedDesignSpace:
         constraints = self.calculate_constraints()
 
         headrooms = {
-            'power': self.limits.max_power_watts - constraints['total_power_w'],
-            'area': self.limits.max_area_mm2 - constraints['area_mm2'],
+            'power_max': self.limits.max_power_watts - constraints['total_power_w'],
+            'power_min': constraints['total_power_w'] - self.limits.min_power_watts,  # NEW: must use enough power!
+            'area_max': self.limits.max_area_mm2 - constraints['area_mm2'],
+            'area_min': constraints['area_mm2'] - self.limits.min_area_mm2,  # NEW: must use enough area!
             'temperature': self.limits.max_temperature_c - constraints['temperature_c'],
             'frequency': self.params.clock_freq_ghz - self.limits.min_frequency_ghz,
             'timing_slack': constraints['timing_slack_ps'] - self.limits.min_timing_slack_ps,
