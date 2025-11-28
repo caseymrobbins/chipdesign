@@ -91,26 +91,26 @@ class DesignParameters:
     - Boost IPC (wider issue, optimal pipeline, bigger caches) to hit 30+ performance
     - Start with strong baseline that meets all minimum requirements
     """
-    # Clock and voltage - IPC-focused: boost voltage for perf, keep freq minimal
-    clock_freq_ghz: float = 5.0  # Clock frequency (GHz) - At minimum to control power
-    supply_voltage: float = 0.67  # Supply voltage Vdd (V) - Precisely tuned for 35+ perf, <12W
+    # Clock and voltage - VERY AGGRESSIVE for high performance with raised minimums
+    clock_freq_ghz: float = 5.5  # Clock frequency (GHz) - Meet 5.5GHz minimum!
+    supply_voltage: float = 0.72  # Supply voltage Vdd (V) - High for 60+ performance
 
     # Microarchitecture - BOOSTED for high base performance
     pipeline_stages: int = 14  # Number of pipeline stages - OPTIMAL depth (no penalty!)
     issue_width: int = 6  # Instructions issued per cycle - WIDE for high IPC!
     reorder_buffer_size: int = 192  # ROB entries - larger for wide issue
 
-    # Cache hierarchy - MASSIVE to maximize IPC without frequency boost
+    # Cache hierarchy - MASSIVE to maximize IPC
     l1_cache_kb: float = 64.0  # L1 cache size (KB) - doubled for IPC boost
     l2_cache_kb: float = 512.0  # L2 cache size (KB) - doubled
     l3_cache_kb: float = 8192.0  # L3 cache size (KB) - 8MB! Massive for memory latency
 
     # Core configuration
-    num_cores: int = 7  # Number of processor cores - balanced throughput
+    num_cores: int = 8  # Number of processor cores - full throughput for performance
 
-    # Physical design - Moderate size to meet 30mm² minimum
-    core_area_mm2: float = 4.5  # Core area (mm²) - slightly larger for wider issue
-    total_area_mm2: float = 31.5  # Total die area (mm²) - above 30mm² minimum
+    # Physical design - LARGE to meet aggressive 40mm² minimum
+    core_area_mm2: float = 5.0  # Core area (mm²) - larger for performance
+    total_area_mm2: float = 42.0  # Total die area (mm²) - meet 40mm² minimum with headroom
     transistor_sizing_factor: float = 1.0  # Relative transistor sizing (1.0 = nominal)
 
     # Floorplan
@@ -139,12 +139,12 @@ class ConstraintLimits:
     The insight: JAM can achieve high performance - we just need to REQUIRE it!
     """
     max_power_watts: float = 12.0  # Maximum power budget
-    min_power_watts: float = 7.0   # FORCE JAM to use ≥58% power budget (moderate)
+    min_power_watts: float = 8.5   # FORCE JAM to use ≥71% power budget (AGGRESSIVE!)
     max_area_mm2: float = 50.0  # Maximum area budget
-    min_area_mm2: float = 30.0  # FORCE JAM to use ≥60% area budget (moderate)
+    min_area_mm2: float = 38.0  # FORCE JAM to use ≥76% area budget (AGGRESSIVE!)
     max_temperature_c: float = 70.0  # Thermal limit
-    min_frequency_ghz: float = 5.0  # High performance requirement
-    min_performance_score: float = 35.0  # FORCE higher performance (achievable!)
+    min_frequency_ghz: float = 5.2  # Higher performance requirement
+    min_performance_score: float = 50.0  # FORCE high performance target!
     min_timing_slack_ps: float = 80.0  # Timing requirement
     max_ir_drop_mv: float = 40.0  # Power delivery quality
     min_yield: float = 0.0  # Removed - margin penalty handles this
