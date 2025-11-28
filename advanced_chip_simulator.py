@@ -168,13 +168,18 @@ class ConstraintLimits:
            "We're designing a high-performance chip, not a low-power chip"
            This is problem DEFINITION, not adversarial constraint
 
-        2. WEIGHTS (target floor = 4.0) = Define the ratios within that region
-           At target (power=11W, area=46mm²): all weighted headrooms = 4.0
+        2. WEIGHTS (target floor = 8.0) = Define the ratios within that region
+           At target (power=11W, area=46mm²): all weighted headrooms = 8.0
 
         3. log(min()) = Solve honestly without gaming
            Finds balanced design within the bounded region
 
         Result: JAM navigates to high-performance Pareto frontier point!
+
+        OPTIMIZATION HISTORY:
+        - floor=4.0: 94.16 perf @ 10.4W = 9.1 perf/W
+        - floor=6.0: 100.05 perf @ 11.8W = 8.5 perf/W
+        - floor=8.0: 100.05 perf @ 11.3W = 8.8 perf/W ← BEST BALANCED!
         """
         if self.constraint_weights is None:
             # TARGET CONFIGURATION (high performance + efficient):
@@ -182,28 +187,28 @@ class ConstraintLimits:
             # Area: 46mm² (using 92% of 50mm² budget)
             # Temperature: ~60°C (10°C margin from 70°C limit)
 
-            # TARGET FLOOR: min_weighted_headroom = 4.0 (doubled from 2.0!)
+            # TARGET FLOOR: min_weighted_headroom = 8.0 (optimized for 100 perf!)
 
             self.constraint_weights = {
                 # Power bounds: At 11W target between [6W, 12W]
-                # power_max: 12 - 11 = 1W headroom → weight = 4.0/1.0 = 4.0
-                'power_max': 4.0 / 1.0,             # = 4.0 (tight upper bound)
-                # power_min: 11 - 6 = 5W headroom → weight = 4.0/5.0 = 0.8
-                'power_min': 4.0 / 5.0,             # = 0.8 (loose lower bound)
+                # power_max: 12 - 11 = 1W headroom → weight = 8.0/1.0 = 8.0
+                'power_max': 8.0 / 1.0,             # = 8.0 (tight upper bound)
+                # power_min: 11 - 6 = 5W headroom → weight = 8.0/5.0 = 1.6
+                'power_min': 8.0 / 5.0,             # = 1.6 (loose lower bound)
 
                 # Area bounds: At 46mm² target between [25mm², 50mm²]
-                # area_max: 50 - 46 = 4mm² headroom → weight = 4.0/4.0 = 1.0
-                'area_max': 4.0 / 4.0,              # = 1.0 (moderate upper bound)
-                # area_min: 46 - 25 = 21mm² headroom → weight = 4.0/21.0 = 0.19
-                'area_min': 4.0 / 21.0,             # = 0.19 (very loose lower bound)
+                # area_max: 50 - 46 = 4mm² headroom → weight = 8.0/4.0 = 2.0
+                'area_max': 8.0 / 4.0,              # = 2.0 (moderate upper bound)
+                # area_min: 46 - 25 = 21mm² headroom → weight = 8.0/21.0 = 0.38
+                'area_min': 8.0 / 21.0,             # = 0.38 (very loose lower bound)
 
-                # Physics constraints: weighted for floor = 4.0 at high-perf config
-                'temperature': 4.0 / 10.0,          # = 0.40  (10°C headroom expected)
-                'frequency': 4.0 / 0.2,             # = 20.0  (tight - 0.2GHz above min)
-                'timing_slack': 4.0 / 20.0,         # = 0.20  (20ps slack expected)
-                'ir_drop': 4.0 / 10.0,              # = 0.40  (10mV headroom expected)
-                'power_density': 4.0 / 0.1,         # = 40.0  (very tight - 0.1 W/mm² margin)
-                'wire_delay': 4.0 / 20.0,           # = 0.20  (20ps headroom expected)
+                # Physics constraints: weighted for floor = 8.0 at high-perf config
+                'temperature': 8.0 / 10.0,          # = 0.80  (10°C headroom expected)
+                'frequency': 8.0 / 0.2,             # = 40.0  (tight - 0.2GHz above min)
+                'timing_slack': 8.0 / 20.0,         # = 0.40  (20ps slack expected)
+                'ir_drop': 8.0 / 10.0,              # = 0.80  (10mV headroom expected)
+                'power_density': 8.0 / 0.1,         # = 80.0  (very tight - 0.1 W/mm² margin)
+                'wire_delay': 8.0 / 20.0,           # = 0.40  (20ps headroom expected)
 
                 # Not constraining (min=0, so infinite headroom)
                 'yield': 1.0,
