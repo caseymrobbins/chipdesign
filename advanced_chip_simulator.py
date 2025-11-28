@@ -137,14 +137,14 @@ class ConstraintLimits:
     max_power_watts: float = 12.0  # Tight but achievable
     max_area_mm2: float = 50.0  # Tight but achievable
     max_temperature_c: float = 70.0  # Tight thermal budget
-    min_frequency_ghz: float = 4.5  # VERY RELAXED - remove freq bottleneck
+    min_frequency_ghz: float = 4.5  # Moderate requirement
     min_performance_score: float = 0.0  # No hard floor - margin bonus drives performance
-    min_timing_slack_ps: float = 85.0  # Tight timing requirement
-    max_ir_drop_mv: float = 35.0  # Tight power delivery
-    min_yield: float = 0.90  # VERY RELAXED - remove yield bottleneck!
-    max_wire_delay_ps: float = 115.0  # Tight interconnects
-    min_signal_integrity: float = 0.91  # VERY RELAXED - remove signal bottleneck!
-    max_power_density_w_mm2: float = 0.65  # VERY RELAXED - remove density bottleneck!
+    min_timing_slack_ps: float = 80.0  # Important - timing must be met
+    max_ir_drop_mv: float = 40.0  # Important - power delivery quality
+    min_yield: float = 0.0  # REMOVED - margin penalty handles this!
+    max_wire_delay_ps: float = 120.0  # Important - interconnect performance
+    min_signal_integrity: float = 0.0  # REMOVED - margin penalty handles this!
+    max_power_density_w_mm2: float = 0.70  # Important - hotspot prevention
 
     # Constraint weights: Lower weight = higher priority (more important to maintain)
     # JAM will work harder to keep weighted headroom higher
