@@ -1193,6 +1193,7 @@ class AdvancedSimulation:
         process: Optional[ProcessTechnology] = None,
         seed: Optional[int] = None,
         verbose: bool = True,
+        progressive_goals: bool = False,  # Enable progressive performance goals
     ):
         self.design_steps = design_steps
         self.adaptation_steps = adaptation_steps
@@ -1201,6 +1202,7 @@ class AdvancedSimulation:
         self.process = process or ProcessTechnology.create_7nm()
         self.seed = seed
         self.verbose = verbose
+        self.progressive_goals = progressive_goals
         self.rng = np.random.RandomState(seed)
 
     def run_single_simulation(self, run_id: int) -> AdvancedSimulationResult:
@@ -1233,6 +1235,13 @@ class AdvancedSimulation:
         if self.verbose:
             print(f"\nPHASE 1: DESIGN ({self.design_steps} steps)")
             print("-" * 60)
+            if self.progressive_goals:
+                print("  Progressive goals ENABLED - performance target will increase dynamically")
+
+        # Progressive goals: Start with achievable target, raise it as performance improves
+        if self.progressive_goals:
+            space1.limits.min_performance_score = 10.0  # Start low and ramp up
+            space2.limits.min_performance_score = 10.0
 
         for step in range(self.design_steps):
             # Agent 1 step
@@ -1240,6 +1249,23 @@ class AdvancedSimulation:
 
             # Agent 2 step
             action2, feasible2 = agent2.step()
+
+            # Progressive goals: Check and raise performance target every 5 steps
+            if self.progressive_goals and step > 0 and step % 5 == 0:
+                current_perf = max(space1.calculate_performance(), space2.calculate_performance())
+                current_target = space1.limits.min_performance_score
+
+                # If we're comfortably above target, raise the bar
+                headroom_threshold = 3.0  # How much headroom before raising target
+                target_margin = 2.0  # Keep target this far below current performance
+
+                if current_perf > current_target + headroom_threshold:
+                    new_target = current_perf - target_margin
+                    space1.limits.min_performance_score = new_target
+                    space2.limits.min_performance_score = new_target
+
+                    if self.verbose:
+                        print(f"\n  [Step {step}] Progressive goal raised: {current_target:.1f} → {new_target:.1f} (current perf: {current_perf:.1f})")
 
             # Checkpoint
             if step % self.checkpoint_frequency == 0 or step == self.design_steps - 1:
@@ -1467,6 +1493,7 @@ def run_advanced_simulations(
     seed: Optional[int] = None,
     output_file: str = "advanced_results.json",
     verbose: bool = False,
+    progressive_goals: bool = False,  # Enable progressive performance goals
 ) -> Dict:
     """Run multiple advanced simulations and aggregate results"""
 
@@ -1478,6 +1505,7 @@ def run_advanced_simulations(
     print(f"Adaptation steps: {adaptation_steps}")
     print(f"Checkpoint frequency: {checkpoint_frequency}")
     print(f"Shift type: {shift_type.value if shift_type else 'random'}")
+    print(f"Progressive goals: {'ENABLED' if progressive_goals else 'disabled'}")
     print(f"Seed: {seed if seed else 'random'}")
     print(f"Output file: {output_file}")
     print(f"{'='*80}\n")
@@ -1496,6 +1524,7 @@ def run_advanced_simulations(
             process=process,
             seed=run_seed,
             verbose=verbose,
+            progressive_goals=progressive_goals,
         )
 
         result = sim.run_single_simulation(run_id)
