@@ -86,26 +86,26 @@ class DesignParameters:
 
     These are the "knobs" that designers turn to optimize their chip.
     """
-    # Clock and voltage - ULTRA CONSERVATIVE starting point for proof configuration
-    clock_freq_ghz: float = 1.8  # Clock frequency (GHz) - Very low to fit ultra-tight power
-    supply_voltage: float = 0.62  # Supply voltage Vdd (V) - Minimal power consumption
+    # Clock and voltage - HIGH PERFORMANCE starting point
+    clock_freq_ghz: float = 4.1  # Clock frequency (GHz) - Above 4.0GHz minimum!
+    supply_voltage: float = 0.78  # Supply voltage Vdd (V) - Higher for performance
 
     # Microarchitecture
-    pipeline_stages: int = 14  # Number of pipeline stages
+    pipeline_stages: int = 16  # Number of pipeline stages - deeper for higher freq
     issue_width: int = 4  # Instructions issued per cycle
     reorder_buffer_size: int = 128  # ROB entries
 
-    # Cache hierarchy - MINIMAL to fit in ultra-tight area budget
-    l1_cache_kb: float = 32.0  # L1 cache size (KB) - Minimal
-    l2_cache_kb: float = 256.0  # L2 cache size (KB) - Small
-    l3_cache_kb: float = 1536.0  # L3 cache size (KB) - 1.5MB (very small)
+    # Cache hierarchy - EFFICIENT for tight area budget
+    l1_cache_kb: float = 32.0  # L1 cache size (KB) - Compact
+    l2_cache_kb: float = 256.0  # L2 cache size (KB) - Compact
+    l3_cache_kb: float = 2048.0  # L3 cache size (KB) - 2MB (compact)
 
     # Core configuration
     num_cores: int = 8  # Number of processor cores
 
-    # Physical design - MINIMAL to fit ultra-tight 45mm² area budget
-    core_area_mm2: float = 4.0  # Core area (mm²) - Ultra-compact cores
-    total_area_mm2: float = 40.0  # Total die area (mm²) - Below 45mm² limit
+    # Physical design - COMPACT for tight area/power budget
+    core_area_mm2: float = 4.5  # Core area (mm²) - Compact cores
+    total_area_mm2: float = 48.0  # Total die area (mm²) - Well within 55mm² limit
     transistor_sizing_factor: float = 1.0  # Relative transistor sizing (1.0 = nominal)
 
     # Floorplan
@@ -127,24 +127,25 @@ class ConstraintLimits:
     Hard limits on constraints.
 
     These represent physical limits, requirements, or specifications.
-    CONFIGURED FOR MAXIMUM EFFICIENCY PROOF:
-    - ULTRA-TIGHT on resources to conserve (power, area, thermal)
-    - Forces JAM to find the absolute most efficient design possible
-    - This is the PROOF configuration - undeniable efficiency advantage
+    CONFIGURED FOR EFFICIENCY + PERFORMANCE BALANCE:
+    - TIGHT power/area budgets (force efficiency)
+    - HIGH minimum frequency (force performance)
+    - Moderate thermal to enable higher clocks
+    - Tight quality metrics (yield, signal integrity)
 
-    The goal: Force efficiency so extreme that the results cannot be disputed.
-    JAM must extract maximum performance from minimal resources.
+    The goal: JAM must find a design that's both fast AND efficient.
+    Both agents must use resources wisely to hit the performance target.
     """
-    max_power_watts: float = 25.0  # ULTRA-TIGHT - Severe power budget constraint
-    max_area_mm2: float = 45.0  # ULTRA-TIGHT - Very small die for low cost
-    max_temperature_c: float = 65.0  # ULTRA-TIGHT - Ultra-cool operation
-    min_frequency_ghz: float = 1.0  # LOOSE - Let JAM find efficient clock
+    max_power_watts: float = 18.0  # TIGHT - Must be efficient!
+    max_area_mm2: float = 55.0  # TIGHT - Must be compact!
+    max_temperature_c: float = 75.0  # MODERATE - Allow higher performance operation
+    min_frequency_ghz: float = 4.0  # VERY HIGH - Strong performance requirement!
     min_timing_slack_ps: float = 80.0  # TIGHT - Reliable timing
     max_ir_drop_mv: float = 35.0  # TIGHT - Good power delivery
-    min_yield: float = 0.96  # ULTRA-TIGHT - Maximize manufacturability
+    min_yield: float = 0.95  # TIGHT - High manufacturability
     max_wire_delay_ps: float = 120.0  # TIGHT
-    min_signal_integrity: float = 0.97  # ULTRA-TIGHT - Excellent signal quality
-    max_power_density_w_mm2: float = 0.4  # ULTRA-TIGHT - Minimal hotspots
+    min_signal_integrity: float = 0.96  # TIGHT - Excellent signal quality
+    max_power_density_w_mm2: float = 0.55  # MODERATE - Allow some hotspots
 
     def clone(self) -> 'ConstraintLimits':
         """Create a deep copy"""
@@ -1022,7 +1023,7 @@ class JAMAgent(AdvancedAgent):
     At each step, you can see exactly what it's optimizing (minimum margin) and why.
     """
 
-    def __init__(self, min_margin_threshold: float = 10.0):
+    def __init__(self, min_margin_threshold: float = 2.0):
         super().__init__("JAM")
         self.min_margin_threshold = min_margin_threshold  # Minimum acceptable margin
         self.epsilon = 0.01  # Small value to avoid log of zero
@@ -1060,8 +1061,12 @@ class JAMAgent(AdvancedAgent):
 
         # Prefer safe actions that maintain margins
         if safe_actions:
-            # Among safe actions, pick best margin score, then best performance
-            best = max(safe_actions, key=lambda x: (x[1], x[2]))  # (margin_score, perf)
+            # BALANCED: Optimize weighted combination of margin AND performance
+            # margin_score is in range [-inf, 0] (log of small positive number)
+            # Normalize performance to similar scale for balanced optimization
+            max_perf = max(x[2] for x in safe_actions)
+            perf_weight = 0.1  # Weight for performance vs margin
+            best = max(safe_actions, key=lambda x: x[1] + perf_weight * (x[2] / max(max_perf, 1.0)))
             return best[0]
 
         # If no safe actions, pick the least risky one (highest margin that's still above current)
@@ -1069,7 +1074,9 @@ class JAMAgent(AdvancedAgent):
             # Only take actions that don't make things worse
             improving = [a for a in risky_actions if a[3] >= current_min_headroom]
             if improving:
-                best = max(improving, key=lambda x: (x[1], x[2]))
+                max_perf = max(x[2] for x in improving)
+                perf_weight = 0.1
+                best = max(improving, key=lambda x: x[1] + perf_weight * (x[2] / max(max_perf, 1.0)))
                 return best[0]
             else:
                 # No improving actions available, stop optimizing
