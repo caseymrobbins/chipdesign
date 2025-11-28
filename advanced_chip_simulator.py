@@ -139,12 +139,12 @@ class ConstraintLimits:
     The insight: JAM can achieve high performance - we just need to REQUIRE it!
     """
     max_power_watts: float = 12.0  # Maximum power budget
-    min_power_watts: float = 0.0   # NO forcing - let weights guide equilibrium!
+    min_power_watts: float = 6.0   # LOOSE BOUND: Defines high-performance solution region
     max_area_mm2: float = 50.0  # Maximum area budget
-    min_area_mm2: float = 0.0  # NO forcing - let weights guide equilibrium!
+    min_area_mm2: float = 25.0  # LOOSE BOUND: Defines high-performance solution region
     max_temperature_c: float = 70.0  # Thermal limit
     min_frequency_ghz: float = 5.0  # Standard frequency requirement
-    min_performance_score: float = 0.0  # NO forcing - let weights guide to high perf!
+    min_performance_score: float = 0.0  # Let weights + bounds guide to high perf
     min_timing_slack_ps: float = 80.0  # Timing requirement
     max_ir_drop_mv: float = 40.0  # Power delivery quality
     min_yield: float = 0.0  # Removed - margin penalty handles this
@@ -158,16 +158,23 @@ class ConstraintLimits:
 
     def __post_init__(self):
         """
-        Set constraint weights to push JAM to high-performance equilibrium.
+        HYBRID APPROACH: Loose bounds + weighted constraints
 
-        STRATEGY: Raise the floor threshold!
-        - Target min_weighted_headroom = 4.0 at desired config
-        - This pushes JAM toward high power/area usage and high performance
-        - JAM will seek synergies to raise all weighted headrooms to 4.0+
+        DISCOVERY: log(min()) finds balanced Pareto-optimal designs, but WHICH one?
+        The whole frontier is valid! Need to define WHICH region we're solving for.
 
-        At target (power=11W, area=46mm², high performance):
-        - All weighted headrooms should equal 4.0 (the raised floor)
-        - This defines our high-performance equilibrium point
+        ARCHITECTURE:
+        1. BOUNDS (min_power=6W, min_area=25mm²) = Define the problem region
+           "We're designing a high-performance chip, not a low-power chip"
+           This is problem DEFINITION, not adversarial constraint
+
+        2. WEIGHTS (target floor = 4.0) = Define the ratios within that region
+           At target (power=11W, area=46mm²): all weighted headrooms = 4.0
+
+        3. log(min()) = Solve honestly without gaming
+           Finds balanced design within the bounded region
+
+        Result: JAM navigates to high-performance Pareto frontier point!
         """
         if self.constraint_weights is None:
             # TARGET CONFIGURATION (high performance + efficient):
@@ -178,13 +185,17 @@ class ConstraintLimits:
             # TARGET FLOOR: min_weighted_headroom = 4.0 (doubled from 2.0!)
 
             self.constraint_weights = {
-                # Power: Critical bottleneck - expect 1W headroom at 11W usage
-                # weight * 1.0 = 4.0 → weight = 4.0
-                'power_max': 4.0 / 1.0,             # = 4.0
+                # Power bounds: At 11W target between [6W, 12W]
+                # power_max: 12 - 11 = 1W headroom → weight = 4.0/1.0 = 4.0
+                'power_max': 4.0 / 1.0,             # = 4.0 (tight upper bound)
+                # power_min: 11 - 6 = 5W headroom → weight = 4.0/5.0 = 0.8
+                'power_min': 4.0 / 5.0,             # = 0.8 (loose lower bound)
 
-                # Area: Moderate - expect 4mm² headroom at 46mm² usage
-                # weight * 4.0 = 4.0 → weight = 1.0
-                'area_max': 4.0 / 4.0,              # = 1.0
+                # Area bounds: At 46mm² target between [25mm², 50mm²]
+                # area_max: 50 - 46 = 4mm² headroom → weight = 4.0/4.0 = 1.0
+                'area_max': 4.0 / 4.0,              # = 1.0 (moderate upper bound)
+                # area_min: 46 - 25 = 21mm² headroom → weight = 4.0/21.0 = 0.19
+                'area_min': 4.0 / 21.0,             # = 0.19 (very loose lower bound)
 
                 # Physics constraints: weighted for floor = 4.0 at high-perf config
                 'temperature': 4.0 / 10.0,          # = 0.40  (10°C headroom expected)
