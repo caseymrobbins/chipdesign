@@ -86,26 +86,26 @@ class DesignParameters:
 
     These are the "knobs" that designers turn to optimize their chip.
     """
-    # Clock and voltage - ULTRA CONSERVATIVE for extreme constraints
-    clock_freq_ghz: float = 2.0  # Clock frequency (GHz) - Very low to fit power budget
-    supply_voltage: float = 0.65  # Supply voltage Vdd (V) - Very low for minimal power
+    # Clock and voltage - ULTRA CONSERVATIVE starting point for proof configuration
+    clock_freq_ghz: float = 1.8  # Clock frequency (GHz) - Very low to fit ultra-tight power
+    supply_voltage: float = 0.62  # Supply voltage Vdd (V) - Minimal power consumption
 
     # Microarchitecture
     pipeline_stages: int = 14  # Number of pipeline stages
     issue_width: int = 4  # Instructions issued per cycle
     reorder_buffer_size: int = 128  # ROB entries
 
-    # Cache hierarchy - MINIMAL for extreme area/power constraints
+    # Cache hierarchy - MINIMAL to fit in ultra-tight area budget
     l1_cache_kb: float = 32.0  # L1 cache size (KB) - Minimal
     l2_cache_kb: float = 256.0  # L2 cache size (KB) - Small
-    l3_cache_kb: float = 2048.0  # L3 cache size (KB) - 2MB (very small)
+    l3_cache_kb: float = 1536.0  # L3 cache size (KB) - 1.5MB (very small)
 
     # Core configuration
     num_cores: int = 8  # Number of processor cores
 
-    # Physical design - MINIMAL for extreme constraints
-    core_area_mm2: float = 5.0  # Core area (mm²) - Very compact cores
-    total_area_mm2: float = 50.0  # Total die area (mm²) - Below 60mm² limit
+    # Physical design - MINIMAL to fit ultra-tight 45mm² area budget
+    core_area_mm2: float = 4.0  # Core area (mm²) - Ultra-compact cores
+    total_area_mm2: float = 40.0  # Total die area (mm²) - Below 45mm² limit
     transistor_sizing_factor: float = 1.0  # Relative transistor sizing (1.0 = nominal)
 
     # Floorplan
@@ -127,26 +127,24 @@ class ConstraintLimits:
     Hard limits on constraints.
 
     These represent physical limits, requirements, or specifications.
-    CONFIGURED FOR EXTREME CONSTRAINT TIGHTNESS:
-    - BARELY any headroom allowed on all constraints
-    - This demonstrates JAM's ability to navigate extremely tight spaces
-    - Greedy will hit limits immediately, JAM will find the narrow path
-    - JAM's solution is interpretable: we can see WHY each choice was made
+    CONFIGURED FOR MAXIMUM EFFICIENCY PROOF:
+    - ULTRA-TIGHT on resources to conserve (power, area, thermal)
+    - Forces JAM to find the absolute most efficient design possible
+    - This is the PROOF configuration - undeniable efficiency advantage
 
-    "JAM will find it. It will find the best possible strategy long after
-     other optimization strategies hit their limit... and be understandable
-     not black box."
+    The goal: Force efficiency so extreme that the results cannot be disputed.
+    JAM must extract maximum performance from minimal resources.
     """
-    max_power_watts: float = 35.0  # EXTREME - Barely any power budget
-    max_area_mm2: float = 60.0  # EXTREME - Tiny die, very constrained
-    max_temperature_c: float = 70.0  # EXTREME - Very cool operation required
-    min_frequency_ghz: float = 1.0  # LOOSE - Don't force speed
+    max_power_watts: float = 25.0  # ULTRA-TIGHT - Severe power budget constraint
+    max_area_mm2: float = 45.0  # ULTRA-TIGHT - Very small die for low cost
+    max_temperature_c: float = 65.0  # ULTRA-TIGHT - Ultra-cool operation
+    min_frequency_ghz: float = 1.0  # LOOSE - Let JAM find efficient clock
     min_timing_slack_ps: float = 80.0  # TIGHT - Reliable timing
     max_ir_drop_mv: float = 35.0  # TIGHT - Good power delivery
-    min_yield: float = 0.95  # EXTREME - Very high manufacturing quality
+    min_yield: float = 0.96  # ULTRA-TIGHT - Maximize manufacturability
     max_wire_delay_ps: float = 120.0  # TIGHT
-    min_signal_integrity: float = 0.96  # EXTREME - Excellent signal quality
-    max_power_density_w_mm2: float = 0.5  # EXTREME - Very low hotspots
+    min_signal_integrity: float = 0.97  # ULTRA-TIGHT - Excellent signal quality
+    max_power_density_w_mm2: float = 0.4  # ULTRA-TIGHT - Minimal hotspots
 
     def clone(self) -> 'ConstraintLimits':
         """Create a deep copy"""
