@@ -86,26 +86,26 @@ class DesignParameters:
 
     These are the "knobs" that designers turn to optimize their chip.
     """
-    # Clock and voltage - EXTREME PERFORMANCE starting point (barely feasible)
-    clock_freq_ghz: float = 5.05  # Clock frequency (GHz) - Slightly above minimum
-    supply_voltage: float = 0.70  # Supply voltage Vdd (V) - Low to fit power budget
+    # Clock and voltage - BARELY FEASIBLE starting point for difficult margins
+    clock_freq_ghz: float = 5.12  # Clock frequency (GHz) - Just above 5.1GHz minimum
+    supply_voltage: float = 0.68  # Supply voltage Vdd (V) - Very low to minimize power
 
     # Microarchitecture
-    pipeline_stages: int = 20  # Number of pipeline stages - very deep for high freq
+    pipeline_stages: int = 22  # Number of pipeline stages - very deep for high freq
     issue_width: int = 4  # Instructions issued per cycle
     reorder_buffer_size: int = 128  # ROB entries
 
-    # Cache hierarchy - BALANCED to use area budget efficiently
-    l1_cache_kb: float = 48.0  # L1 cache size (KB) - Moderate
-    l2_cache_kb: float = 512.0  # L2 cache size (KB) - Moderate
-    l3_cache_kb: float = 4096.0  # L3 cache size (KB) - 4MB (use area budget!)
+    # Cache hierarchy - MINIMAL to fit extreme area constraint
+    l1_cache_kb: float = 32.0  # L1 cache size (KB) - Minimal
+    l2_cache_kb: float = 256.0  # L2 cache size (KB) - Minimal
+    l3_cache_kb: float = 2048.0  # L3 cache size (KB) - 2MB (minimal for feasibility)
 
     # Core configuration
     num_cores: int = 8  # Number of processor cores
 
-    # Physical design - ULTRA-COMPACT for brutal budget
-    core_area_mm2: float = 4.0  # Core area (mm²) - Ultra-compact
-    total_area_mm2: float = 42.0  # Total die area (mm²) - Very tight
+    # Physical design - ULTRA-MINIMAL for extreme 45mm² constraint
+    core_area_mm2: float = 3.5  # Core area (mm²) - Ultra-minimal
+    total_area_mm2: float = 38.0  # Total die area (mm²) - Well under 45mm²
     transistor_sizing_factor: float = 1.0  # Relative transistor sizing (1.0 = nominal)
 
     # Floorplan
@@ -127,25 +127,25 @@ class ConstraintLimits:
     Hard limits on constraints.
 
     These represent physical limits, requirements, or specifications.
-    CONFIGURED FOR EXTREME EFFICIENCY + PERFORMANCE CHALLENGE:
-    - BRUTAL power/area budgets (GreedyPerf will crash!)
-    - VERY HIGH minimum frequency (forces performance)
-    - TIGHT thermal (adds pressure)
-    - TIGHT quality metrics (adds more constraints)
+    CONFIGURED FOR EXTREMELY DIFFICULT MARGINS:
+    - BRUTAL power/area/thermal budgets (no room for waste!)
+    - VERY HIGH quality requirements (forces careful optimization)
+    - AGGRESSIVE performance targets (must use resources efficiently)
+    - ALL margins intentionally difficult to achieve
 
-    The goal: Constraints so tight that greedy optimization fails.
-    JAM must find the needle-threading solution by balancing ALL margins.
+    The goal: Force JAM to actually USE resources to meet tight margins.
+    No more coasting with 80% unused resources!
     """
-    max_power_watts: float = 12.0  # BRUTAL - GreedyPerf will violate!
-    max_area_mm2: float = 50.0  # BRUTAL - Very constrained!
-    max_temperature_c: float = 68.0  # TIGHT - Limited thermal headroom
-    min_frequency_ghz: float = 5.0  # EXTREME - Force JAM to use resources!
-    min_timing_slack_ps: float = 80.0  # TIGHT - Reliable timing
-    max_ir_drop_mv: float = 35.0  # TIGHT - Good power delivery
-    min_yield: float = 0.95  # TIGHT - High manufacturability
-    max_wire_delay_ps: float = 120.0  # TIGHT
-    min_signal_integrity: float = 0.96  # TIGHT - Excellent signal quality
-    max_power_density_w_mm2: float = 0.55  # MODERATE - Allow some hotspots
+    max_power_watts: float = 10.0  # EXTREME - Severely limited power!
+    max_area_mm2: float = 45.0  # EXTREME - Ultra-compact die!
+    max_temperature_c: float = 62.0  # EXTREME - Very cool operation required!
+    min_frequency_ghz: float = 5.1  # VERY HIGH - Strong performance demand!
+    min_timing_slack_ps: float = 90.0  # VERY TIGHT - Excellent timing margins!
+    max_ir_drop_mv: float = 30.0  # VERY TIGHT - Superior power delivery!
+    min_yield: float = 0.96  # VERY HIGH - Premium manufacturability!
+    max_wire_delay_ps: float = 110.0  # VERY TIGHT - Fast interconnects!
+    min_signal_integrity: float = 0.97  # VERY HIGH - Pristine signals!
+    max_power_density_w_mm2: float = 0.45  # TIGHT - Minimal hotspots!
 
     def clone(self) -> 'ConstraintLimits':
         """Create a deep copy"""
