@@ -86,26 +86,26 @@ class DesignParameters:
 
     These are the "knobs" that designers turn to optimize their chip.
     """
-    # Clock and voltage - Balanced starting point
-    clock_freq_ghz: float = 3.0  # Clock frequency (GHz) - At minimum spec
-    supply_voltage: float = 0.75  # Supply voltage Vdd (V) - Lower for efficiency
+    # Clock and voltage - EFFICIENCY starting point
+    clock_freq_ghz: float = 2.5  # Clock frequency (GHz) - Moderate for efficiency
+    supply_voltage: float = 0.70  # Supply voltage Vdd (V) - Low for power efficiency
 
     # Microarchitecture
     pipeline_stages: int = 14  # Number of pipeline stages
     issue_width: int = 4  # Instructions issued per cycle
     reorder_buffer_size: int = 128  # ROB entries
 
-    # Cache hierarchy
-    l1_cache_kb: float = 64.0  # L1 cache size (KB)
-    l2_cache_kb: float = 512.0  # L2 cache size (KB)
-    l3_cache_kb: float = 8192.0  # L3 cache size (KB)
+    # Cache hierarchy - SMALL for efficiency (cache uses lots of area!)
+    l1_cache_kb: float = 48.0  # L1 cache size (KB) - Smaller
+    l2_cache_kb: float = 256.0  # L2 cache size (KB) - Smaller
+    l3_cache_kb: float = 4096.0  # L3 cache size (KB) - 4MB (half of typical)
 
     # Core configuration
     num_cores: int = 8  # Number of processor cores
 
-    # Physical design
-    core_area_mm2: float = 8.0  # Core area (mm²) - Smaller for tight constraints
-    total_area_mm2: float = 100.0  # Total die area (mm²) - Start below 120mm² limit
+    # Physical design - SMALL for efficiency
+    core_area_mm2: float = 6.0  # Core area (mm²) - Compact cores
+    total_area_mm2: float = 60.0  # Total die area (mm²) - Small die, below 80mm² limit
     transistor_sizing_factor: float = 1.0  # Relative transistor sizing (1.0 = nominal)
 
     # Floorplan
@@ -127,21 +127,23 @@ class ConstraintLimits:
     Hard limits on constraints.
 
     These represent physical limits, requirements, or specifications.
-    CONFIGURED TO MAKE JAM WIN:
-    - MULTIPLE tight constraints simultaneously (area, power, thermal, yield)
-    - Forces balanced optimization across ALL dimensions
-    - Greedy will crush one constraint; JAM will balance all of them
+    CONFIGURED FOR MAXIMUM EFFICIENCY (Performance per Watt, per mm²):
+    - VERY TIGHT on resources we want to conserve (power, area, thermal)
+    - VERY TIGHT on quality/cost (yield, signal integrity)
+    - LOOSE on performance (let JAM find the sweet spot naturally)
+
+    JAM will avoid wasting power, area, and thermal budget!
     """
-    max_power_watts: float = 80.0  # TIGHT - Battery/mobile power budget
-    max_area_mm2: float = 120.0  # TIGHT - Cost-sensitive
-    max_temperature_c: float = 85.0  # TIGHT - Limited cooling
-    min_frequency_ghz: float = 3.0  # Moderate floor
-    min_timing_slack_ps: float = 60.0  # TIGHT - Reliable timing needed
-    max_ir_drop_mv: float = 40.0  # TIGHT - Good signal quality needed
-    min_yield: float = 0.88  # TIGHT - High volume, need good yield
-    max_wire_delay_ps: float = 150.0  # TIGHT
-    min_signal_integrity: float = 0.92  # TIGHT - Reliable signals required
-    max_power_density_w_mm2: float = 1.0  # TIGHT - Prevent hot spots
+    max_power_watts: float = 50.0  # VERY TIGHT - Force power efficiency
+    max_area_mm2: float = 80.0  # VERY TIGHT - Force small die (low cost)
+    max_temperature_c: float = 75.0  # VERY TIGHT - Cool & efficient operation
+    min_frequency_ghz: float = 1.0  # LOOSE - Don't force speed (let efficiency win)
+    min_timing_slack_ps: float = 80.0  # TIGHT - Reliable, conservative timing
+    max_ir_drop_mv: float = 35.0  # TIGHT - Good power delivery
+    min_yield: float = 0.93  # VERY TIGHT - Maximize manufacturability
+    max_wire_delay_ps: float = 120.0  # TIGHT
+    min_signal_integrity: float = 0.94  # VERY TIGHT - High quality signals
+    max_power_density_w_mm2: float = 0.7  # VERY TIGHT - Avoid hotspots
 
     def clone(self) -> 'ConstraintLimits':
         """Create a deep copy"""
