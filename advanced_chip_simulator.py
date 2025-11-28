@@ -86,26 +86,26 @@ class DesignParameters:
 
     These are the "knobs" that designers turn to optimize their chip.
     """
-    # Clock and voltage - HIGH PERFORMANCE starting point
-    clock_freq_ghz: float = 4.1  # Clock frequency (GHz) - Above 4.0GHz minimum!
-    supply_voltage: float = 0.78  # Supply voltage Vdd (V) - Higher for performance
+    # Clock and voltage - EXTREME PERFORMANCE starting point (barely feasible)
+    clock_freq_ghz: float = 4.6  # Clock frequency (GHz) - Above 4.5GHz minimum!
+    supply_voltage: float = 0.72  # Supply voltage Vdd (V) - Lower to reduce power
 
     # Microarchitecture
-    pipeline_stages: int = 16  # Number of pipeline stages - deeper for higher freq
+    pipeline_stages: int = 18  # Number of pipeline stages - deeper for higher freq
     issue_width: int = 4  # Instructions issued per cycle
     reorder_buffer_size: int = 128  # ROB entries
 
-    # Cache hierarchy - EFFICIENT for tight area budget
-    l1_cache_kb: float = 32.0  # L1 cache size (KB) - Compact
-    l2_cache_kb: float = 256.0  # L2 cache size (KB) - Compact
-    l3_cache_kb: float = 2048.0  # L3 cache size (KB) - 2MB (compact)
+    # Cache hierarchy - MINIMAL for brutal area/power budget
+    l1_cache_kb: float = 32.0  # L1 cache size (KB) - Minimal
+    l2_cache_kb: float = 256.0  # L2 cache size (KB) - Minimal
+    l3_cache_kb: float = 1024.0  # L3 cache size (KB) - 1MB (minimal)
 
     # Core configuration
     num_cores: int = 8  # Number of processor cores
 
-    # Physical design - COMPACT for tight area/power budget
-    core_area_mm2: float = 4.5  # Core area (mm²) - Compact cores
-    total_area_mm2: float = 48.0  # Total die area (mm²) - Well within 55mm² limit
+    # Physical design - ULTRA-COMPACT for brutal budget
+    core_area_mm2: float = 4.0  # Core area (mm²) - Ultra-compact
+    total_area_mm2: float = 42.0  # Total die area (mm²) - Very tight
     transistor_sizing_factor: float = 1.0  # Relative transistor sizing (1.0 = nominal)
 
     # Floorplan
@@ -127,19 +127,19 @@ class ConstraintLimits:
     Hard limits on constraints.
 
     These represent physical limits, requirements, or specifications.
-    CONFIGURED FOR EFFICIENCY + PERFORMANCE BALANCE:
-    - TIGHT power/area budgets (force efficiency)
-    - HIGH minimum frequency (force performance)
-    - Moderate thermal to enable higher clocks
-    - Tight quality metrics (yield, signal integrity)
+    CONFIGURED FOR EXTREME EFFICIENCY + PERFORMANCE CHALLENGE:
+    - BRUTAL power/area budgets (GreedyPerf will crash!)
+    - VERY HIGH minimum frequency (forces performance)
+    - TIGHT thermal (adds pressure)
+    - TIGHT quality metrics (adds more constraints)
 
-    The goal: JAM must find a design that's both fast AND efficient.
-    Both agents must use resources wisely to hit the performance target.
+    The goal: Constraints so tight that greedy optimization fails.
+    JAM must find the needle-threading solution by balancing ALL margins.
     """
-    max_power_watts: float = 18.0  # TIGHT - Must be efficient!
-    max_area_mm2: float = 55.0  # TIGHT - Must be compact!
-    max_temperature_c: float = 75.0  # MODERATE - Allow higher performance operation
-    min_frequency_ghz: float = 4.0  # VERY HIGH - Strong performance requirement!
+    max_power_watts: float = 12.0  # BRUTAL - GreedyPerf will violate!
+    max_area_mm2: float = 50.0  # BRUTAL - Very constrained!
+    max_temperature_c: float = 68.0  # TIGHT - Limited thermal headroom
+    min_frequency_ghz: float = 4.5  # VERY HIGH - Demanding performance!
     min_timing_slack_ps: float = 80.0  # TIGHT - Reliable timing
     max_ir_drop_mv: float = 35.0  # TIGHT - Good power delivery
     min_yield: float = 0.95  # TIGHT - High manufacturability
@@ -1061,12 +1061,9 @@ class JAMAgent(AdvancedAgent):
 
         # Prefer safe actions that maintain margins
         if safe_actions:
-            # BALANCED: Optimize weighted combination of margin AND performance
-            # margin_score is in range [-inf, 0] (log of small positive number)
-            # Normalize performance to similar scale for balanced optimization
-            max_perf = max(x[2] for x in safe_actions)
-            perf_weight = 0.1  # Weight for performance vs margin
-            best = max(safe_actions, key=lambda x: x[1] + perf_weight * (x[2] / max(max_perf, 1.0)))
+            # PURE JAM: Optimize log(min_headroom), use performance only as tiebreaker
+            # This tests if margin balancing naturally leads to better performance
+            best = max(safe_actions, key=lambda x: (x[1], x[2]))  # (margin_score, perf)
             return best[0]
 
         # If no safe actions, pick the least risky one (highest margin that's still above current)
@@ -1074,9 +1071,7 @@ class JAMAgent(AdvancedAgent):
             # Only take actions that don't make things worse
             improving = [a for a in risky_actions if a[3] >= current_min_headroom]
             if improving:
-                max_perf = max(x[2] for x in improving)
-                perf_weight = 0.1
-                best = max(improving, key=lambda x: x[1] + perf_weight * (x[2] / max(max_perf, 1.0)))
+                best = max(improving, key=lambda x: (x[1], x[2]))  # (margin_score, perf)
                 return best[0]
             else:
                 # No improving actions available, stop optimizing
