@@ -91,9 +91,9 @@ class DesignParameters:
     - Boost IPC (wider issue, optimal pipeline, bigger caches) to hit 30+ performance
     - Start with strong baseline that meets all minimum requirements
     """
-    # Clock and voltage - VERY AGGRESSIVE for high performance with raised minimums
-    clock_freq_ghz: float = 5.5  # Clock frequency (GHz) - Meet 5.5GHz minimum!
-    supply_voltage: float = 0.72  # Supply voltage Vdd (V) - High for 60+ performance
+    # Clock and voltage - Conservative start, let weights guide to optimal
+    clock_freq_ghz: float = 5.0  # Clock frequency (GHz) - At minimum to control power
+    supply_voltage: float = 0.67  # Supply voltage Vdd (V) - Tuned for <12W, close to 50 perf
 
     # Microarchitecture - BOOSTED for high base performance
     pipeline_stages: int = 14  # Number of pipeline stages - OPTIMAL depth (no penalty!)
@@ -106,11 +106,11 @@ class DesignParameters:
     l3_cache_kb: float = 8192.0  # L3 cache size (KB) - 8MB! Massive for memory latency
 
     # Core configuration
-    num_cores: int = 8  # Number of processor cores - full throughput for performance
+    num_cores: int = 7  # Number of processor cores - balanced for power
 
-    # Physical design - LARGE to meet aggressive 40mm² minimum
-    core_area_mm2: float = 5.0  # Core area (mm²) - larger for performance
-    total_area_mm2: float = 42.0  # Total die area (mm²) - meet 40mm² minimum with headroom
+    # Physical design - Moderate to keep power under control
+    core_area_mm2: float = 4.5  # Core area (mm²) - moderate
+    total_area_mm2: float = 38.5  # Total die area (mm²) - just above minimum
     transistor_sizing_factor: float = 1.0  # Relative transistor sizing (1.0 = nominal)
 
     # Floorplan
@@ -139,12 +139,12 @@ class ConstraintLimits:
     The insight: JAM can achieve high performance - we just need to REQUIRE it!
     """
     max_power_watts: float = 12.0  # Maximum power budget
-    min_power_watts: float = 8.5   # FORCE JAM to use ≥71% power budget (AGGRESSIVE!)
+    min_power_watts: float = 0.0   # NO forcing - let weights guide equilibrium!
     max_area_mm2: float = 50.0  # Maximum area budget
-    min_area_mm2: float = 38.0  # FORCE JAM to use ≥76% area budget (AGGRESSIVE!)
+    min_area_mm2: float = 0.0  # NO forcing - let weights guide equilibrium!
     max_temperature_c: float = 70.0  # Thermal limit
-    min_frequency_ghz: float = 5.2  # Higher performance requirement
-    min_performance_score: float = 50.0  # FORCE high performance target!
+    min_frequency_ghz: float = 5.0  # Standard frequency requirement
+    min_performance_score: float = 0.0  # NO forcing - let weights guide to high perf!
     min_timing_slack_ps: float = 80.0  # Timing requirement
     max_ir_drop_mv: float = 40.0  # Power delivery quality
     min_yield: float = 0.0  # Removed - margin penalty handles this
@@ -157,20 +157,38 @@ class ConstraintLimits:
     constraint_weights: dict = None  # Will be set in __post_init__
 
     def __post_init__(self):
-        """Set default constraint weights - all equal for balanced optimization"""
+        """
+        Set constraint weights so optimal state has all weighted headrooms = 1.0
+
+        Strategy: Calculate weights based on DESIRED target configuration
+        At target (power=10.5W, area=46mm², perf=80), all weighted headrooms equal 1.0
+
+        This makes JAM's lowest energy state = our desired high-performance efficient point!
+        """
         if self.constraint_weights is None:
+            # TARGET CONFIGURATION (high performance + efficient):
+            # Power: 10.5W in range [8.5, 12.0]
+            # Area: 46mm² in range [38, 50]
+            # Performance: 80 with min 50
+
             self.constraint_weights = {
-                'power': 1.0,
-                'area': 1.0,
-                'temperature': 1.0,
-                'frequency': 1.0,
-                'performance': 1.0,  # Equal weight - difficult margins drive performance naturally
-                'timing_slack': 1.0,
-                'ir_drop': 1.0,
+                # Power: LOW weight = HIGH priority - push to use ~11W for performance
+                'power_max': 1.0 / (12.0 - 11.0),   # = 1.0   (expect ~1W headroom at 11W)
+
+                # Area: Moderate weight - allow using most of budget
+                'area_max': 1.0 / (50.0 - 46.0),    # = 0.25  (expect ~4mm² headroom)
+
+                # Physics constraints: weighted for high-performance operation
+                'temperature': 1.0 / 10.0,          # = 0.10  (expect ~10°C headroom)
+                'frequency': 1.0 / 0.5,             # = 2.0   (tight - at minimum 5GHz)
+                'timing_slack': 1.0 / 20.0,         # = 0.05  (expect ~20ps slack)
+                'ir_drop': 1.0 / 10.0,              # = 0.10  (expect ~10mV headroom)
+                'power_density': 1.0 / 0.1,         # = 10.0  (tight on density - high perf!)
+                'wire_delay': 1.0 / 20.0,           # = 0.05  (expect ~20ps headroom)
+
+                # Not constraining (min=0, so infinite headroom)
                 'yield': 1.0,
                 'signal_integrity': 1.0,
-                'power_density': 1.0,
-                'wire_delay': 1.0,
             }
 
     def clone(self) -> 'ConstraintLimits':
