@@ -87,18 +87,18 @@ class DesignParameters:
     These are the "knobs" that designers turn to optimize their chip.
     """
     # Clock and voltage - EXTREME PERFORMANCE starting point (barely feasible)
-    clock_freq_ghz: float = 4.6  # Clock frequency (GHz) - Above 4.5GHz minimum!
-    supply_voltage: float = 0.72  # Supply voltage Vdd (V) - Lower to reduce power
+    clock_freq_ghz: float = 5.05  # Clock frequency (GHz) - Slightly above minimum
+    supply_voltage: float = 0.70  # Supply voltage Vdd (V) - Low to fit power budget
 
     # Microarchitecture
-    pipeline_stages: int = 18  # Number of pipeline stages - deeper for higher freq
+    pipeline_stages: int = 20  # Number of pipeline stages - very deep for high freq
     issue_width: int = 4  # Instructions issued per cycle
     reorder_buffer_size: int = 128  # ROB entries
 
-    # Cache hierarchy - MINIMAL for brutal area/power budget
-    l1_cache_kb: float = 32.0  # L1 cache size (KB) - Minimal
-    l2_cache_kb: float = 256.0  # L2 cache size (KB) - Minimal
-    l3_cache_kb: float = 1024.0  # L3 cache size (KB) - 1MB (minimal)
+    # Cache hierarchy - BALANCED to use area budget efficiently
+    l1_cache_kb: float = 48.0  # L1 cache size (KB) - Moderate
+    l2_cache_kb: float = 512.0  # L2 cache size (KB) - Moderate
+    l3_cache_kb: float = 4096.0  # L3 cache size (KB) - 4MB (use area budget!)
 
     # Core configuration
     num_cores: int = 8  # Number of processor cores
@@ -139,7 +139,7 @@ class ConstraintLimits:
     max_power_watts: float = 12.0  # BRUTAL - GreedyPerf will violate!
     max_area_mm2: float = 50.0  # BRUTAL - Very constrained!
     max_temperature_c: float = 68.0  # TIGHT - Limited thermal headroom
-    min_frequency_ghz: float = 4.5  # VERY HIGH - Demanding performance!
+    min_frequency_ghz: float = 5.0  # EXTREME - Force JAM to use resources!
     min_timing_slack_ps: float = 80.0  # TIGHT - Reliable timing
     max_ir_drop_mv: float = 35.0  # TIGHT - Good power delivery
     min_yield: float = 0.95  # TIGHT - High manufacturability
@@ -584,8 +584,8 @@ class AdvancedDesignSpace:
                 description="Reduce L3 cache (-1024KB)",
                 apply_fn=lambda p: self._modify_params(
                     p,
-                    l3_cache_kb=max(4096, p.l3_cache_kb - 1024),
-                    total_area_mm2=p.total_area_mm2 - 5.0
+                    l3_cache_kb=max(1024, p.l3_cache_kb - 1024),
+                    total_area_mm2=max(10.0, p.total_area_mm2 - 5.0)  # Prevent area from going too low
                 ),
                 category="area"
             ),
