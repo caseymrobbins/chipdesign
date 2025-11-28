@@ -797,7 +797,8 @@ class AdvancedDesignSpace:
         # - Timing errors when margins too tight
         # - Signal integrity issues cause retries
         # - Low yield means defective chips
-        headrooms = self.get_headrooms()
+        # Exclude performance from headrooms to avoid recursion
+        headrooms = self.get_headrooms(include_performance=False)
         min_headroom = min(headrooms.values())
 
         # STEEP penalty for running with low margins
@@ -813,7 +814,7 @@ class AdvancedDesignSpace:
 
         return performance
 
-    def get_headrooms(self) -> Dict[str, float]:
+    def get_headrooms(self, include_performance: bool = True) -> Dict[str, float]:
         """
         Calculate headroom for each constraint.
 
@@ -834,6 +835,11 @@ class AdvancedDesignSpace:
             'power_density': self.limits.max_power_density_w_mm2 - constraints['power_density_w_mm2'],
             'wire_delay': self.limits.max_wire_delay_ps - constraints['wire_delay_ps'],
         }
+
+        # Add performance headroom AFTER calculating performance (to avoid recursion)
+        if include_performance:
+            performance = self.calculate_performance()
+            headrooms['performance'] = performance - self.limits.min_performance_score
 
         return headrooms
 
