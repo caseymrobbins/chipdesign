@@ -24,8 +24,7 @@ wheels/
 *_results.json
 *.json
 
-# Generated visualizations
-*.png
+# Generated visualizations (allow PNG for documentation)
 *.pdf
 *.svg
 
