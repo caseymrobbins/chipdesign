@@ -158,33 +158,41 @@ class ConstraintLimits:
 
     def __post_init__(self):
         """
-        Set constraint weights so optimal state has all weighted headrooms = 1.0
+        Set constraint weights to push JAM to high-performance equilibrium.
 
-        Strategy: Calculate weights based on DESIRED target configuration
-        At target (power=10.5W, area=46mm², perf=80), all weighted headrooms equal 1.0
+        STRATEGY: Raise the floor threshold!
+        - Target min_weighted_headroom = 2.0 (not 1.0) at desired config
+        - This pushes JAM toward high power/area usage and high performance
+        - JAM will seek synergies to raise all weighted headrooms to 2.0+
 
-        This makes JAM's lowest energy state = our desired high-performance efficient point!
+        At target (power=11W, area=46mm², high performance):
+        - All weighted headrooms should equal 2.0 (the raised floor)
+        - This defines our high-performance equilibrium point
         """
         if self.constraint_weights is None:
             # TARGET CONFIGURATION (high performance + efficient):
-            # Power: 10.5W in range [8.5, 12.0]
-            # Area: 46mm² in range [38, 50]
-            # Performance: 80 with min 50
+            # Power: 11W (using 92% of 12W budget)
+            # Area: 46mm² (using 92% of 50mm² budget)
+            # Temperature: ~60°C (10°C margin from 70°C limit)
+
+            # TARGET FLOOR: min_weighted_headroom = 2.0
 
             self.constraint_weights = {
-                # Power: LOW weight = HIGH priority - push to use ~11W for performance
-                'power_max': 1.0 / (12.0 - 11.0),   # = 1.0   (expect ~1W headroom at 11W)
+                # Power: Critical bottleneck - expect 1W headroom at 11W usage
+                # weight * 1.0 = 2.0 → weight = 2.0
+                'power_max': 2.0 / 1.0,             # = 2.0
 
-                # Area: Moderate weight - allow using most of budget
-                'area_max': 1.0 / (50.0 - 46.0),    # = 0.25  (expect ~4mm² headroom)
+                # Area: Moderate - expect 4mm² headroom at 46mm² usage
+                # weight * 4.0 = 2.0 → weight = 0.5
+                'area_max': 2.0 / 4.0,              # = 0.5
 
-                # Physics constraints: weighted for high-performance operation
-                'temperature': 1.0 / 10.0,          # = 0.10  (expect ~10°C headroom)
-                'frequency': 1.0 / 0.5,             # = 2.0   (tight - at minimum 5GHz)
-                'timing_slack': 1.0 / 20.0,         # = 0.05  (expect ~20ps slack)
-                'ir_drop': 1.0 / 10.0,              # = 0.10  (expect ~10mV headroom)
-                'power_density': 1.0 / 0.1,         # = 10.0  (tight on density - high perf!)
-                'wire_delay': 1.0 / 20.0,           # = 0.05  (expect ~20ps headroom)
+                # Physics constraints: weighted for floor = 2.0 at high-perf config
+                'temperature': 2.0 / 10.0,          # = 0.20  (10°C headroom expected)
+                'frequency': 2.0 / 0.2,             # = 10.0  (tight - 0.2GHz above min)
+                'timing_slack': 2.0 / 20.0,         # = 0.10  (20ps slack expected)
+                'ir_drop': 2.0 / 10.0,              # = 0.20  (10mV headroom expected)
+                'power_density': 2.0 / 0.1,         # = 20.0  (very tight - 0.1 W/mm² margin)
+                'wire_delay': 2.0 / 20.0,           # = 0.10  (20ps headroom expected)
 
                 # Not constraining (min=0, so infinite headroom)
                 'yield': 1.0,
