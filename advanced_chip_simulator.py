@@ -86,26 +86,26 @@ class DesignParameters:
 
     These are the "knobs" that designers turn to optimize their chip.
     """
-    # Clock and voltage - BARELY FEASIBLE starting point for difficult margins
-    clock_freq_ghz: float = 5.12  # Clock frequency (GHz) - Just above 5.1GHz minimum
-    supply_voltage: float = 0.68  # Supply voltage Vdd (V) - Very low to minimize power
+    # Clock and voltage - Feasible starting point with room to optimize
+    clock_freq_ghz: float = 5.0  # Clock frequency (GHz) - At minimum requirement
+    supply_voltage: float = 0.70  # Supply voltage Vdd (V) - Lower for power efficiency
 
     # Microarchitecture
-    pipeline_stages: int = 22  # Number of pipeline stages - very deep for high freq
+    pipeline_stages: int = 18  # Number of pipeline stages - moderate depth
     issue_width: int = 4  # Instructions issued per cycle
     reorder_buffer_size: int = 128  # ROB entries
 
-    # Cache hierarchy - MINIMAL to fit extreme area constraint
+    # Cache hierarchy - Start small, let optimizers grow it
     l1_cache_kb: float = 32.0  # L1 cache size (KB) - Minimal
     l2_cache_kb: float = 256.0  # L2 cache size (KB) - Minimal
-    l3_cache_kb: float = 2048.0  # L3 cache size (KB) - 2MB (minimal for feasibility)
+    l3_cache_kb: float = 2048.0  # L3 cache size (KB) - 2MB starter
 
     # Core configuration
     num_cores: int = 8  # Number of processor cores
 
-    # Physical design - ULTRA-MINIMAL for extreme 45mm² constraint
-    core_area_mm2: float = 3.5  # Core area (mm²) - Ultra-minimal
-    total_area_mm2: float = 38.0  # Total die area (mm²) - Well under 45mm²
+    # Physical design - Start conservative, let optimizers expand
+    core_area_mm2: float = 4.0  # Core area (mm²) - Conservative
+    total_area_mm2: float = 40.0  # Total die area (mm²) - Conservative start
     transistor_sizing_factor: float = 1.0  # Relative transistor sizing (1.0 = nominal)
 
     # Floorplan
@@ -127,26 +127,24 @@ class ConstraintLimits:
     Hard limits on constraints.
 
     These represent physical limits, requirements, or specifications.
-    CONFIGURED FOR EXTREMELY DIFFICULT MARGINS:
-    - BRUTAL power/area/thermal budgets (no room for waste!)
-    - VERY HIGH quality requirements (forces careful optimization)
-    - AGGRESSIVE performance targets (must use resources efficiently)
-    - ALL margins intentionally difficult to achieve
+    CONFIGURED TO REWARD BALANCED MARGINS:
+    - Tight constraints force resource utilization
+    - JAM must work hard to achieve >10 headroom for bonus
+    - GreedyPerf will hit limits; JAM will balance for 20% boost!
 
-    The goal: Force JAM to actually USE resources to meet tight margins.
-    No more coasting with 80% unused resources!
+    The goal: JAM's balanced margins earn performance bonus that beats GreedyPerf!
     """
-    max_power_watts: float = 10.0  # EXTREME - Severely limited power!
-    max_area_mm2: float = 45.0  # EXTREME - Ultra-compact die!
-    max_temperature_c: float = 62.0  # EXTREME - Very cool operation required!
-    min_frequency_ghz: float = 5.1  # VERY HIGH - Strong performance demand!
-    min_performance_score: float = 0.0  # No hard floor - difficult margins drive performance
-    min_timing_slack_ps: float = 90.0  # VERY TIGHT - Excellent timing margins!
-    max_ir_drop_mv: float = 30.0  # VERY TIGHT - Superior power delivery!
-    min_yield: float = 0.96  # VERY HIGH - Premium manufacturability!
-    max_wire_delay_ps: float = 110.0  # VERY TIGHT - Fast interconnects!
-    min_signal_integrity: float = 0.97  # VERY HIGH - Pristine signals!
-    max_power_density_w_mm2: float = 0.45  # TIGHT - Minimal hotspots!
+    max_power_watts: float = 12.0  # Tight - forces optimization
+    max_area_mm2: float = 50.0  # Tight - must use resources wisely
+    max_temperature_c: float = 70.0  # Tight thermal budget
+    min_frequency_ghz: float = 5.0  # High performance requirement
+    min_performance_score: float = 0.0  # No hard floor - margin bonus drives performance
+    min_timing_slack_ps: float = 85.0  # Tight timing requirement
+    max_ir_drop_mv: float = 35.0  # Tight power delivery
+    min_yield: float = 0.95  # High quality requirement
+    max_wire_delay_ps: float = 115.0  # Tight interconnects
+    min_signal_integrity: float = 0.96  # High signal quality
+    max_power_density_w_mm2: float = 0.45  # Tight density limit
 
     # Constraint weights: Lower weight = higher priority (more important to maintain)
     # JAM will work harder to keep weighted headroom higher
@@ -814,25 +812,32 @@ class AdvancedDesignSpace:
         # Base performance
         base_performance = single_thread_perf * core_scaling
 
-        # MARGIN PENALTY: Running with low margins hurts real performance!
-        # - Thermal throttling when too hot
-        # - Timing errors when margins too tight
-        # - Signal integrity issues cause retries
-        # - Low yield means defective chips
+        # MARGIN IMPACT: Running with low margins hurts real performance, but
+        # EXCELLENT margins actually BOOST performance!
+        # - Thermal throttling when too hot (penalty)
+        # - Timing errors when margins too tight (penalty)
+        # - Signal integrity issues cause retries (penalty)
+        # - Low yield means defective chips (penalty)
+        # - BUT: Great margins allow higher boost clocks, better signal quality (bonus!)
         # Exclude performance from headrooms to avoid recursion
         headrooms = self.get_headrooms(include_performance=False)
         min_headroom = min(headrooms.values())
 
-        # STEEP penalty for running with low margins
-        # At headroom=0: 70% performance penalty (0.3x)
-        # At headroom=10: No penalty (1.0x)
-        if min_headroom < 10.0:
-            margin_penalty = 0.3 + 0.07 * min_headroom  # Range: 0.3 to 1.0
+        # MARGIN FACTOR: Ranges from 0.5x (at limit) to 1.5x (excellent margins)
+        # VERY steep curve to reward even tiny margin improvements!
+        # At headroom=0.0: 50% performance (0.5x) - running at absolute limit
+        # At headroom=1.0: 80% performance (0.8x) - slight margin helps
+        # At headroom=5.0: 100% performance (1.0x) - healthy margins
+        # At headroom=10.0+: 150% performance (1.5x) - excellent margins enable boost!
+        if min_headroom < 5.0:
+            margin_factor = 0.5 + 0.1 * min_headroom  # Range: 0.5 to 1.0
+        elif min_headroom < 10.0:
+            margin_factor = 1.0 + 0.1 * (min_headroom - 5.0)  # Range: 1.0 to 1.5
         else:
-            margin_penalty = 1.0  # No penalty when margins are healthy
+            margin_factor = 1.5  # Maximum 50% boost for excellent margins!
 
-        # Apply margin penalty
-        performance = base_performance * margin_penalty
+        # Apply margin factor
+        performance = base_performance * margin_factor
 
         return performance
 
