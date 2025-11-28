@@ -140,12 +140,34 @@ class ConstraintLimits:
     max_area_mm2: float = 45.0  # EXTREME - Ultra-compact die!
     max_temperature_c: float = 62.0  # EXTREME - Very cool operation required!
     min_frequency_ghz: float = 5.1  # VERY HIGH - Strong performance demand!
+    min_performance_score: float = 0.0  # No hard floor - difficult margins drive performance
     min_timing_slack_ps: float = 90.0  # VERY TIGHT - Excellent timing margins!
     max_ir_drop_mv: float = 30.0  # VERY TIGHT - Superior power delivery!
     min_yield: float = 0.96  # VERY HIGH - Premium manufacturability!
     max_wire_delay_ps: float = 110.0  # VERY TIGHT - Fast interconnects!
     min_signal_integrity: float = 0.97  # VERY HIGH - Pristine signals!
     max_power_density_w_mm2: float = 0.45  # TIGHT - Minimal hotspots!
+
+    # Constraint weights: Lower weight = higher priority (more important to maintain)
+    # JAM will work harder to keep weighted headroom higher
+    constraint_weights: dict = None  # Will be set in __post_init__
+
+    def __post_init__(self):
+        """Set default constraint weights - all equal for balanced optimization"""
+        if self.constraint_weights is None:
+            self.constraint_weights = {
+                'power': 1.0,
+                'area': 1.0,
+                'temperature': 1.0,
+                'frequency': 1.0,
+                'performance': 1.0,  # Equal weight - difficult margins drive performance naturally
+                'timing_slack': 1.0,
+                'ir_drop': 1.0,
+                'yield': 1.0,
+                'signal_integrity': 1.0,
+                'power_density': 1.0,
+                'wire_delay': 1.0,
+            }
 
     def clone(self) -> 'ConstraintLimits':
         """Create a deep copy"""
@@ -844,9 +866,23 @@ class AdvancedDesignSpace:
         return headrooms
 
     def get_min_headroom(self) -> float:
-        """Get the minimum headroom (bottleneck constraint)"""
+        """
+        Get the minimum WEIGHTED headroom (bottleneck constraint).
+
+        Lower weight = higher priority = JAM works harder to maintain that headroom.
+        Example: performance_weight=0.3 means JAM keeps performance_headroom 3x higher!
+        """
         headrooms = self.get_headrooms()
-        return min(headrooms.values())
+        weights = self.limits.constraint_weights
+
+        # Apply weights: weighted_headroom = actual_headroom * weight
+        # Lower weight makes that headroom appear smaller, so JAM prioritizes it
+        weighted_headrooms = {
+            constraint: headroom * weights.get(constraint, 1.0)
+            for constraint, headroom in headrooms.items()
+        }
+
+        return min(weighted_headrooms.values())
 
     def is_feasible(self) -> bool:
         """Check if all constraints are satisfied"""
