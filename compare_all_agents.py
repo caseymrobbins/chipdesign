@@ -65,7 +65,7 @@ def run_single_comparison(
     agents = [
         ("Greedy", AdvancedGreedyPerformanceAgent()),
         ("JAM (hard-min)", JAMAgent(min_margin_threshold=2.0)),
-        ("Softmin JAM (λ=1,β=2)", SoftminJAMAgent(lambda_weight=1.0, beta=2.0)),
+        ("Softmin JAM (λ=1,β=2)", SoftminJAMAgent(lambda_weight=1.0, beta=2.0, min_margin_threshold=0.5)),
     ]
 
     spaces = []
