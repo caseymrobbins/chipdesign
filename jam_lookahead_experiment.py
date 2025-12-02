@@ -8,6 +8,7 @@ or does one-step greedy evaluation work?
 Tests across 4 topology levels with different evaluation strategies.
 """
 
+from __future__ import annotations
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -53,6 +54,39 @@ class State:
         if min_val <= 0:
             return -np.inf  # Dead state
         return np.log(min_val)
+
+    def softmin_score(self, env: Environment, temperature: float = 0.1) -> float:
+        """
+        Compute comprehensive JAM score using softmin with ALL constraints internal.
+
+        This combines:
+        - Softmin over values (smooth approximation of min)
+        - Goal distance penalty
+        - Death penalty
+        - Goal bonus
+
+        Everything is internalized - no external constraints should be added!
+        """
+        # Death constraint: if any value <= 0, return very negative score
+        if np.any(self.values <= 0):
+            return -1000.0  # Large penalty instead of -inf for gradient flow
+
+        # Softmin over values: -T * log(sum(exp(-v/T)))
+        # This is a smooth approximation of min(values)
+        # As T->0, approaches min(values)
+        exp_vals = np.exp(-self.values / temperature)
+        softmin_val = -temperature * np.log(np.sum(exp_vals))
+
+        # Goal distance constraint (internalized)
+        dist_to_goal = abs(self.position[0] - env.goal_pos[0]) + abs(self.position[1] - env.goal_pos[1])
+        goal_penalty = -0.01 * dist_to_goal  # Penalize being far from goal
+
+        # Goal reached bonus (internalized)
+        goal_bonus = 10.0 if self.position == env.goal_pos else 0.0
+
+        # Combine all factors into single score
+        # ALL CONSTRAINTS ARE HERE, NOTHING ADDED OUTSIDE
+        return np.log(softmin_val + 1e-8) + goal_penalty + goal_bonus
 
     def is_alive(self) -> bool:
         """Check if all values are positive"""
@@ -402,7 +436,7 @@ class Strategy:
 
 
 class JAMGreedy(Strategy):
-    """Greedy JAM: Pick action with best immediate log(min(values)) + goal progress"""
+    """Greedy JAM: Pick action with best immediate softmin score (all constraints internal)"""
 
     def __init__(self):
         super().__init__("JAM-Greedy")
@@ -415,21 +449,15 @@ class JAMGreedy(Strategy):
         best_action = None
         best_score = -np.inf
 
+        # GREEDY LOOP ONLY - NO CONSTRAINTS OUTSIDE
         for neighbor in neighbors:
             self.nodes_evaluated += 1
             # Simulate action
             next_state = env.apply_action(state, neighbor)
 
-            # Combined score: JAM safety + goal progress
-            jam_score = next_state.jam_score()
-
-            # Distance to goal (negative, want to minimize)
-            curr_dist = abs(state.position[0] - env.goal_pos[0]) + abs(state.position[1] - env.goal_pos[1])
-            next_dist = abs(neighbor[0] - env.goal_pos[0]) + abs(neighbor[1] - env.goal_pos[1])
-            goal_progress = curr_dist - next_dist  # Positive if moving closer
-
-            # Combined score: prioritize JAM safety, but break ties with goal progress
-            score = jam_score + 0.01 * goal_progress
+            # Use softmin_score which has ALL constraints internalized
+            # NO additional terms added here!
+            score = next_state.softmin_score(env)
 
             if score > best_score:
                 best_score = score
@@ -465,30 +493,24 @@ class JAMLookahead(Strategy):
 
     def _evaluate_path(self, env: Environment, state: State,
                       first_action: Tuple[int, int], depth: int) -> float:
-        """Recursively evaluate path with lookahead"""
+        """Recursively evaluate path with lookahead - ALL constraints in softmin"""
         self.nodes_evaluated += 1
 
         # Apply first action
         next_state = env.apply_action(state, first_action)
 
-        # Base cases
-        if not next_state.is_alive():
-            return -np.inf
-
-        # Goal bonus
-        if next_state.position == env.goal_pos:
-            return next_state.jam_score() + 10.0
-
+        # Base case: depth 1 - just return softmin score
+        # NO external constraints - everything is inside softmin_score!
         if depth == 1:
-            # Add small goal progress bonus
-            dist_to_goal = abs(next_state.position[0] - env.goal_pos[0]) + abs(next_state.position[1] - env.goal_pos[1])
-            return next_state.jam_score() + 0.01 * (1.0 / max(dist_to_goal, 1))
+            return next_state.softmin_score(env)
 
         # Recursive case: evaluate all possible continuations
         neighbors = env.get_neighbors(next_state.position)
         if not neighbors:
-            return next_state.jam_score()
+            # No neighbors, just return current score
+            return next_state.softmin_score(env)
 
+        # Look ahead and pick best future
         max_future_score = -np.inf
         for neighbor in neighbors:
             future_score = self._evaluate_path(env, next_state, neighbor, depth - 1)
