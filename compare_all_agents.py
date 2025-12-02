@@ -3,6 +3,12 @@
 Comprehensive comparison: Greedy vs JAM vs Softmin JAM
 
 Focus: Maximum performance and speed while maintaining robustness
+
+PARAMETERS FOR TUNING (see line ~70 for actual usage):
+    lambda_weight = 0.3          # Weight of softmin term vs sum term (higher = more bottleneck focus)
+    beta = 2.5                   # Softmin sharpness (higher = closer to hard min, more aggressive)
+    softmin_min_threshold = 2.0  # Minimum headroom safety margin for Softmin JAM
+    jam_min_threshold = 2.0      # Minimum headroom safety margin for hard-min JAM
 """
 
 import numpy as np
@@ -64,8 +70,14 @@ def run_single_comparison(
     # Create agents with identical starting conditions
     agents = [
         ("Greedy", AdvancedGreedyPerformanceAgent()),
-        ("JAM (hard-min)", JAMAgent(min_margin_threshold=2.0)),
-        ("Softmin JAM (λ=0.3,β=2.5)", SoftminJAMAgent(lambda_weight=0.3, beta=2.5, min_margin_threshold=2.0)),
+        ("JAM (hard-min)", JAMAgent(
+            min_margin_threshold=2.0  # PARAM: jam_min_threshold
+        )),
+        ("Softmin JAM (λ=0.3,β=2.5)", SoftminJAMAgent(
+            lambda_weight=0.3,         # PARAM: lambda_weight - weight of softmin term vs sum term
+            beta=2.5,                  # PARAM: beta - softmin sharpness (higher = closer to hard min)
+            min_margin_threshold=2.0   # PARAM: softmin_min_threshold - minimum headroom safety margin
+        )),
     ]
 
     spaces = []
@@ -536,11 +548,11 @@ def print_summary_stats(all_results: List[List[AgentResult]]):
 if __name__ == "__main__":
     # Run experiments
     all_results = run_experiments(
-        num_runs=50,
-        design_steps=75,
-        adaptation_steps=25,
-        seed=42,
-        verbose=False,
+        num_runs=50,           # PARAM: num_runs - number of independent simulation runs
+        design_steps=75,       # PARAM: design_steps - optimization steps before requirement shift
+        adaptation_steps=25,   # PARAM: adaptation_steps - optimization steps after requirement shift
+        seed=42,               # PARAM: seed - random seed for reproducibility
+        verbose=False,         # PARAM: verbose - print detailed progress
     )
 
     # Print statistics
