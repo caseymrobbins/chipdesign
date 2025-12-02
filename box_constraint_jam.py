@@ -64,7 +64,7 @@ class BoxConstraintJAM(AdvancedAgent):
         self.beta = beta
         self.epsilon = epsilon
 
-    def calculate_objective(self, headrooms_dict: Dict[str, float]) -> float:
+    def calculate_objective(self, headrooms_dict: Dict[str, float], test_space=None) -> float:
         """
         Box constraint objective: maximize performance while keeping
         headrooms in the sweet spot [min_target, max_target].
@@ -75,8 +75,11 @@ class BoxConstraintJAM(AdvancedAgent):
         - violation_low = -log(softmin(headroom - min_target))
         - violation_high = -log(softmin(max_target - headroom))
         """
+        # Use test_space if provided, otherwise fall back to self.design_space
+        space = test_space if test_space is not None else self.design_space
+
         # Get weighted headrooms
-        weights = self.design_space.limits.constraint_weights
+        weights = space.limits.constraint_weights
         weighted_headrooms = {
             constraint: headroom * weights.get(constraint, 1.0)
             for constraint, headroom in headrooms_dict.items()
@@ -88,8 +91,8 @@ class BoxConstraintJAM(AdvancedAgent):
         if np.any(headroom_values <= 0):
             return -np.inf
 
-        # PRIMARY GOAL: Maximize chip performance
-        performance = self.design_space.calculate_performance()
+        # PRIMARY GOAL: Maximize chip performance (from the test space!)
+        performance = space.calculate_performance()
 
         # LOWER BOUND PENALTY: Keep headrooms above min_target
         # violation_low → 0 means some headroom is approaching min_target
@@ -123,7 +126,7 @@ class BoxConstraintJAM(AdvancedAgent):
         if not self.design_space:
             return None
 
-        current_objective = self.calculate_objective(self.design_space.get_headrooms())
+        current_objective = self.calculate_objective(self.design_space.get_headrooms(), self.design_space)
 
         candidate_actions = []
 
@@ -135,7 +138,8 @@ class BoxConstraintJAM(AdvancedAgent):
                 continue
 
             headrooms = test_space.get_headrooms()
-            objective_score = self.calculate_objective(headrooms)
+            # CRITICAL FIX: Pass test_space so performance is evaluated correctly!
+            objective_score = self.calculate_objective(headrooms, test_space)
 
             candidate_actions.append((action, objective_score))
 
