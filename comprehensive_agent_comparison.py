@@ -66,8 +66,8 @@ def create_agent_configs() -> List[AgentConfig]:
         params={}
     ))
 
-    # 8 HardMin JAM agents with different thresholds
-    hardmin_thresholds = [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5]
+    # 8 HardMin JAM agents with WIDE threshold range (aggressive to conservative)
+    hardmin_thresholds = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0]
     for threshold in hardmin_thresholds:
         configs.append(AgentConfig(
             name=f"HardMin(t={threshold:.1f})",
@@ -75,22 +75,22 @@ def create_agent_configs() -> List[AgentConfig]:
             params={'min_margin_threshold': threshold}
         ))
 
-    # 8 Softmin JAM agents with different λ and β combinations
-    # Vary both lambda_weight and beta
+    # 8 Softmin JAM agents with WIDE parameter exploration
+    # Mix of aggressive (low λ, low threshold) and conservative (high λ, high β)
     softmin_configs = [
-        {'lambda_weight': 0.1, 'beta': 1.5, 'min_margin_threshold': 2.0},
-        {'lambda_weight': 0.2, 'beta': 2.0, 'min_margin_threshold': 2.0},
-        {'lambda_weight': 0.3, 'beta': 2.5, 'min_margin_threshold': 2.0},
-        {'lambda_weight': 0.4, 'beta': 3.0, 'min_margin_threshold': 2.0},
-        {'lambda_weight': 0.5, 'beta': 2.0, 'min_margin_threshold': 1.5},
-        {'lambda_weight': 0.3, 'beta': 1.5, 'min_margin_threshold': 1.5},
-        {'lambda_weight': 0.2, 'beta': 3.0, 'min_margin_threshold': 2.5},
-        {'lambda_weight': 0.4, 'beta': 2.5, 'min_margin_threshold': 1.5},
+        {'lambda_weight': 0.05, 'beta': 1.0, 'min_margin_threshold': 0.5},   # Very aggressive
+        {'lambda_weight': 0.1, 'beta': 1.5, 'min_margin_threshold': 1.0},    # Aggressive
+        {'lambda_weight': 0.15, 'beta': 2.0, 'min_margin_threshold': 1.5},   # Moderate-aggressive
+        {'lambda_weight': 0.2, 'beta': 2.5, 'min_margin_threshold': 2.0},    # Moderate
+        {'lambda_weight': 0.3, 'beta': 3.0, 'min_margin_threshold': 2.0},    # Moderate-conservative
+        {'lambda_weight': 0.4, 'beta': 3.5, 'min_margin_threshold': 2.5},    # Conservative
+        {'lambda_weight': 0.5, 'beta': 4.0, 'min_margin_threshold': 3.0},    # Very conservative
+        {'lambda_weight': 0.6, 'beta': 5.0, 'min_margin_threshold': 3.5},    # Ultra conservative
     ]
 
     for i, params in enumerate(softmin_configs, 1):
         configs.append(AgentConfig(
-            name=f"Softmin(λ={params['lambda_weight']:.1f},β={params['beta']:.1f})",
+            name=f"Softmin(λ={params['lambda_weight']:.2f},β={params['beta']:.1f})",
             agent_type="softmin",
             params=params
         ))
