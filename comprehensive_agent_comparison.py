@@ -66,26 +66,15 @@ def create_agent_configs() -> List[AgentConfig]:
         params={}
     ))
 
-    # 8 HardMin JAM agents with WIDE threshold range (aggressive to conservative)
-    hardmin_thresholds = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0]
-    for threshold in hardmin_thresholds:
-        configs.append(AgentConfig(
-            name=f"HardMin(t={threshold:.1f})",
-            agent_type="hardmin",
-            params={'min_margin_threshold': threshold}
-        ))
+    # NO HardMin JAM agents - REMOVED
 
-    # 8 Softmin JAM agents with WIDE parameter exploration
-    # Mix of aggressive (low λ, low threshold) and conservative (high λ, high β)
+    # 4 ULTRA-AGGRESSIVE Softmin JAM agents
+    # Push the limits: lower λ, lower β, lower threshold
     softmin_configs = [
+        {'lambda_weight': 0.01, 'beta': 0.5, 'min_margin_threshold': 0.2},   # ULTRA aggressive
+        {'lambda_weight': 0.03, 'beta': 0.8, 'min_margin_threshold': 0.3},   # HYPER aggressive
         {'lambda_weight': 0.05, 'beta': 1.0, 'min_margin_threshold': 0.5},   # Very aggressive
-        {'lambda_weight': 0.1, 'beta': 1.5, 'min_margin_threshold': 1.0},    # Aggressive
-        {'lambda_weight': 0.15, 'beta': 2.0, 'min_margin_threshold': 1.5},   # Moderate-aggressive
-        {'lambda_weight': 0.2, 'beta': 2.5, 'min_margin_threshold': 2.0},    # Moderate
-        {'lambda_weight': 0.3, 'beta': 3.0, 'min_margin_threshold': 2.0},    # Moderate-conservative
-        {'lambda_weight': 0.4, 'beta': 3.5, 'min_margin_threshold': 2.5},    # Conservative
-        {'lambda_weight': 0.5, 'beta': 4.0, 'min_margin_threshold': 3.0},    # Very conservative
-        {'lambda_weight': 0.6, 'beta': 5.0, 'min_margin_threshold': 3.5},    # Ultra conservative
+        {'lambda_weight': 0.08, 'beta': 1.2, 'min_margin_threshold': 0.7},   # Aggressive
     ]
 
     for i, params in enumerate(softmin_configs, 1):
@@ -248,13 +237,13 @@ def run_experiments(
     agent_configs = create_agent_configs()
 
     print(f"\n{'='*80}")
-    print(f"COMPREHENSIVE AGENT COMPARISON")
+    print(f"ULTRA-AGGRESSIVE SOFTMIN COMPARISON")
     print(f"{'='*80}")
     print(f"Runs: {num_runs}")
     print(f"Agents: {len(agent_configs)}")
     print(f"  - 1 Greedy agent")
-    print(f"  - 8 HardMin JAM agents (varying threshold)")
-    print(f"  - 8 Softmin JAM agents (varying λ and β)")
+    print(f"  - 0 HardMin JAM agents (REMOVED)")
+    print(f"  - 4 ULTRA-AGGRESSIVE Softmin JAM agents")
     print(f"{'='*80}\n")
 
     rng = np.random.RandomState(seed)
@@ -557,7 +546,7 @@ def create_visualization(agent_stats: Dict, agent_data: Dict, top_agents: Dict,
     ax8.grid(alpha=0.3)
 
     # Overall title
-    fig.suptitle('Comprehensive Agent Comparison: 17 Agents Tested Across 100 Simulations\n' +
+    fig.suptitle(f'ULTRA-AGGRESSIVE Softmin Comparison: 5 Agents Tested Across {len(agent_data[list(agent_data.keys())[0]]["survival"])} Simulations\n' +
                 f'Top Performers: {", ".join([n.split("(")[0] for n in top_names])}',
                 fontsize=14, fontweight='bold', y=0.98)
 
