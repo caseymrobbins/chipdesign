@@ -65,7 +65,7 @@ def run_single_comparison(
     agents = [
         ("Greedy", AdvancedGreedyPerformanceAgent()),
         ("JAM (hard-min)", JAMAgent(min_margin_threshold=2.0)),
-        ("Softmin JAM (λ=1,β=2)", SoftminJAMAgent(lambda_weight=1.0, beta=2.0)),
+        ("Softmin JAM (λ=0.2,β=1.5)", SoftminJAMAgent(lambda_weight=0.2, beta=1.5, min_margin_threshold=1.0)),
     ]
 
     spaces = []
@@ -228,7 +228,7 @@ def create_comprehensive_visualization(all_results: List[List[AgentResult]], out
     """Create comprehensive visualization comparing all agents"""
 
     # Extract data by agent
-    agent_names = ["Greedy", "JAM (hard-min)", "Softmin JAM (λ=1,β=2)"]
+    agent_names = ["Greedy", "JAM (hard-min)", "Softmin JAM (λ=0.2,β=1.5)"]
     data = {name: {
         'design_perf': [],
         'design_power': [],
@@ -398,7 +398,7 @@ def create_comprehensive_visualization(all_results: List[List[AgentResult]], out
         perf = data[name]['design_perf']
         power = data[name]['design_power']
         ax7.scatter(power, perf, c=colors[i], alpha=0.6, s=100, edgecolors='black',
-                   linewidth=1, label=name.replace(' (λ=1,β=2)', ''))
+                   linewidth=1, label=name.replace(' (λ=0.2,β=1.5)', ''))
     ax7.set_xlabel('Power Consumption (W)', fontweight='bold', fontsize=11)
     ax7.set_ylabel('Performance', fontweight='bold', fontsize=11)
     ax7.set_title('Performance vs Power Trade-off', fontweight='bold', fontsize=12)
@@ -411,7 +411,7 @@ def create_comprehensive_visualization(all_results: List[List[AgentResult]], out
     ax8 = plt.subplot(3, 3, 8)
 
     # Determine winner for each run (by final performance if survived, else DNF)
-    winners = {'Greedy': 0, 'JAM (hard-min)': 0, 'Softmin JAM (λ=1,β=2)': 0, 'Tie': 0}
+    winners = {'Greedy': 0, 'JAM (hard-min)': 0, 'Softmin JAM (λ=0.2,β=1.5)': 0, 'Tie': 0}
 
     for run_results in all_results:
         # Get survivors
@@ -432,7 +432,7 @@ def create_comprehensive_visualization(all_results: List[List[AgentResult]], out
                 winners['Tie'] += 1
 
     winner_names = ['Greedy', 'JAM\n(hard-min)', 'Softmin\nJAM', 'Tie']
-    winner_counts = [winners['Greedy'], winners['JAM (hard-min)'], winners['Softmin JAM (λ=1,β=2)'], winners['Tie']]
+    winner_counts = [winners['Greedy'], winners['JAM (hard-min)'], winners['Softmin JAM (λ=0.2,β=1.5)'], winners['Tie']]
     winner_colors = colors + ['#95a5a6']
 
     bars = ax8.bar(range(4), winner_counts, color=winner_colors, alpha=0.7, edgecolor='black', linewidth=1.5)
@@ -455,7 +455,7 @@ def create_comprehensive_visualization(all_results: List[List[AgentResult]], out
     # Create summary table
     summary_data = []
     for i, name in enumerate(agent_names):
-        short_name = name.replace(' (λ=1,β=2)', '').replace(' (hard-min)', '')
+        short_name = name.replace(' (λ=0.2,β=1.5)', '').replace(' (hard-min)', '')
         summary_data.append([
             short_name,
             f"{np.mean(data[name]['design_perf']):.1f}",
@@ -501,7 +501,7 @@ def create_comprehensive_visualization(all_results: List[List[AgentResult]], out
 def print_summary_stats(all_results: List[List[AgentResult]]):
     """Print detailed summary statistics"""
 
-    agent_names = ["Greedy", "JAM (hard-min)", "Softmin JAM (λ=1,β=2)"]
+    agent_names = ["Greedy", "JAM (hard-min)", "Softmin JAM (λ=0.2,β=1.5)"]
 
     print(f"\n{'='*80}")
     print("DETAILED SUMMARY STATISTICS")
