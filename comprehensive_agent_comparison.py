@@ -609,7 +609,7 @@ if __name__ == "__main__":
     print("This will take several minutes...")
 
     all_results = run_experiments(
-        num_runs=100,
+        num_runs=25,
         design_steps=75,
         adaptation_steps=25,
         seed=42,
@@ -624,7 +624,7 @@ if __name__ == "__main__":
     top_agents = find_top_agents(agent_stats)
 
     # Print summary
-    print_summary(agent_stats, top_agents, num_runs=100)
+    print_summary(agent_stats, top_agents, num_runs=25)
 
     # Create visualization
     print("\nCreating visualization...")
