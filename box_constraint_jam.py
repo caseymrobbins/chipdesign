@@ -67,54 +67,43 @@ class BoxConstraintJAM(AdvancedAgent):
     def calculate_objective(self, headrooms_dict: Dict[str, float], test_space=None) -> float:
         """
         Box constraint objective: maximize performance while keeping
-        headrooms in the sweet spot [min_target, max_target].
+        MIN headroom (bottleneck) in the sweet spot [min_target, max_target].
+
+        User's insight: If min_headroom is too high, we're being too conservative!
+        Force optimizer to push limits by penalizing excessive headroom.
 
         R = performance - penalty_low * violation_low - penalty_high * violation_high
-
-        where:
-        - violation_low = -log(softmin(headroom - min_target))
-        - violation_high = -log(softmin(max_target - headroom))
         """
         # Use test_space if provided, otherwise fall back to self.design_space
         space = test_space if test_space is not None else self.design_space
 
-        # Get weighted headrooms
-        weights = space.limits.constraint_weights
-        weighted_headrooms = {
-            constraint: headroom * weights.get(constraint, 1.0)
-            for constraint, headroom in headrooms_dict.items()
-        }
-
-        headroom_values = np.array(list(weighted_headrooms.values()))
-
-        # Hard constraint: must be feasible (headroom > 0)
-        if np.any(headroom_values <= 0):
+        # Hard constraint: must be feasible
+        if not space.is_feasible():
             return -np.inf
 
         # PRIMARY GOAL: Maximize chip performance (from the test space!)
         performance = space.calculate_performance()
 
-        # LOWER BOUND PENALTY: Keep headrooms above min_target
-        # violation_low → 0 means some headroom is approaching min_target
-        lower_violations = headroom_values - self.min_target
-        if np.any(lower_violations <= 0):
-            # Below minimum target - strong penalty
+        # Get the BOTTLENECK headroom (already weighted and normalized)
+        min_headroom = space.get_min_headroom()
+
+        # LOWER BOUND PENALTY: Keep min_headroom above min_target (safety)
+        lower_violation = min_headroom - self.min_target
+        if lower_violation <= 0:
+            # Below minimum target - infeasible territory
             penalty_low_val = np.inf
         else:
-            softmin_low = softmin(lower_violations, beta=self.beta)
-            penalty_low_val = -np.log(softmin_low + self.epsilon)
+            penalty_low_val = -np.log(lower_violation + self.epsilon)
 
-        # UPPER BOUND PENALTY: Keep headrooms below max_target
-        # violation_high → 0 means some headroom is approaching max_target
+        # UPPER BOUND PENALTY: Keep min_headroom below max_target (performance)
         # This is the KEY insight: penalize being TOO conservative!
-        upper_violations = self.max_target - headroom_values
-        if np.any(upper_violations <= 0):
-            # Above maximum target - we're being too conservative!
-            # Smaller penalty than lower bound (it's not infeasible, just wasteful)
-            penalty_high_val = np.abs(np.min(upper_violations)) * 10
+        upper_violation = self.max_target - min_headroom
+        if upper_violation <= 0:
+            # Above maximum target - we're wasting performance potential!
+            # Use linear penalty (not inf, since it's not infeasible)
+            penalty_high_val = -upper_violation
         else:
-            softmin_high = softmin(upper_violations, beta=self.beta)
-            penalty_high_val = -np.log(softmin_high + self.epsilon)
+            penalty_high_val = -np.log(upper_violation + self.epsilon)
 
         # COMBINED OBJECTIVE
         objective = performance - self.penalty_low * penalty_low_val - self.penalty_high * penalty_high_val
