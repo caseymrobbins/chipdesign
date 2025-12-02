@@ -75,8 +75,8 @@ def run_single_comparison(
         )),
         ("Softmin JAM (λ=0.3,β=2.5)", SoftminJAMAgent(
             lambda_weight=0.3,         # PARAM: lambda_weight - weight of softmin term vs sum term
-            beta=2.5,                  # PARAM: beta - softmin sharpness (higher = closer to hard min)
-            min_margin_threshold=2.0   # PARAM: softmin_min_threshold - minimum headroom safety margin
+            beta=1.5,                  # PARAM: beta - softmin sharpness (higher = closer to hard min)
+            min_margin_threshold=1.0   # PARAM: softmin_min_threshold - minimum headroom safety margin
         )),
     ]
 
