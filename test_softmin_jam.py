@@ -117,8 +117,15 @@ class SoftminJAMAgent(AdvancedAgent):
         }
 
         # Build complete value vector: v = [performance, efficiency, ...all headrooms]
-        # ALL agency domains go in softmin - performance is survival requirement!
-        all_values = np.array([perf, efficiency] + list(weighted_headrooms.values()))
+        # Scale performance and efficiency UP to match their importance (they're ~100x bigger naturally)
+        # This prevents headrooms from dominating the softmin
+        PERF_SCALE = 1.0  # Keep natural scale
+        EFF_SCALE = 10.0   # Boost efficiency importance
+
+        all_values = np.array(
+            [perf * PERF_SCALE, efficiency * EFF_SCALE] +
+            list(weighted_headrooms.values())
+        )
 
         # Ensure all values are positive for log
         if np.any(all_values <= 0):

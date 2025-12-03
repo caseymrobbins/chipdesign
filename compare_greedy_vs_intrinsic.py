@@ -70,16 +70,15 @@ def run_single_comparison(
     base_space.initialize_actions()
 
     # Create agents - ALL using pure intrinsic optimization (NO external constraints!)
-    # AGGRESSIVE parameters for MAXIMUM PERFORMANCE + EFFICIENCY (not just survival)
+    # ULTRA-AGGRESSIVE parameters - λ→0 to match/exceed JAM performance
     agents = [
         ("Greedy", AdvancedGreedyPerformanceAgent()),
         ("JAM (hard min)", JAMAgent()),
-        ("AdaptiveJAM", AdaptiveJAM(margin_target=10.0)),
-        ("HybridJAM (λ=5)", HybridJAM(lambda_reg=5.0)),  # Much lower λ for higher performance
-        ("SoftminJAM (λ=0.1,β=1.0)", SoftminJAMAgent(lambda_weight=0.1, beta=1.0)),  # Minimal penalty, max perf
-        ("SoftminJAM (λ=0.5,β=1.5)", SoftminJAMAgent(lambda_weight=0.5, beta=1.5)),  # Light penalty
-        ("SoftminJAM (λ=1.0,β=2.0)", SoftminJAMAgent(lambda_weight=1.0, beta=2.0)),  # Moderate penalty
-        ("SoftminJAM (λ=2.0,β=2.5)", SoftminJAMAgent(lambda_weight=2.0, beta=2.5)),  # Balanced
+        ("HybridJAM (λ=1)", HybridJAM(lambda_reg=1.0)),  # Low penalty
+        ("SoftminJAM (λ=0.001,β=0.5)", SoftminJAMAgent(lambda_weight=0.001, beta=0.5)),  # Ultra-minimal penalty
+        ("SoftminJAM (λ=0.01,β=0.75)", SoftminJAMAgent(lambda_weight=0.01, beta=0.75)),  # Minimal penalty
+        ("SoftminJAM (λ=0.05,β=1.0)", SoftminJAMAgent(lambda_weight=0.05, beta=1.0)),  # Very light penalty
+        ("SoftminJAM (λ=0.1,β=1.5)", SoftminJAMAgent(lambda_weight=0.1, beta=1.5)),  # Light penalty
     ]
 
     spaces = []
@@ -224,12 +223,11 @@ def run_experiments(
     print(f"\nAgents being tested:")
     print(f"  1. Greedy - Maximizes immediate performance gain")
     print(f"  2. JAM (hard min) - Pure log(min(headroom)) optimization")
-    print(f"  3. AdaptiveJAM - Two-phase: build margins, then push performance")
-    print(f"  4. HybridJAM (λ=5) - Aggressive: low penalty for max performance")
-    print(f"  5. SoftminJAM (λ=0.1,β=1.0) - Minimal penalty: MAXIMUM PERFORMANCE")
-    print(f"  6. SoftminJAM (λ=0.5,β=1.5) - Light penalty: high performance focus")
-    print(f"  7. SoftminJAM (λ=1.0,β=2.0) - Moderate: balanced performance")
-    print(f"  8. SoftminJAM (λ=2.0,β=2.5) - Conservative: prioritize survival")
+    print(f"  3. HybridJAM (λ=1) - Ultra-aggressive: minimal penalty")
+    print(f"  4. SoftminJAM (λ=0.001,β=0.5) - Ultra-minimal: λ→0 for max performance")
+    print(f"  5. SoftminJAM (λ=0.01,β=0.75) - Minimal: approaching pure sum")
+    print(f"  6. SoftminJAM (λ=0.05,β=1.0) - Very light: should match/exceed JAM")
+    print(f"  7. SoftminJAM (λ=0.1,β=1.5) - Light: smooth optimization advantage")
     print(f"\n✓ ALL agents use PURE intrinsic optimization (NO external constraints)")
     print(f"{'='*80}\n")
 

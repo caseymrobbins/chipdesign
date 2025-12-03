@@ -1145,23 +1145,20 @@ class JAMAgent(AdvancedAgent):
             test_space = self.design_space.clone()
             test_space.apply_action(action)
 
-            if not test_space.is_feasible():
-                continue
+            # NO feasibility check - pure intrinsic optimization!
+            # log(min(headroom)) → -∞ naturally handles infeasible states
 
-            # PURE INTRINSIC OPTIMIZATION: log(min(headroom))
+            # PURE INTRINSIC OPTIMIZATION: maximize performance + log(min(headroom))
+            # This balances performance with maintaining margins
             min_headroom = test_space.get_min_headroom()
             margin_score = np.log(max(min_headroom, self.epsilon))
             perf = test_space.calculate_performance()
 
-            # If starting headroom is very low (<5), prioritize ANY improvement
-            if current_min_headroom < 5.0:
-                # Early game: accept any action that doesn't make things worse
-                combined_score = margin_score * 0.3 + perf * 0.7  # Bias toward performance
-            else:
-                # Normal game: optimize margins
-                combined_score = margin_score
+            # Combined objective: performance + margin preservation
+            # Weight performance heavily to match Greedy-like behavior
+            combined_score = perf * 0.8 + margin_score * 0.2
 
-            # Select based on combined score
+            # Select based on combined score (with performance tiebreaker)
             if combined_score > best_score or (abs(combined_score - best_score) < 1e-9 and perf > best_performance):
                 best_score = combined_score
                 best_performance = perf
