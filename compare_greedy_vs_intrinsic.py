@@ -75,10 +75,10 @@ def run_single_comparison(
         ("Greedy", AdvancedGreedyPerformanceAgent()),
         ("JAM (hard min)", JAMAgent()),  # ✓ FIXED: No min_margin_threshold!
         ("AdaptiveJAM", AdaptiveJAM(margin_target=10.0)),  # ✓ FIXED: No thresholds!
-        ("HybridJAM (λ=1000)", HybridJAM(lambda_reg=1000.0)),  # ✓ FIXED: Pure intrinsic!
-        ("SoftminJAM (λ=200,β=2.5)", SoftminJAMAgent(lambda_weight=200.0, beta=2.5)),  # Smooth gradients
-        ("SoftminJAM (λ=1000,β=5.0)", SoftminJAMAgent(lambda_weight=1000.0, beta=5.0)),  # Aggressive
-        ("SoftminJAM (λ=5000,β=10.0)", SoftminJAMAgent(lambda_weight=5000.0, beta=10.0)),  # Very aggressive
+        ("HybridJAM (λ=50)", HybridJAM(lambda_reg=50.0)),  # ✓ FIXED: Pure intrinsic with balanced λ!
+        ("SoftminJAM (λ=1,β=2.5)", SoftminJAMAgent(lambda_weight=1.0, beta=2.5)),  # Minimal bottleneck focus
+        ("SoftminJAM (λ=10,β=5.0)", SoftminJAMAgent(lambda_weight=10.0, beta=5.0)),  # Balanced
+        ("SoftminJAM (λ=50,β=10.0)", SoftminJAMAgent(lambda_weight=50.0, beta=10.0)),  # Moderate bottleneck focus
     ]
 
     spaces = []
@@ -224,10 +224,10 @@ def run_experiments(
     print(f"  1. Greedy - Maximizes immediate performance gain")
     print(f"  2. JAM (hard min) - Pure log(min(headroom)) optimization")
     print(f"  3. AdaptiveJAM - Two-phase: build margins, then push performance")
-    print(f"  4. HybridJAM (λ=1000) - Full intrinsic: R = Σv + 1000·log(min(v))")
-    print(f"  5. SoftminJAM (λ=200,β=2.5) - Smooth gradients, balanced")
-    print(f"  6. SoftminJAM (λ=1000,β=5.0) - Aggressive bottleneck focus")
-    print(f"  7. SoftminJAM (λ=5000,β=10.0) - Very aggressive, maximum performance push")
+    print(f"  4. HybridJAM (λ=50) - Full intrinsic: R = Σv + 50·log(min(v))")
+    print(f"  5. SoftminJAM (λ=1,β=2.5) - Minimal bottleneck focus, max performance")
+    print(f"  6. SoftminJAM (λ=10,β=5.0) - Balanced performance + robustness")
+    print(f"  7. SoftminJAM (λ=50,β=10.0) - Moderate bottleneck focus, higher robustness")
     print(f"\n✓ ALL agents use PURE intrinsic optimization (NO external constraints)")
     print(f"{'='*80}\n")
 
@@ -255,16 +255,8 @@ def create_comparison_visualization(all_results: List[List[AgentResult]],
                                    output_file: str = "greedy_vs_intrinsic.png"):
     """Create comprehensive visualization comparing Greedy vs Intrinsic optimization"""
 
-    # Extract data by agent
-    agent_names = [
-        "Greedy",
-        "JAM (hard min)",
-        "AdaptiveJAM",
-        "HybridJAM (λ=1000)",
-        "SoftminJAM (λ=200,β=2.5)",
-        "SoftminJAM (λ=1000,β=5.0)",
-        "SoftminJAM (λ=5000,β=10.0)",
-    ]
+    # Extract data by agent - dynamically from first run to avoid hardcoding
+    agent_names = [result.name for result in all_results[0]]
     colors = ['#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#f39c12', '#1abc9c', '#e91e63']
     # Red, Blue, Green, Purple, Orange, Teal, Pink
 
