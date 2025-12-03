@@ -1,0 +1,28 @@
+
+================================================================================
+GREEDY vs PURE INTRINSIC OPTIMIZATION COMPARISON
+================================================================================
+Runs: 50
+Design steps: 75
+Adaptation steps: 25
+
+Agents being tested:
+  1. Greedy - Maximizes immediate performance gain
+  2. JAM (hard min) - Pure log(min(headroom)) optimization
+  3. AdaptiveJAM - Two-phase: build margins, then push performance
+  4. HybridJAM (λ=20) - R = objectives + Σ(constraints) + 20·log(min(constraints))
+  5. SoftminJAM (λ=10,β=3.0) - High performance, moderate constraint protection
+  6. SoftminJAM (λ=20,β=5.0) - Balanced performance + robustness
+  7. SoftminJAM (λ=50,β=7.5) - Strong robustness, high survival rate
+
+✓ ALL agents use PURE intrinsic optimization (NO external constraints)
+================================================================================
+
+/home/user/chipdesign/test_softmin_jam.py:48: RuntimeWarning: overflow encountered in exp
+  weights = np.exp(-beta * v_shifted)
+/home/user/chipdesign/test_softmin_jam.py:52: RuntimeWarning: invalid value encountered in scalar divide
+  result = np.sum(values * weights) / weights_sum
+/usr/local/lib/python3.11/dist-packages/numpy/_core/fromnumeric.py:86: RuntimeWarning: overflow encountered in reduce
+  return ufunc.reduce(obj, axis, dtype, out, **passkwargs)
+Completed 10/50 runs...
+Completed 20/50 runs...

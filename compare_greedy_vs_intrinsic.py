@@ -75,10 +75,10 @@ def run_single_comparison(
         ("Greedy", AdvancedGreedyPerformanceAgent()),
         ("JAM (hard min)", JAMAgent()),  # ✓ FIXED: No min_margin_threshold!
         ("AdaptiveJAM", AdaptiveJAM(margin_target=10.0)),  # ✓ FIXED: No thresholds!
-        ("HybridJAM (λ=50)", HybridJAM(lambda_reg=50.0)),  # ✓ FIXED: Pure intrinsic with balanced λ!
-        ("SoftminJAM (λ=1,β=2.5)", SoftminJAMAgent(lambda_weight=1.0, beta=2.5)),  # Minimal bottleneck focus
-        ("SoftminJAM (λ=10,β=5.0)", SoftminJAMAgent(lambda_weight=10.0, beta=5.0)),  # Balanced
-        ("SoftminJAM (λ=50,β=10.0)", SoftminJAMAgent(lambda_weight=50.0, beta=10.0)),  # Moderate bottleneck focus
+        ("HybridJAM (λ=20)", HybridJAM(lambda_reg=20.0)),  # ✓ Optimized: balanced perf + constraints
+        ("SoftminJAM (λ=10,β=3.0)", SoftminJAMAgent(lambda_weight=10.0, beta=3.0)),  # High performance focus
+        ("SoftminJAM (λ=20,β=5.0)", SoftminJAMAgent(lambda_weight=20.0, beta=5.0)),  # Balanced
+        ("SoftminJAM (λ=50,β=7.5)", SoftminJAMAgent(lambda_weight=50.0, beta=7.5)),  # Higher robustness
     ]
 
     spaces = []
@@ -224,10 +224,10 @@ def run_experiments(
     print(f"  1. Greedy - Maximizes immediate performance gain")
     print(f"  2. JAM (hard min) - Pure log(min(headroom)) optimization")
     print(f"  3. AdaptiveJAM - Two-phase: build margins, then push performance")
-    print(f"  4. HybridJAM (λ=50) - Full intrinsic: R = Σv + 50·log(min(v))")
-    print(f"  5. SoftminJAM (λ=1,β=2.5) - Minimal bottleneck focus, max performance")
-    print(f"  6. SoftminJAM (λ=10,β=5.0) - Balanced performance + robustness")
-    print(f"  7. SoftminJAM (λ=50,β=10.0) - Moderate bottleneck focus, higher robustness")
+    print(f"  4. HybridJAM (λ=20) - R = objectives + Σ(constraints) + 20·log(min(constraints))")
+    print(f"  5. SoftminJAM (λ=10,β=3.0) - High performance, moderate constraint protection")
+    print(f"  6. SoftminJAM (λ=20,β=5.0) - Balanced performance + robustness")
+    print(f"  7. SoftminJAM (λ=50,β=7.5) - Strong robustness, high survival rate")
     print(f"\n✓ ALL agents use PURE intrinsic optimization (NO external constraints)")
     print(f"{'='*80}\n")
 
