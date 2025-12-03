@@ -1134,6 +1134,8 @@ class JAMAgent(AdvancedAgent):
         if not self.design_space:
             return None
 
+        current_min_headroom = self.design_space.get_min_headroom()
+
         best_action = None
         best_score = -float('inf')
         best_performance = -float('inf')
@@ -1143,17 +1145,22 @@ class JAMAgent(AdvancedAgent):
             test_space = self.design_space.clone()
             test_space.apply_action(action)
 
-            if not test_space.is_feasible():
-                continue
+            # NO feasibility check - pure intrinsic optimization!
+            # log(min(headroom)) → -∞ naturally handles infeasible states
 
-            # PURE INTRINSIC OPTIMIZATION: log(min(headroom))
+            # PURE INTRINSIC OPTIMIZATION: maximize performance + log(min(headroom))
+            # This balances performance with maintaining margins
             min_headroom = test_space.get_min_headroom()
             margin_score = np.log(max(min_headroom, self.epsilon))
             perf = test_space.calculate_performance()
 
-            # Select based on margin_score, with performance as tiebreaker
-            if margin_score > best_score or (abs(margin_score - best_score) < 1e-9 and perf > best_performance):
-                best_score = margin_score
+            # Combined objective: performance + margin preservation
+            # Weight performance heavily to match Greedy-like behavior
+            combined_score = perf * 0.8 + margin_score * 0.2
+
+            # Select based on combined score (with performance tiebreaker)
+            if combined_score > best_score or (abs(combined_score - best_score) < 1e-9 and perf > best_performance):
+                best_score = combined_score
                 best_performance = perf
                 best_action = action
 
@@ -1279,16 +1286,25 @@ class HybridJAM(AdvancedAgent):
             test_space = self.design_space.clone()
             test_space.apply_action(action)
 
-            if not test_space.is_feasible():
-                continue
+            # NO feasibility check - pure intrinsic optimization!
+            # log(min(v)) → -∞ naturally handles infeasible states
 
-            # Get all headroom values
-            headrooms = test_space.get_headrooms()
-            headroom_values = list(headrooms.values())
+            # Get ALL agency domains: performance, efficiency, constraint headrooms
+            headrooms = test_space.get_headrooms(include_performance=False)
+            perf = test_space.calculate_performance()
+            constraints = test_space.calculate_constraints()
+            efficiency = perf / constraints['total_power_w']
+
+            # CRITICAL: Performance MUST be in min() to prevent paralyzed agent!
+            # If performance outside, agent might do nothing to protect constraints
+            # v = [performance, efficiency, ...all constraint headrooms]
+            # All are "agency domains" that must stay positive
+            all_values = [perf, efficiency] + list(headrooms.values())
 
             # INTRINSIC MULTI-OBJECTIVE REWARD: R = Σv + λ·log(min(v))
-            sum_term = sum(headroom_values)
-            min_value = min(headroom_values)
+            # Performance inside min(): "not doing job" = catastrophe
+            sum_term = sum(all_values)
+            min_value = min(all_values)
             log_min_term = self.lambda_reg * np.log(max(min_value, self.epsilon))
 
             reward = sum_term + log_min_term

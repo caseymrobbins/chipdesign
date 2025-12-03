@@ -70,15 +70,15 @@ def run_single_comparison(
     base_space.initialize_actions()
 
     # Create agents - ALL using pure intrinsic optimization (NO external constraints!)
-    # Testing multiple parameter configurations to find maximum performance
+    # ULTRA-AGGRESSIVE parameters - λ→0 to match/exceed JAM performance
     agents = [
         ("Greedy", AdvancedGreedyPerformanceAgent()),
-        ("JAM (hard min)", JAMAgent()),  # ✓ FIXED: No min_margin_threshold!
-        ("AdaptiveJAM", AdaptiveJAM(margin_target=10.0)),  # ✓ FIXED: No thresholds!
-        ("HybridJAM (λ=1000)", HybridJAM(lambda_reg=1000.0)),  # ✓ FIXED: Pure intrinsic!
-        ("SoftminJAM (λ=200,β=2.5)", SoftminJAMAgent(lambda_weight=200.0, beta=2.5)),  # Smooth gradients
-        ("SoftminJAM (λ=1000,β=5.0)", SoftminJAMAgent(lambda_weight=1000.0, beta=5.0)),  # Aggressive
-        ("SoftminJAM (λ=5000,β=10.0)", SoftminJAMAgent(lambda_weight=5000.0, beta=10.0)),  # Very aggressive
+        ("JAM (hard min)", JAMAgent()),
+        ("HybridJAM (λ=1)", HybridJAM(lambda_reg=1.0)),  # Low penalty
+        ("SoftminJAM (λ=0.001,β=0.5)", SoftminJAMAgent(lambda_weight=0.001, beta=0.5)),  # Ultra-minimal penalty
+        ("SoftminJAM (λ=0.01,β=0.75)", SoftminJAMAgent(lambda_weight=0.01, beta=0.75)),  # Minimal penalty
+        ("SoftminJAM (λ=0.05,β=1.0)", SoftminJAMAgent(lambda_weight=0.05, beta=1.0)),  # Very light penalty
+        ("SoftminJAM (λ=0.1,β=1.5)", SoftminJAMAgent(lambda_weight=0.1, beta=1.5)),  # Light penalty
     ]
 
     spaces = []
@@ -223,11 +223,11 @@ def run_experiments(
     print(f"\nAgents being tested:")
     print(f"  1. Greedy - Maximizes immediate performance gain")
     print(f"  2. JAM (hard min) - Pure log(min(headroom)) optimization")
-    print(f"  3. AdaptiveJAM - Two-phase: build margins, then push performance")
-    print(f"  4. HybridJAM (λ=1000) - Full intrinsic: R = Σv + 1000·log(min(v))")
-    print(f"  5. SoftminJAM (λ=200,β=2.5) - Smooth gradients, balanced")
-    print(f"  6. SoftminJAM (λ=1000,β=5.0) - Aggressive bottleneck focus")
-    print(f"  7. SoftminJAM (λ=5000,β=10.0) - Very aggressive, maximum performance push")
+    print(f"  3. HybridJAM (λ=1) - Ultra-aggressive: minimal penalty")
+    print(f"  4. SoftminJAM (λ=0.001,β=0.5) - Ultra-minimal: λ→0 for max performance")
+    print(f"  5. SoftminJAM (λ=0.01,β=0.75) - Minimal: approaching pure sum")
+    print(f"  6. SoftminJAM (λ=0.05,β=1.0) - Very light: should match/exceed JAM")
+    print(f"  7. SoftminJAM (λ=0.1,β=1.5) - Light: smooth optimization advantage")
     print(f"\n✓ ALL agents use PURE intrinsic optimization (NO external constraints)")
     print(f"{'='*80}\n")
 
@@ -255,16 +255,8 @@ def create_comparison_visualization(all_results: List[List[AgentResult]],
                                    output_file: str = "greedy_vs_intrinsic.png"):
     """Create comprehensive visualization comparing Greedy vs Intrinsic optimization"""
 
-    # Extract data by agent
-    agent_names = [
-        "Greedy",
-        "JAM (hard min)",
-        "AdaptiveJAM",
-        "HybridJAM (λ=1000)",
-        "SoftminJAM (λ=200,β=2.5)",
-        "SoftminJAM (λ=1000,β=5.0)",
-        "SoftminJAM (λ=5000,β=10.0)",
-    ]
+    # Extract data by agent - dynamically from first run to avoid hardcoding
+    agent_names = [result.name for result in all_results[0]]
     colors = ['#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#f39c12', '#1abc9c', '#e91e63']
     # Red, Blue, Green, Purple, Orange, Teal, Pink
 
@@ -408,15 +400,21 @@ def create_comparison_visualization(all_results: List[List[AgentResult]],
                 winners['Tie'] += 1
 
     winner_counts = [winners[name] for name in agent_names] + [winners['Tie']]
-    winner_labels = ['Greedy', 'JAM\n(log-min)', 'Adaptive\nJAM', 'Hybrid\nJAM', 'Tie']
+    winner_labels = [name.split('(')[0].strip()[:8] for name in agent_names] + ['Tie']
     winner_colors_pie = colors + ['#95a5a6']
 
-    wedges, texts, autotexts = ax8.pie(winner_counts, labels=winner_labels, colors=winner_colors_pie,
-                                       autopct='%1.0f%%', startangle=90, textprops={'fontsize': 11})
-    for autotext in autotexts:
-        autotext.set_color('white')
-        autotext.set_fontweight('bold')
-        autotext.set_fontsize(12)
+    # Filter out zero counts to avoid pie chart errors
+    non_zero = [(count, label, color) for count, label, color in zip(winner_counts, winner_labels, winner_colors_pie) if count > 0]
+    if non_zero:
+        filtered_counts, filtered_labels, filtered_colors = zip(*non_zero)
+        wedges, texts, autotexts = ax8.pie(filtered_counts, labels=filtered_labels, colors=filtered_colors,
+                                           autopct='%1.0f%%', startangle=90, textprops={'fontsize': 11})
+        for autotext in autotexts:
+            autotext.set_color('white')
+            autotext.set_fontweight('bold')
+            autotext.set_fontsize(12)
+    else:
+        ax8.text(0.5, 0.5, 'No winners', ha='center', va='center', fontsize=12)
     ax8.set_title('Overall Winners\n(Survived + Best Performance)', fontweight='bold', fontsize=13)
 
     # Row 3: Scatter plots and improvement metrics
@@ -593,10 +591,7 @@ if __name__ == "__main__":
     # Print statistics
     print_detailed_stats(all_results)
 
-    # Create visualization
-    create_comparison_visualization(all_results, "greedy_vs_intrinsic.png")
-
-    # Save raw data
+    # Save raw data FIRST (before visualization which might crash)
     data_to_save = []
     for run_results in all_results:
         run_data = []
@@ -614,6 +609,14 @@ if __name__ == "__main__":
 
     with open('greedy_vs_intrinsic_data.json', 'w') as f:
         json.dump(data_to_save, f, indent=2)
+
+    # Create visualization AFTER saving data
+    try:
+        create_comparison_visualization(all_results, "greedy_vs_intrinsic.png")
+        print(f"\n✓ Visualization saved to: greedy_vs_intrinsic.png")
+    except Exception as e:
+        print(f"\n⚠ Visualization failed: {e}")
+        print("(Data was saved successfully to JSON)")
 
     print(f"\n{'='*80}")
     print("COMPARISON COMPLETE!")

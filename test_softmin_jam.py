@@ -29,7 +29,7 @@ import json
 
 def softmin(values: np.ndarray, beta: float = 1.0) -> float:
     """
-    Compute smooth softmin approximation.
+    Compute smooth softmin approximation with numerical stability.
 
     softmin(v; β) = Σ_i v_i * exp(-β * v_i) / Σ_i exp(-β * v_i)
 
@@ -43,12 +43,18 @@ def softmin(values: np.ndarray, beta: float = 1.0) -> float:
     Returns:
         Smooth minimum approximation
     """
-    # Normalize to avoid numerical overflow
-    v_shifted = values - np.max(values)
-    weights = np.exp(-beta * v_shifted)
+    # Normalize to avoid numerical overflow by shifting to make min = 0
+    # This way exp(-beta * 0) = 1 for min, and exp(-beta * positive) < 1 for others
+    v_shifted = values - np.min(values)
+
+    # Clip to prevent overflow even with high beta
+    exponents = -beta * v_shifted
+    exponents = np.clip(exponents, -700, 700)  # exp(700) is near float64 max
+
+    weights = np.exp(exponents)
     weights_sum = np.sum(weights)
 
-    # Weighted average (unnormalized version)
+    # Weighted average
     result = np.sum(values * weights) / weights_sum
 
     return result
@@ -90,23 +96,45 @@ class SoftminJAMAgent(AdvancedAgent):
         Calculate the intrinsic objective function.
 
         R = Σv + λ·log(softmin(v; β) + ε)
+
+        CRITICAL: v includes EVERYTHING (all agency domains):
+        - Performance: must do the job (prevents paralyzed agent)
+        - Efficiency: must be efficient
+        - Constraints: must satisfy all constraints
+
+        All are treated as agency domains in softmin - doing nothing → perf=0 → log(0) → -∞
         """
-        # Get weighted headrooms
+        # Get ALL agency domains
+        perf = self.design_space.calculate_performance()
+        constraints = self.design_space.calculate_constraints()
+        efficiency = perf / constraints['total_power_w']
+
+        # Get weighted constraint headrooms
         weights = self.design_space.limits.constraint_weights
         weighted_headrooms = {
             constraint: headroom * weights.get(constraint, 1.0)
             for constraint, headroom in headrooms_dict.items()
         }
 
-        headroom_values = np.array(list(weighted_headrooms.values()))
+        # Build complete value vector: v = [performance, efficiency, ...all headrooms]
+        # Scale performance and efficiency UP to match their importance (they're ~100x bigger naturally)
+        # This prevents headrooms from dominating the softmin
+        PERF_SCALE = 1.0  # Keep natural scale
+        EFF_SCALE = 10.0   # Boost efficiency importance
 
-        # Ensure all headrooms are positive for log
-        if np.any(headroom_values <= 0):
+        all_values = np.array(
+            [perf * PERF_SCALE, efficiency * EFF_SCALE] +
+            list(weighted_headrooms.values())
+        )
+
+        # Ensure all values are positive for log
+        if np.any(all_values <= 0):
             return -np.inf
 
         # INTRINSIC MULTI-OBJECTIVE REWARD: R = Σv + λ·log(softmin(v; β))
-        sum_term = np.sum(headroom_values)
-        softmin_val = softmin(headroom_values, beta=self.beta)
+        # Performance in softmin: agent must do job AND satisfy constraints
+        sum_term = np.sum(all_values)
+        softmin_val = softmin(all_values, beta=self.beta)
         log_softmin_term = self.lambda_weight * np.log(softmin_val + self.epsilon)
 
         return sum_term + log_softmin_term
@@ -124,10 +152,9 @@ class SoftminJAMAgent(AdvancedAgent):
             test_space = self.design_space.clone()
             test_space.apply_action(action)
 
-            if not test_space.is_feasible():
-                continue
-
-            headrooms = test_space.get_headrooms()
+            # NO feasibility check - pure intrinsic optimization!
+            # log(softmin(v)) → -∞ naturally handles infeasible states
+            headrooms = test_space.get_headrooms(include_performance=False)
             objective_score = self.calculate_objective(headrooms)
 
             # Select action with highest intrinsic objective
