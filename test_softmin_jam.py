@@ -145,10 +145,17 @@ class SoftminJAMAgent(AdvancedAgent):
         best_action = None
         best_objective = -float('inf')
 
+        # Save original design_space
+        original_space = self.design_space
+
         for action in self.design_space.actions:
             # Simulate applying the action
-            test_space = self.design_space.clone()
+            test_space = original_space.clone()
             test_space.apply_action(action)
+
+            # Temporarily update design_space for objective calculation
+            # (calculate_objective uses self.design_space internally)
+            self.design_space = test_space
 
             # NO feasibility check - pure intrinsic optimization!
             # log(softmin(v)) → -∞ naturally handles infeasible states
@@ -159,6 +166,9 @@ class SoftminJAMAgent(AdvancedAgent):
             if objective_score > best_objective:
                 best_objective = objective_score
                 best_action = action
+
+        # Restore original design_space
+        self.design_space = original_space
 
         return best_action
 

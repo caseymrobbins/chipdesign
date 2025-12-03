@@ -573,9 +573,10 @@ def print_detailed_stats(all_results: List[List[AgentResult]]):
 
 if __name__ == "__main__":
     # Run experiments
+    # Using 40 steps for faster testing with bug fix
     all_results = run_experiments(
         num_runs=50,
-        design_steps=75,
+        design_steps=40,
         adaptation_steps=25,
         seed=42,
         verbose=False,
