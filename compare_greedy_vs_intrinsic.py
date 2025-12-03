@@ -408,15 +408,21 @@ def create_comparison_visualization(all_results: List[List[AgentResult]],
                 winners['Tie'] += 1
 
     winner_counts = [winners[name] for name in agent_names] + [winners['Tie']]
-    winner_labels = ['Greedy', 'JAM\n(log-min)', 'Adaptive\nJAM', 'Hybrid\nJAM', 'Tie']
+    winner_labels = [name.split('(')[0].strip()[:8] for name in agent_names] + ['Tie']
     winner_colors_pie = colors + ['#95a5a6']
 
-    wedges, texts, autotexts = ax8.pie(winner_counts, labels=winner_labels, colors=winner_colors_pie,
-                                       autopct='%1.0f%%', startangle=90, textprops={'fontsize': 11})
-    for autotext in autotexts:
-        autotext.set_color('white')
-        autotext.set_fontweight('bold')
-        autotext.set_fontsize(12)
+    # Filter out zero counts to avoid pie chart errors
+    non_zero = [(count, label, color) for count, label, color in zip(winner_counts, winner_labels, winner_colors_pie) if count > 0]
+    if non_zero:
+        filtered_counts, filtered_labels, filtered_colors = zip(*non_zero)
+        wedges, texts, autotexts = ax8.pie(filtered_counts, labels=filtered_labels, colors=filtered_colors,
+                                           autopct='%1.0f%%', startangle=90, textprops={'fontsize': 11})
+        for autotext in autotexts:
+            autotext.set_color('white')
+            autotext.set_fontweight('bold')
+            autotext.set_fontsize(12)
+    else:
+        ax8.text(0.5, 0.5, 'No winners', ha='center', va='center', fontsize=12)
     ax8.set_title('Overall Winners\n(Survived + Best Performance)', fontweight='bold', fontsize=13)
 
     # Row 3: Scatter plots and improvement metrics
