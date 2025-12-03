@@ -1,0 +1,20 @@
+
+================================================================================
+GREEDY vs PURE INTRINSIC OPTIMIZATION COMPARISON
+================================================================================
+Runs: 50
+Design steps: 75
+Adaptation steps: 25
+
+Agents being tested:
+  1. Greedy - Maximizes immediate performance gain
+  2. JAM (hard min) - Pure log(min(headroom)) optimization
+  3. AdaptiveJAM - Two-phase: build margins, then push performance
+  4. HybridJAM (λ=50) - R = Σv + 50·log(min(v)) - OPTIMAL highest performance
+  5. SoftminJAM (λ=1,β=2.5) - Minimal penalty, maximum performance focus
+  6. SoftminJAM (λ=10,β=5.0) - ⭐ SWEET SPOT: 62.34 perf + 100% survival
+  7. SoftminJAM (λ=50,β=10.0) - Maximum robustness, perfect survival
+
+✓ ALL agents use PURE intrinsic optimization (NO external constraints)
+================================================================================
+

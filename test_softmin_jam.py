@@ -29,7 +29,7 @@ import json
 
 def softmin(values: np.ndarray, beta: float = 1.0) -> float:
     """
-    Compute smooth softmin approximation.
+    Compute smooth softmin approximation with numerical stability.
 
     softmin(v; β) = Σ_i v_i * exp(-β * v_i) / Σ_i exp(-β * v_i)
 
@@ -43,12 +43,18 @@ def softmin(values: np.ndarray, beta: float = 1.0) -> float:
     Returns:
         Smooth minimum approximation
     """
-    # Normalize to avoid numerical overflow
-    v_shifted = values - np.max(values)
-    weights = np.exp(-beta * v_shifted)
+    # Normalize to avoid numerical overflow by shifting to make min = 0
+    # This way exp(-beta * 0) = 1 for min, and exp(-beta * positive) < 1 for others
+    v_shifted = values - np.min(values)
+
+    # Clip to prevent overflow even with high beta
+    exponents = -beta * v_shifted
+    exponents = np.clip(exponents, -700, 700)  # exp(700) is near float64 max
+
+    weights = np.exp(exponents)
     weights_sum = np.sum(weights)
 
-    # Weighted average (unnormalized version)
+    # Weighted average
     result = np.sum(values * weights) / weights_sum
 
     return result
