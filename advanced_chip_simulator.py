@@ -1292,13 +1292,18 @@ class HybridJAM(AdvancedAgent):
             if not test_space.is_feasible():
                 continue
 
-            # Get all headroom values
+            # Get all values to optimize: performance, efficiency, AND all headrooms
             headrooms = test_space.get_headrooms()
-            headroom_values = list(headrooms.values())
+            perf = test_space.calculate_performance()
+            constraints = test_space.calculate_constraints()
+            efficiency = perf / constraints['total_power_w']
+
+            # Build complete value vector v = [performance, efficiency, ...headrooms]
+            all_values = [perf, efficiency] + list(headrooms.values())
 
             # INTRINSIC MULTI-OBJECTIVE REWARD: R = Σv + λ·log(min(v))
-            sum_term = sum(headroom_values)
-            min_value = min(headroom_values)
+            sum_term = sum(all_values)
+            min_value = min(all_values)
             log_min_term = self.lambda_reg * np.log(max(min_value, self.epsilon))
 
             reward = sum_term + log_min_term
