@@ -56,35 +56,40 @@ def softmin(values: np.ndarray, beta: float = 1.0) -> float:
 
 class SoftminJAMAgent(AdvancedAgent):
     """
-    JAM agent using softmin instead of hard min.
+    JAM agent using softmin instead of hard min - PURE intrinsic optimization.
 
-    Objective: R = sum(headrooms) + λ * log(softmin(headrooms; β) + ε)
+    Objective: R = Σv + λ·log(softmin(v; β) + ε)
 
     Benefits of this formulation:
     1. Sum term: Encourages improving ALL headrooms, not just the minimum
     2. Softmin term: Smooth focus on bottleneck, differentiable
     3. λ controls balance between global improvement (sum) and bottleneck focus (softmin)
     4. β controls how "hard" the minimum is (β→∞ recovers original JAM)
+
+    CRITICAL: NO external constraints or threshold checks!
+    Trust that log(softmin(v)) → -∞ as any value → 0 prevents catastrophic failures.
+
+    Optimal parameters (per guide):
+    - For neural network/gradient-based: λ=200, β=0.05
+    - For tabular/discrete: λ=1000-5000, β=2.0-5.0
     """
 
     def __init__(
         self,
-        lambda_weight: float = 1.0,
-        beta: float = 2.0,
-        min_margin_threshold: float = 2.0,
-        epsilon: float = 0.01,
+        lambda_weight: float = 200.0,
+        beta: float = 2.5,
+        epsilon: float = 1e-10,
     ):
         super().__init__(f"SoftminJAM(λ={lambda_weight},β={beta})")
         self.lambda_weight = lambda_weight
         self.beta = beta
-        self.min_margin_threshold = min_margin_threshold
         self.epsilon = epsilon
 
     def calculate_objective(self, headrooms_dict: Dict[str, float]) -> float:
         """
-        Calculate the new objective function.
+        Calculate the intrinsic objective function.
 
-        R = sum(headrooms) + λ * log(softmin(headrooms; β) + ε)
+        R = Σv + λ·log(softmin(v; β) + ε)
         """
         # Get weighted headrooms
         weights = self.design_space.limits.constraint_weights
@@ -99,23 +104,20 @@ class SoftminJAMAgent(AdvancedAgent):
         if np.any(headroom_values <= 0):
             return -np.inf
 
-        # Compute components
+        # INTRINSIC MULTI-OBJECTIVE REWARD: R = Σv + λ·log(softmin(v; β))
         sum_term = np.sum(headroom_values)
         softmin_val = softmin(headroom_values, beta=self.beta)
-        softmin_term = self.lambda_weight * np.log(softmin_val + self.epsilon)
+        log_softmin_term = self.lambda_weight * np.log(softmin_val + self.epsilon)
 
-        return sum_term + softmin_term
+        return sum_term + log_softmin_term
 
     def select_action(self) -> Optional[DesignAction]:
-        """Select action that maximizes the new objective"""
+        """Select action that maximizes intrinsic objective - pure optimization, no thresholds"""
         if not self.design_space:
             return None
 
-        current_headrooms = self.design_space.get_headrooms()
-        current_objective = self.calculate_objective(current_headrooms)
-
-        safe_actions = []
-        risky_actions = []
+        best_action = None
+        best_objective = -float('inf')
 
         for action in self.design_space.actions:
             # Simulate applying the action
@@ -126,32 +128,14 @@ class SoftminJAMAgent(AdvancedAgent):
                 continue
 
             headrooms = test_space.get_headrooms()
-            min_headroom = min(headrooms.values())
             objective_score = self.calculate_objective(headrooms)
-            perf = test_space.calculate_performance()
 
-            action_data = (action, objective_score, perf, min_headroom)
+            # Select action with highest intrinsic objective
+            if objective_score > best_objective:
+                best_objective = objective_score
+                best_action = action
 
-            # Safe actions: maintain min_headroom above threshold
-            if min_headroom >= self.min_margin_threshold:
-                safe_actions.append(action_data)
-            else:
-                risky_actions.append(action_data)
-
-        # Prefer safe actions
-        if safe_actions:
-            # Primary: objective score, Secondary: performance
-            best = max(safe_actions, key=lambda x: (x[1], x[2]))
-            return best[0]
-
-        # If no safe actions, pick least risky one
-        elif risky_actions:
-            improving = [a for a in risky_actions if a[3] >= min(current_headrooms.values())]
-            if improving:
-                best = max(improving, key=lambda x: (x[1], x[2]))
-                return best[0]
-
-        return None
+        return best_action
 
 
 class SoftminSimulation(AdvancedSimulation):

@@ -1114,27 +1114,29 @@ class JAMAgent(AdvancedAgent):
     Agent 2: JAM (Just Add Margin)
 
     Optimizes log(min(headroom)) to preserve margins in the most constrained dimension.
-    REFUSES actions that would reduce margins below a safety threshold.
+    TRUSTS the intrinsic optimization - NO external safety thresholds!
 
     This is a GLASS BOX strategy: the decision logic is transparent and interpretable.
     At each step, you can see exactly what it's optimizing (minimum margin) and why.
+
+    Following pure intrinsic optimization principles:
+    - R = Σv + λ·log(min(v))
+    - NO external constraints or threshold checks
+    - Trust that log(min(v)) → -∞ as any value → 0 prevents catastrophic failures
     """
 
-    def __init__(self, min_margin_threshold: float = 2.0):
+    def __init__(self):
         super().__init__("JAM")
-        self.min_margin_threshold = min_margin_threshold  # Minimum acceptable margin
-        self.epsilon = 0.01  # Small value to avoid log of zero
+        self.epsilon = 1e-10  # Small value for numerical stability
 
     def select_action(self) -> Optional[DesignAction]:
-        """Select action that maximizes log of minimum headroom while maintaining safety margins"""
+        """Select action that maximizes log of minimum headroom - pure intrinsic optimization"""
         if not self.design_space:
             return None
 
-        current_min_headroom = self.design_space.get_min_headroom()
-
-        # Separate actions into "safe" (maintain threshold) and "risky" (reduce margins)
-        safe_actions = []
-        risky_actions = []
+        best_action = None
+        best_score = -float('inf')
+        best_performance = -float('inf')
 
         for action in self.design_space.actions:
             # Simulate applying the action
@@ -1144,55 +1146,37 @@ class JAMAgent(AdvancedAgent):
             if not test_space.is_feasible():
                 continue
 
+            # PURE INTRINSIC OPTIMIZATION: log(min(headroom))
             min_headroom = test_space.get_min_headroom()
             margin_score = np.log(max(min_headroom, self.epsilon))
             perf = test_space.calculate_performance()
 
-            action_data = (action, margin_score, perf, min_headroom)
+            # Select based on margin_score, with performance as tiebreaker
+            if margin_score > best_score or (abs(margin_score - best_score) < 1e-9 and perf > best_performance):
+                best_score = margin_score
+                best_performance = perf
+                best_action = action
 
-            # Safe actions: maintain min_headroom above threshold
-            if min_headroom >= self.min_margin_threshold:
-                safe_actions.append(action_data)
-            else:
-                risky_actions.append(action_data)
-
-        # Prefer safe actions that maintain margins
-        if safe_actions:
-            # PURE JAM: Optimize log(min_headroom), use performance only as tiebreaker
-            # This tests if margin balancing naturally leads to better performance
-            best = max(safe_actions, key=lambda x: (x[1], x[2]))  # (margin_score, perf)
-            return best[0]
-
-        # If no safe actions, pick the least risky one (highest margin that's still above current)
-        elif risky_actions:
-            # Only take actions that don't make things worse
-            improving = [a for a in risky_actions if a[3] >= current_min_headroom]
-            if improving:
-                best = max(improving, key=lambda x: (x[1], x[2]))  # (margin_score, perf)
-                return best[0]
-            else:
-                # No improving actions available, stop optimizing
-                return None
-
-        return None
+        return best_action
 
 
 class AdaptiveJAM(AdvancedAgent):
     """
-    Adaptive JAM: Two-phase optimization strategy
+    Adaptive JAM: Two-phase optimization strategy with PURE intrinsic optimization
 
     PHASE 1 (Build Margins): Optimize log(min_headroom) until reaching sweet spot
     PHASE 2 (Push Performance): Once margins are good (>10), maximize performance
 
     The sweet spot (headroom > 10) unlocks 1.5x performance bonus, then we push base performance!
     This combines JAM's efficiency with GreedyPerf's performance focus.
+
+    CRITICAL: NO external threshold checks - trust the intrinsic optimization!
     """
 
-    def __init__(self, margin_target: float = 10.0, min_margin_threshold: float = 2.0):
+    def __init__(self, margin_target: float = 10.0):
         super().__init__("AdaptiveJAM")
         self.margin_target = margin_target  # Target headroom for sweet spot
-        self.min_margin_threshold = min_margin_threshold  # Safety threshold
-        self.epsilon = 0.01
+        self.epsilon = 1e-10  # Numerical stability
 
     def select_action(self) -> Optional[DesignAction]:
         """Two-phase selection: build margins first, then push performance"""
@@ -1204,15 +1188,16 @@ class AdaptiveJAM(AdvancedAgent):
         # Determine which phase we're in
         if current_min_headroom < self.margin_target:
             # PHASE 1: Build margins to sweet spot
-            return self._select_margin_building_action(current_min_headroom)
+            return self._select_margin_building_action()
         else:
             # PHASE 2: Margins are good, now maximize performance!
-            return self._select_performance_pushing_action(current_min_headroom)
+            return self._select_performance_pushing_action()
 
-    def _select_margin_building_action(self, current_min_headroom: float) -> Optional[DesignAction]:
-        """Phase 1: Build margins to unlock performance bonus"""
-        safe_actions = []
-        risky_actions = []
+    def _select_margin_building_action(self) -> Optional[DesignAction]:
+        """Phase 1: Build margins to unlock performance bonus - pure intrinsic optimization"""
+        best_action = None
+        best_score = -float('inf')
+        best_performance = -float('inf')
 
         for action in self.design_space.actions:
             test_space = self.design_space.clone()
@@ -1225,28 +1210,19 @@ class AdaptiveJAM(AdvancedAgent):
             margin_score = np.log(max(min_headroom, self.epsilon))
             perf = test_space.calculate_performance()
 
-            action_data = (action, margin_score, perf, min_headroom)
-
-            if min_headroom >= self.min_margin_threshold:
-                safe_actions.append(action_data)
-            else:
-                risky_actions.append(action_data)
-
-        if safe_actions:
             # Prioritize margin improvement, use perf as tiebreaker
-            best = max(safe_actions, key=lambda x: (x[1], x[2]))
-            return best[0]
-        elif risky_actions:
-            improving = [a for a in risky_actions if a[3] >= current_min_headroom]
-            if improving:
-                best = max(improving, key=lambda x: (x[1], x[2]))
-                return best[0]
+            if margin_score > best_score or (abs(margin_score - best_score) < 1e-9 and perf > best_performance):
+                best_score = margin_score
+                best_performance = perf
+                best_action = action
 
-        return None
+        return best_action
 
-    def _select_performance_pushing_action(self, current_min_headroom: float) -> Optional[DesignAction]:
+    def _select_performance_pushing_action(self) -> Optional[DesignAction]:
         """Phase 2: Margins are at sweet spot, now push performance!"""
-        safe_actions = []
+        best_action = None
+        best_performance = -float('inf')
+        best_margin_score = -float('inf')
 
         for action in self.design_space.actions:
             test_space = self.design_space.clone()
@@ -1257,46 +1233,47 @@ class AdaptiveJAM(AdvancedAgent):
 
             min_headroom = test_space.get_min_headroom()
             perf = test_space.calculate_performance()
+            margin_score = np.log(max(min_headroom, self.epsilon))
 
-            # Only consider actions that maintain minimum safety threshold
-            # This prevents sacrificing ALL margins for performance
-            if min_headroom >= self.min_margin_threshold:
-                # Prioritize PERFORMANCE, use margin_score as tiebreaker
-                margin_score = np.log(max(min_headroom, self.epsilon))
-                safe_actions.append((action, perf, margin_score, min_headroom))
+            # Prioritize PERFORMANCE, use margin_score as tiebreaker
+            if perf > best_performance or (abs(perf - best_performance) < 1e-6 and margin_score > best_margin_score):
+                best_performance = perf
+                best_margin_score = margin_score
+                best_action = action
 
-        if safe_actions:
-            # PRIMARY: performance, SECONDARY: margins
-            best = max(safe_actions, key=lambda x: (x[1], x[2]))
-            return best[0]
-
-        return None
+        return best_action
 
 
 class HybridJAM(AdvancedAgent):
     """
-    Hybrid JAM: Optimizes BOTH margins AND performance simultaneously
+    Hybrid JAM: PURE intrinsic multi-objective optimization
 
-    Objective: margin_score + performance_weight * performance
+    Implements the core principle from the guide:
+    R = Σv + λ·log(min(v))
 
-    Unlike pure JAM (margins only) or AdaptiveJAM (phase-based),
-    this agent balances both objectives from the start.
+    Where:
+    - Σv = sum of all headroom values (encourages growth)
+    - λ·log(min(v)) = unbounded penalty preventing any value from crashing
+    - λ = 1000 (optimal for tabular/discrete optimization per guide)
+
+    NO external constraints, NO threshold checks, NO action filtering.
+    Trust that log(min(v)) → -∞ as any value → 0 prevents catastrophic failures.
+
+    This is the "HardHybrid" approach with λ=1000 from the guide's optimal parameters.
     """
 
-    def __init__(self, performance_weight: float = 0.05, min_margin_threshold: float = 2.0):
+    def __init__(self, lambda_reg: float = 1000.0):
         super().__init__("HybridJAM")
-        self.performance_weight = performance_weight  # How much to value performance vs margins
-        self.min_margin_threshold = min_margin_threshold
-        self.epsilon = 0.01
+        self.lambda_reg = lambda_reg  # λ=1000 per guide for tabular optimization
+        self.epsilon = 1e-10  # Numerical stability
 
     def select_action(self) -> Optional[DesignAction]:
-        """Select action that maximizes weighted combination of margins and performance"""
+        """Select action that maximizes R = Σv + λ·log(min(v)) - pure intrinsic optimization"""
         if not self.design_space:
             return None
 
-        current_min_headroom = self.design_space.get_min_headroom()
-        safe_actions = []
-        risky_actions = []
+        best_action = None
+        best_reward = -float('inf')
 
         for action in self.design_space.actions:
             test_space = self.design_space.clone()
@@ -1305,31 +1282,23 @@ class HybridJAM(AdvancedAgent):
             if not test_space.is_feasible():
                 continue
 
-            min_headroom = test_space.get_min_headroom()
-            margin_score = np.log(max(min_headroom, self.epsilon))
-            perf = test_space.calculate_performance()
+            # Get all headroom values
+            headrooms = test_space.get_headrooms()
+            headroom_values = list(headrooms.values())
 
-            # HYBRID SCORE: combines margin and performance objectives
-            hybrid_score = margin_score + self.performance_weight * perf
+            # INTRINSIC MULTI-OBJECTIVE REWARD: R = Σv + λ·log(min(v))
+            sum_term = sum(headroom_values)
+            min_value = min(headroom_values)
+            log_min_term = self.lambda_reg * np.log(max(min_value, self.epsilon))
 
-            action_data = (action, hybrid_score, margin_score, perf, min_headroom)
+            reward = sum_term + log_min_term
 
-            if min_headroom >= self.min_margin_threshold:
-                safe_actions.append(action_data)
-            else:
-                risky_actions.append(action_data)
+            # Select action with highest intrinsic reward
+            if reward > best_reward:
+                best_reward = reward
+                best_action = action
 
-        if safe_actions:
-            # Maximize hybrid score
-            best = max(safe_actions, key=lambda x: x[1])
-            return best[0]
-        elif risky_actions:
-            improving = [a for a in risky_actions if a[4] >= current_min_headroom]
-            if improving:
-                best = max(improving, key=lambda x: x[1])
-                return best[0]
-
-        return None
+        return best_action
 
 
 @dataclass
