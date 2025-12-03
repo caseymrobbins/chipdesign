@@ -70,15 +70,16 @@ def run_single_comparison(
     base_space.initialize_actions()
 
     # Create agents - ALL using pure intrinsic optimization (NO external constraints!)
-    # Using OPTIMAL parameters from systematic testing (see FINAL_RESULTS_SUMMARY.md)
+    # AGGRESSIVE parameters for MAXIMUM PERFORMANCE + EFFICIENCY (not just survival)
     agents = [
         ("Greedy", AdvancedGreedyPerformanceAgent()),
         ("JAM (hard min)", JAMAgent()),
         ("AdaptiveJAM", AdaptiveJAM(margin_target=10.0)),
-        ("HybridJAM (λ=50)", HybridJAM(lambda_reg=50.0)),  # ✅ Optimized! Highest perf (149.56)
-        ("SoftminJAM (λ=1,β=2.5)", SoftminJAMAgent(lambda_weight=1.0, beta=2.5)),  # Minimal penalty
-        ("SoftminJAM (λ=10,β=5.0)", SoftminJAMAgent(lambda_weight=10.0, beta=5.0)),  # ⭐ SWEET SPOT! (62.34 perf, 100% survival)
-        ("SoftminJAM (λ=50,β=10.0)", SoftminJAMAgent(lambda_weight=50.0, beta=10.0)),  # Maximum robustness
+        ("HybridJAM (λ=5)", HybridJAM(lambda_reg=5.0)),  # Much lower λ for higher performance
+        ("SoftminJAM (λ=0.1,β=1.0)", SoftminJAMAgent(lambda_weight=0.1, beta=1.0)),  # Minimal penalty, max perf
+        ("SoftminJAM (λ=0.5,β=1.5)", SoftminJAMAgent(lambda_weight=0.5, beta=1.5)),  # Light penalty
+        ("SoftminJAM (λ=1.0,β=2.0)", SoftminJAMAgent(lambda_weight=1.0, beta=2.0)),  # Moderate penalty
+        ("SoftminJAM (λ=2.0,β=2.5)", SoftminJAMAgent(lambda_weight=2.0, beta=2.5)),  # Balanced
     ]
 
     spaces = []
@@ -224,10 +225,11 @@ def run_experiments(
     print(f"  1. Greedy - Maximizes immediate performance gain")
     print(f"  2. JAM (hard min) - Pure log(min(headroom)) optimization")
     print(f"  3. AdaptiveJAM - Two-phase: build margins, then push performance")
-    print(f"  4. HybridJAM (λ=50) - R = Σv + 50·log(min(v)) - OPTIMAL highest performance")
-    print(f"  5. SoftminJAM (λ=1,β=2.5) - Minimal penalty, maximum performance focus")
-    print(f"  6. SoftminJAM (λ=10,β=5.0) - ⭐ SWEET SPOT: 62.34 perf + 100% survival")
-    print(f"  7. SoftminJAM (λ=50,β=10.0) - Maximum robustness, perfect survival")
+    print(f"  4. HybridJAM (λ=5) - Aggressive: low penalty for max performance")
+    print(f"  5. SoftminJAM (λ=0.1,β=1.0) - Minimal penalty: MAXIMUM PERFORMANCE")
+    print(f"  6. SoftminJAM (λ=0.5,β=1.5) - Light penalty: high performance focus")
+    print(f"  7. SoftminJAM (λ=1.0,β=2.0) - Moderate: balanced performance")
+    print(f"  8. SoftminJAM (λ=2.0,β=2.5) - Conservative: prioritize survival")
     print(f"\n✓ ALL agents use PURE intrinsic optimization (NO external constraints)")
     print(f"{'='*80}\n")
 
@@ -591,10 +593,7 @@ if __name__ == "__main__":
     # Print statistics
     print_detailed_stats(all_results)
 
-    # Create visualization
-    create_comparison_visualization(all_results, "greedy_vs_intrinsic.png")
-
-    # Save raw data
+    # Save raw data FIRST (before visualization which might crash)
     data_to_save = []
     for run_results in all_results:
         run_data = []
@@ -612,6 +611,14 @@ if __name__ == "__main__":
 
     with open('greedy_vs_intrinsic_data.json', 'w') as f:
         json.dump(data_to_save, f, indent=2)
+
+    # Create visualization AFTER saving data
+    try:
+        create_comparison_visualization(all_results, "greedy_vs_intrinsic.png")
+        print(f"\n✓ Visualization saved to: greedy_vs_intrinsic.png")
+    except Exception as e:
+        print(f"\n⚠ Visualization failed: {e}")
+        print("(Data was saved successfully to JSON)")
 
     print(f"\n{'='*80}")
     print("COMPARISON COMPLETE!")
