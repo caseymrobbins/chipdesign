@@ -26,6 +26,7 @@ from advanced_chip_simulator import (
     ProcessTechnology,
     ShiftType,
 )
+from test_softmin_jam import SoftminJAMAgent
 import json
 
 # Set style
@@ -69,11 +70,15 @@ def run_single_comparison(
     base_space.initialize_actions()
 
     # Create agents - ALL using pure intrinsic optimization (NO external constraints!)
+    # Testing multiple parameter configurations to find maximum performance
     agents = [
         ("Greedy", AdvancedGreedyPerformanceAgent()),
-        ("JAM (pure log-min)", JAMAgent()),  # ✓ FIXED: No min_margin_threshold!
+        ("JAM (hard min)", JAMAgent()),  # ✓ FIXED: No min_margin_threshold!
         ("AdaptiveJAM", AdaptiveJAM(margin_target=10.0)),  # ✓ FIXED: No thresholds!
         ("HybridJAM (λ=1000)", HybridJAM(lambda_reg=1000.0)),  # ✓ FIXED: Pure intrinsic!
+        ("SoftminJAM (λ=200,β=2.5)", SoftminJAMAgent(lambda_weight=200.0, beta=2.5)),  # Smooth gradients
+        ("SoftminJAM (λ=1000,β=5.0)", SoftminJAMAgent(lambda_weight=1000.0, beta=5.0)),  # Aggressive
+        ("SoftminJAM (λ=5000,β=10.0)", SoftminJAMAgent(lambda_weight=5000.0, beta=10.0)),  # Very aggressive
     ]
 
     spaces = []
@@ -217,10 +222,13 @@ def run_experiments(
     print(f"Adaptation steps: {adaptation_steps}")
     print(f"\nAgents being tested:")
     print(f"  1. Greedy - Maximizes immediate performance gain")
-    print(f"  2. JAM (pure log-min) - Pure log(min(headroom)) optimization")
+    print(f"  2. JAM (hard min) - Pure log(min(headroom)) optimization")
     print(f"  3. AdaptiveJAM - Two-phase: build margins, then push performance")
     print(f"  4. HybridJAM (λ=1000) - Full intrinsic: R = Σv + 1000·log(min(v))")
-    print(f"\n✓ ALL JAM agents use PURE intrinsic optimization (NO external constraints)")
+    print(f"  5. SoftminJAM (λ=200,β=2.5) - Smooth gradients, balanced")
+    print(f"  6. SoftminJAM (λ=1000,β=5.0) - Aggressive bottleneck focus")
+    print(f"  7. SoftminJAM (λ=5000,β=10.0) - Very aggressive, maximum performance push")
+    print(f"\n✓ ALL agents use PURE intrinsic optimization (NO external constraints)")
     print(f"{'='*80}\n")
 
     rng = np.random.RandomState(seed)
@@ -248,8 +256,17 @@ def create_comparison_visualization(all_results: List[List[AgentResult]],
     """Create comprehensive visualization comparing Greedy vs Intrinsic optimization"""
 
     # Extract data by agent
-    agent_names = ["Greedy", "JAM (pure log-min)", "AdaptiveJAM", "HybridJAM (λ=1000)"]
-    colors = ['#e74c3c', '#3498db', '#2ecc71', '#9b59b6']  # Red, Blue, Green, Purple
+    agent_names = [
+        "Greedy",
+        "JAM (hard min)",
+        "AdaptiveJAM",
+        "HybridJAM (λ=1000)",
+        "SoftminJAM (λ=200,β=2.5)",
+        "SoftminJAM (λ=1000,β=5.0)",
+        "SoftminJAM (λ=5000,β=10.0)",
+    ]
+    colors = ['#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#f39c12', '#1abc9c', '#e91e63']
+    # Red, Blue, Green, Purple, Orange, Teal, Pink
 
     data = {name: {
         'design_perf': [],
@@ -281,10 +298,10 @@ def create_comparison_visualization(all_results: List[List[AgentResult]],
     # Create figure
     fig = plt.figure(figsize=(20, 14))
 
-    # Title with emphasis on "NO external constraints"
-    fig.suptitle('Greedy vs Pure Intrinsic Optimization\n'
-                '✓ All JAM agents use PURE intrinsic optimization (NO external constraints)',
-                fontsize=18, fontweight='bold', y=0.98)
+    # Title with emphasis on "NO external constraints" and testing Softmin variants
+    fig.suptitle('Greedy vs Pure Intrinsic Optimization: Testing Softmin for Maximum Performance\n'
+                '✓ All agents use PURE intrinsic optimization (NO external constraints) | R = Σv + λ·log(softmin(v; β))',
+                fontsize=16, fontweight='bold', y=0.98)
 
     # Helper function for box plots
     def create_boxplot(ax, data_list, positions, title, ylabel, show_mean=True):
@@ -298,8 +315,9 @@ def create_comparison_visualization(all_results: List[List[AgentResult]],
             patch.set_alpha(0.6)
 
         ax.set_xticks(positions)
-        ax.set_xticklabels(['Greedy', 'JAM\n(log-min)', 'Adaptive\nJAM', 'Hybrid\nJAM'],
-                          fontsize=11)
+        ax.set_xticklabels(['Greedy', 'JAM\n(hard)', 'Adaptive\nJAM', 'Hybrid\nJAM',
+                           'Softmin\n(λ=200)', 'Softmin\n(λ=1000)', 'Softmin\n(λ=5000)'],
+                          fontsize=9, rotation=15)
         ax.set_ylabel(ylabel, fontweight='bold', fontsize=12)
         ax.set_title(title, fontweight='bold', fontsize=13)
         ax.grid(axis='y', alpha=0.3)
@@ -311,7 +329,7 @@ def create_comparison_visualization(all_results: List[List[AgentResult]],
                        fontweight='bold', fontsize=10, color=colors[i],
                        bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8))
 
-    positions = [0, 1, 2, 3]
+    positions = list(range(len(agent_names)))  # [0, 1, 2, 3, 4, 5, 6]
 
     # Row 1: Performance, Efficiency, Survival
     ax1 = plt.subplot(3, 4, 1)
@@ -329,8 +347,9 @@ def create_comparison_visualization(all_results: List[List[AgentResult]],
     bars = ax3.bar(positions, survival_rates, color=colors, alpha=0.7,
                    edgecolor='black', linewidth=2)
     ax3.set_xticks(positions)
-    ax3.set_xticklabels(['Greedy', 'JAM\n(log-min)', 'Adaptive\nJAM', 'Hybrid\nJAM'],
-                        fontsize=11)
+    ax3.set_xticklabels(['Greedy', 'JAM\n(hard)', 'Adaptive\nJAM', 'Hybrid\nJAM',
+                        'Softmin\n(λ=200)', 'Softmin\n(λ=1000)', 'Softmin\n(λ=5000)'],
+                        fontsize=9, rotation=15)
     ax3.set_ylabel('Survival Rate (%)', fontweight='bold', fontsize=12)
     ax3.set_title('Adaptability: Survived Requirement Shift\n(Higher is Better)',
                   fontweight='bold', fontsize=13)
@@ -432,34 +451,35 @@ def create_comparison_visualization(all_results: List[List[AgentResult]],
     greedy_eff = np.mean(data['Greedy']['design_efficiency'])
     greedy_survival = np.mean(data['Greedy']['survival'])
 
-    improvements = {
-        'JAM': {
-            'perf': (np.mean(data['JAM (pure log-min)']['design_perf']) - greedy_perf) / greedy_perf * 100,
-            'eff': (np.mean(data['JAM (pure log-min)']['design_efficiency']) - greedy_eff) / greedy_eff * 100,
-            'survival': (np.mean(data['JAM (pure log-min)']['survival']) - greedy_survival) * 100,
-        },
-        'AdaptiveJAM': {
-            'perf': (np.mean(data['AdaptiveJAM']['design_perf']) - greedy_perf) / greedy_perf * 100,
-            'eff': (np.mean(data['AdaptiveJAM']['design_efficiency']) - greedy_eff) / greedy_eff * 100,
-            'survival': (np.mean(data['AdaptiveJAM']['survival']) - greedy_survival) * 100,
-        },
-        'HybridJAM': {
-            'perf': (np.mean(data['HybridJAM (λ=1000)']['design_perf']) - greedy_perf) / greedy_perf * 100,
-            'eff': (np.mean(data['HybridJAM (λ=1000)']['design_efficiency']) - greedy_eff) / greedy_eff * 100,
-            'survival': (np.mean(data['HybridJAM (λ=1000)']['survival']) - greedy_survival) * 100,
-        },
-    }
+    # Calculate improvements for all JAM agents
+    jam_agent_names = agent_names[1:]  # All except Greedy
+    improvements = {}
+    for jam_name in jam_agent_names:
+        short_name = jam_name.split('(')[0].strip()  # Get short name
+        improvements[short_name] = {
+            'perf': (np.mean(data[jam_name]['design_perf']) - greedy_perf) / greedy_perf * 100,
+            'eff': (np.mean(data[jam_name]['design_efficiency']) - greedy_eff) / greedy_eff * 100,
+            'survival': (np.mean(data[jam_name]['survival']) - greedy_survival) * 100,
+        }
+
+    # Show top 3 performers
+    perf_sorted = sorted(improvements.items(), key=lambda x: x[1]['perf'], reverse=True)
+    top_3 = perf_sorted[:3]
 
     metrics = ['Performance', 'Efficiency', 'Survival']
     x_pos = np.arange(len(metrics))
     width = 0.25
 
-    for i, (agent_name, color) in enumerate(zip(['JAM', 'AdaptiveJAM', 'HybridJAM'], colors[1:])):
-        values = [improvements[agent_name]['perf'],
-                 improvements[agent_name]['eff'],
-                 improvements[agent_name]['survival']]
+    for i, (agent_short_name, _) in enumerate(top_3):
+        # Find original index for color
+        agent_idx = next(j for j, name in enumerate(jam_agent_names) if name.startswith(agent_short_name))
+        color = colors[agent_idx + 1]  # +1 because colors[0] is Greedy
+
+        values = [improvements[agent_short_name]['perf'],
+                 improvements[agent_short_name]['eff'],
+                 improvements[agent_short_name]['survival']]
         offset = (i - 1) * width
-        bars = ax11.bar(x_pos + offset, values, width, label=agent_name,
+        bars = ax11.bar(x_pos + offset, values, width, label=agent_short_name,
                        color=color, alpha=0.7, edgecolor='black', linewidth=1.5)
 
         # Add value labels
@@ -467,7 +487,7 @@ def create_comparison_visualization(all_results: List[List[AgentResult]],
             height = bar.get_height()
             ax11.text(bar.get_x() + bar.get_width()/2., height + (2 if height > 0 else -2),
                      f'{val:+.1f}%', ha='center', va='bottom' if height > 0 else 'top',
-                     fontweight='bold', fontsize=9, color=color)
+                     fontweight='bold', fontsize=8, color=color)
 
     ax11.set_xticks(x_pos)
     ax11.set_xticklabels(metrics, fontsize=11, fontweight='bold')
@@ -478,15 +498,20 @@ def create_comparison_visualization(all_results: List[List[AgentResult]],
     ax11.legend(loc='upper right', fontsize=10)
     ax11.grid(axis='y', alpha=0.3)
 
-    # Summary table
+    # Summary table - showing top performers
     ax12 = plt.subplot(3, 4, 12)
     ax12.axis('off')
 
+    # Show top 5 performers by performance score
+    perf_scores = [(name, np.mean(data[name]['design_perf'])) for name in agent_names]
+    perf_scores_sorted = sorted(perf_scores, key=lambda x: x[1], reverse=True)[:5]
+
     summary_data = []
-    for i, name in enumerate(agent_names):
-        short_name = name.replace(' (pure log-min)', '').replace(' (λ=1000)', '')
+    for name, _ in perf_scores_sorted:
+        i = agent_names.index(name)
+        short_name = name.split('(')[0].strip() if '(' in name else name
         summary_data.append([
-            short_name,
+            short_name[:12],  # Truncate long names
             f"{np.mean(data[name]['design_perf']):.1f}",
             f"{np.mean(data[name]['design_efficiency']):.2f}",
             f"{np.mean(data[name]['design_power']):.1f}W",
@@ -497,25 +522,26 @@ def create_comparison_visualization(all_results: List[List[AgentResult]],
                       colLabels=['Agent', 'Perf', 'Eff', 'Power', 'Survive'],
                       cellLoc='center',
                       loc='center',
-                      colWidths=[0.30, 0.18, 0.18, 0.18, 0.16])
+                      colWidths=[0.30, 0.18, 0.16, 0.18, 0.18])
 
     table.auto_set_font_size(False)
-    table.set_fontsize(11)
-    table.scale(1, 3.0)
+    table.set_fontsize(9)
+    table.scale(1, 2.5)
 
     # Color header
     for i in range(5):
         table[(0, i)].set_facecolor('#34495e')
-        table[(0, i)].set_text_props(weight='bold', color='white', fontsize=12)
+        table[(0, i)].set_text_props(weight='bold', color='white', fontsize=10)
 
-    # Color rows
-    for i in range(1, 5):
+    # Color rows by original agent colors
+    for row_idx, (name, _) in enumerate(perf_scores_sorted):
+        agent_idx = agent_names.index(name)
         for j in range(5):
-            table[(i, j)].set_facecolor(colors[i-1])
-            table[(i, j)].set_alpha(0.3)
-            table[(i, j)].set_text_props(fontweight='bold')
+            table[(row_idx + 1, j)].set_facecolor(colors[agent_idx])
+            table[(row_idx + 1, j)].set_alpha(0.3)
+            table[(row_idx + 1, j)].set_text_props(fontweight='bold', fontsize=9)
 
-    ax12.set_title('Summary Statistics', fontweight='bold', fontsize=13, pad=20)
+    ax12.set_title('Top 5 Performers\n(by Performance)', fontweight='bold', fontsize=13, pad=20)
 
     plt.tight_layout(rect=[0, 0.01, 1, 0.96])
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
