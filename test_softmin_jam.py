@@ -132,9 +132,8 @@ class SoftminJAMAgent(AdvancedAgent):
             test_space = self.design_space.clone()
             test_space.apply_action(action)
 
-            if not test_space.is_feasible():
-                continue
-
+            # NO feasibility check - pure intrinsic optimization!
+            # log(softmin(v)) → -∞ naturally handles infeasible states
             headrooms = test_space.get_headrooms()
             objective_score = self.calculate_objective(headrooms)
 
