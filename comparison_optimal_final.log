@@ -19,3 +19,75 @@ Agents being tested:
 ================================================================================
 
 Completed 10/50 runs...
+Completed 20/50 runs...
+Completed 30/50 runs...
+Completed 40/50 runs...
+Completed 50/50 runs...
+
+================================================================================
+DETAILED STATISTICS
+================================================================================
+
+Greedy
+------
+  Design Phase:
+    Performance:       93.90 ±  0.00
+    Efficiency:         8.54 ±  0.00 perf/W
+    Power:             10.99 ±  0.00 W
+    Min Headroom:       0.42 ±  0.00
+  Robustness:
+    Survival Rate:     42.0% (21/50)
+
+JAM (pure log-min)
+------------------
+  Design Phase:
+/usr/local/lib/python3.11/dist-packages/numpy/_core/fromnumeric.py:3860: RuntimeWarning: Mean of empty slice.
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/usr/local/lib/python3.11/dist-packages/numpy/_core/_methods.py:144: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/usr/local/lib/python3.11/dist-packages/numpy/_core/_methods.py:222: RuntimeWarning: Degrees of freedom <= 0 for slice
+  ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/usr/local/lib/python3.11/dist-packages/numpy/_core/_methods.py:180: RuntimeWarning: invalid value encountered in divide
+  arrmean = um.true_divide(arrmean, div, out=arrmean,
+/usr/local/lib/python3.11/dist-packages/numpy/_core/_methods.py:214: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+    Performance:         nan ±   nan
+    Efficiency:          nan ±   nan perf/W
+    Power:               nan ±   nan W
+    Min Headroom:        nan ±   nan
+  Robustness:
+    Survival Rate:      nan% (0/0)
+
+AdaptiveJAM
+-----------
+  Design Phase:
+    Performance:       47.08 ±  0.00
+    Efficiency:         4.01 ±  0.00 perf/W
+    Power:             11.74 ±  0.00 W
+    Min Headroom:       0.97 ±  0.00
+  Robustness:
+    Survival Rate:     54.0% (27/50)
+
+HybridJAM (λ=1000)
+------------------
+  Design Phase:
+    Performance:         nan ±   nan
+    Efficiency:          nan ±   nan perf/W
+    Power:               nan ±   nan W
+    Min Headroom:        nan ±   nan
+  Robustness:
+    Survival Rate:      nan% (0/0)
+
+
+✓ Visualization saved to: greedy_vs_intrinsic.png
+
+================================================================================
+COMPARISON COMPLETE!
+================================================================================
+✓ All JAM agents use PURE intrinsic optimization (NO external constraints)
+
+Files created:
+  - greedy_vs_intrinsic.png (comprehensive visualization)
+  - greedy_vs_intrinsic_data.json (raw data)
+================================================================================
+
