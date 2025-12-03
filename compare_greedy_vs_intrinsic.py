@@ -55,7 +55,7 @@ class AgentResult:
 
 def run_single_comparison(
     run_id: int,
-    design_steps: int = 25,  # Reduced for faster parameter tuning
+    design_steps: int = 40,  # User requested 40 steps
     adaptation_steps: int = 25,
     shift_type: Optional[ShiftType] = None,
     seed: Optional[int] = None,
@@ -69,12 +69,12 @@ def run_single_comparison(
     base_space = AdvancedDesignSpace(process=ProcessTechnology.create_7nm(), seed=seed)
     base_space.initialize_actions()
 
-    # Final comparison with OPTIMAL JAMAdvanced parameters
-    # λ=10, β=5.0 found through systematic tuning (35.95 perf + 100% survival)
+    # FINAL COMPARISON with optimized JAMAdvanced
+    # Scaling: perf/20, eff/2, headrooms×0.03, λ=5, β=5
     agents = [
         ("IndustryBest", AdvancedGreedyPerformanceAgent()),
         ("JAM", JAMAgent()),
-        ("JAMAdvanced", SoftminJAMAgent(lambda_weight=10.0, beta=5.0)),  # OPTIMAL parameters
+        ("JAMAdvanced", SoftminJAMAgent(lambda_weight=5.0, beta=5.0)),
     ]
 
     spaces = []
@@ -203,7 +203,7 @@ def run_single_comparison(
 
 def run_experiments(
     num_runs: int = 50,
-    design_steps: int = 25,  # Reduced for faster parameter tuning
+    design_steps: int = 40,  # User requested 40 steps
     adaptation_steps: int = 25,
     seed: Optional[int] = None,
     verbose: bool = False,

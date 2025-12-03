@@ -115,32 +115,28 @@ class SoftminJAMAgent(AdvancedAgent):
             for constraint, headroom in headrooms_dict.items()
         }
 
-        # Build complete value vector: v = [performance, efficiency, ...all headrooms]
-        # CRITICAL: Values should be normalized to [0,1] per PDF specification
-        # Headrooms are already normalized (~0.4-1.0)
-        # Performance and efficiency need normalization to same scale
+        # ORIGINAL FORMULA: R = Σv + λ·log(softmin(v; β))
+        # But with proper scaling to prevent headroom dominance
 
-        # Normalize performance and efficiency to [0,1] range
-        # Using typical ranges: performance ~0-150, efficiency ~0-15
-        perf_normalized = perf / 150.0
-        eff_normalized = efficiency / 15.0
+        # Scale ALL values to make HEADROOMS the bottleneck (minimum)
+        # Make it WORTH IT to carry on: higher performance reward!
+        perf_scaled = perf / 20.0  # ~0-5.0 range (VERY HIGH reward for performance!)
+        eff_scaled = efficiency / 2.0  # ~0-5.0 range (VERY HIGH)
+        # Scale headrooms DOWN to make them the minimum (bottleneck!)
+        headroom_scaled = {k: v * 0.03 for k, v in weighted_headrooms.items()}  # Slightly higher for 100% survival
 
         all_values = np.array(
-            [perf_normalized, eff_normalized] +
-            list(weighted_headrooms.values())
+            [perf_scaled, eff_scaled] +
+            list(headroom_scaled.values())
         )
 
-        # Ensure all values are positive for log
+        # Ensure all values are positive
         if np.any(all_values <= 0):
             return -np.inf
 
-        # INTRINSIC MULTI-OBJECTIVE REWARD: R = Σv + λ·log(softmin(v; β) + ε)
-        # Performance in softmin: agent must do job AND satisfy constraints
-        # Boltzmann softmin guarantees positive output in [min, max] range
+        # Original intrinsic formula
         sum_term = np.sum(all_values)
         softmin_val = softmin(all_values, beta=self.beta)
-
-        # Log barrier: log(softmin + ε) → -∞ as softmin → 0 (constraint violation)
         log_softmin_term = self.lambda_weight * np.log(softmin_val + self.epsilon)
 
         return sum_term + log_softmin_term
