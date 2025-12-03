@@ -69,16 +69,17 @@ def run_single_comparison(
     base_space = AdvancedDesignSpace(process=ProcessTechnology.create_7nm(), seed=seed)
     base_space.initialize_actions()
 
-    # Create agents - ALL using pure intrinsic optimization (NO external constraints!)
-    # ULTRA-AGGRESSIVE parameters - λ→0 to match/exceed JAM performance
+    # Create agents - SKIP Greedy/JAM (we have their data already)
+    # Focus on testing SoftminJAM variants to find optimal parameters
     agents = [
-        ("Greedy", AdvancedGreedyPerformanceAgent()),
-        ("JAM (hard min)", JAMAgent()),
-        ("HybridJAM (λ=1)", HybridJAM(lambda_reg=1.0)),  # Low penalty
-        ("SoftminJAM (λ=0.001,β=0.5)", SoftminJAMAgent(lambda_weight=0.001, beta=0.5)),  # Ultra-minimal penalty
-        ("SoftminJAM (λ=0.01,β=0.75)", SoftminJAMAgent(lambda_weight=0.01, beta=0.75)),  # Minimal penalty
-        ("SoftminJAM (λ=0.05,β=1.0)", SoftminJAMAgent(lambda_weight=0.05, beta=1.0)),  # Very light penalty
-        ("SoftminJAM (λ=0.1,β=1.5)", SoftminJAMAgent(lambda_weight=0.1, beta=1.5)),  # Light penalty
+        # Greedy: 93.90 perf, 8.54 eff (baseline - skipped)
+        # JAM: 110.12 perf, 9.62 eff (baseline - skipped)
+        ("HybridJAM (λ=0.5)", HybridJAM(lambda_reg=0.5)),  # Ultra-minimal
+        ("HybridJAM (λ=1)", HybridJAM(lambda_reg=1.0)),  # Minimal
+        ("SoftminJAM (λ=0.001,β=0.5)", SoftminJAMAgent(lambda_weight=0.001, beta=0.5)),
+        ("SoftminJAM (λ=0.01,β=0.75)", SoftminJAMAgent(lambda_weight=0.01, beta=0.75)),
+        ("SoftminJAM (λ=0.05,β=1.0)", SoftminJAMAgent(lambda_weight=0.05, beta=1.0)),
+        ("SoftminJAM (λ=0.1,β=1.5)", SoftminJAMAgent(lambda_weight=0.1, beta=1.5)),
     ]
 
     spaces = []
@@ -220,14 +221,17 @@ def run_experiments(
     print(f"Runs: {num_runs}")
     print(f"Design steps: {design_steps}")
     print(f"Adaptation steps: {adaptation_steps}")
-    print(f"\nAgents being tested:")
-    print(f"  1. Greedy - Maximizes immediate performance gain")
-    print(f"  2. JAM (hard min) - Pure log(min(headroom)) optimization")
-    print(f"  3. HybridJAM (λ=1) - Ultra-aggressive: minimal penalty")
-    print(f"  4. SoftminJAM (λ=0.001,β=0.5) - Ultra-minimal: λ→0 for max performance")
-    print(f"  5. SoftminJAM (λ=0.01,β=0.75) - Minimal: approaching pure sum")
-    print(f"  6. SoftminJAM (λ=0.05,β=1.0) - Very light: should match/exceed JAM")
-    print(f"  7. SoftminJAM (λ=0.1,β=1.5) - Light: smooth optimization advantage")
+    print(f"\nAgents being tested (Greedy/JAM skipped - using baseline data):")
+    print(f"  Baselines (reference only):")
+    print(f"    - Greedy: 93.90 perf, 8.54 eff, 42% survival")
+    print(f"    - JAM (hard min): 110.12 perf, 9.62 eff, 42% survival")
+    print(f"\n  Testing:")
+    print(f"  1. HybridJAM (λ=0.5) - Ultra-minimal penalty")
+    print(f"  2. HybridJAM (λ=1) - Minimal penalty")
+    print(f"  3. SoftminJAM (λ=0.001,β=0.5) - Target: match JAM performance")
+    print(f"  4. SoftminJAM (λ=0.01,β=0.75) - Approaching pure sum")
+    print(f"  5. SoftminJAM (λ=0.05,β=1.0) - Should match/exceed JAM")
+    print(f"  6. SoftminJAM (λ=0.1,β=1.5) - Smooth optimization advantage")
     print(f"\n✓ ALL agents use PURE intrinsic optimization (NO external constraints)")
     print(f"{'='*80}\n")
 
