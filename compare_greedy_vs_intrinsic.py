@@ -69,17 +69,14 @@ def run_single_comparison(
     base_space = AdvancedDesignSpace(process=ProcessTechnology.create_7nm(), seed=seed)
     base_space.initialize_actions()
 
-    # Create agents - SKIP Greedy/JAM (we have their data already)
-    # Focus on testing SoftminJAM variants to find optimal parameters
+    # Final comparison: 3 agents only
+    # 1. IndustryBest (baseline greedy approach)
+    # 2. JAM (logarithmic barrier - hard min)
+    # 3. JAMAdvanced (logarithmic barrier - softmin with efficiency scaling)
     agents = [
-        # Greedy: 93.90 perf, 8.54 eff (baseline - skipped)
-        # JAM: 110.12 perf, 9.62 eff (baseline - skipped)
-        ("HybridJAM (λ=0.5)", HybridJAM(lambda_reg=0.5)),  # Ultra-minimal
-        ("HybridJAM (λ=1)", HybridJAM(lambda_reg=1.0)),  # Minimal
-        ("SoftminJAM (λ=0.001,β=0.5)", SoftminJAMAgent(lambda_weight=0.001, beta=0.5)),
-        ("SoftminJAM (λ=0.01,β=0.75)", SoftminJAMAgent(lambda_weight=0.01, beta=0.75)),
-        ("SoftminJAM (λ=0.05,β=1.0)", SoftminJAMAgent(lambda_weight=0.05, beta=1.0)),
-        ("SoftminJAM (λ=0.1,β=1.5)", SoftminJAMAgent(lambda_weight=0.1, beta=1.5)),
+        ("IndustryBest", AdvancedGreedyPerformanceAgent()),
+        ("JAM", JAMAgent()),
+        ("JAMAdvanced", SoftminJAMAgent(lambda_weight=0.01, beta=0.75)),
     ]
 
     spaces = []
@@ -221,18 +218,12 @@ def run_experiments(
     print(f"Runs: {num_runs}")
     print(f"Design steps: {design_steps}")
     print(f"Adaptation steps: {adaptation_steps}")
-    print(f"\nAgents being tested (Greedy/JAM skipped - using baseline data):")
-    print(f"  Baselines (reference only):")
-    print(f"    - Greedy: 93.90 perf, 8.54 eff, 42% survival")
-    print(f"    - JAM (hard min): 110.12 perf, 9.62 eff, 42% survival")
-    print(f"\n  Testing:")
-    print(f"  1. HybridJAM (λ=0.5) - Ultra-minimal penalty")
-    print(f"  2. HybridJAM (λ=1) - Minimal penalty")
-    print(f"  3. SoftminJAM (λ=0.001,β=0.5) - Target: match JAM performance")
-    print(f"  4. SoftminJAM (λ=0.01,β=0.75) - Approaching pure sum")
-    print(f"  5. SoftminJAM (λ=0.05,β=1.0) - Should match/exceed JAM")
-    print(f"  6. SoftminJAM (λ=0.1,β=1.5) - Smooth optimization advantage")
-    print(f"\n✓ ALL agents use PURE intrinsic optimization (NO external constraints)")
+    print(f"\nFinal Comparison - 3 Agents:")
+    print(f"  1. IndustryBest - Standard greedy performance maximization")
+    print(f"  2. JAM - Logarithmic barrier with hard min (eliminates weight tuning)")
+    print(f"  3. JAMAdvanced - Logarithmic barrier with softmin (smooth optimization)")
+    print(f"\n✓ JAM/JAMAdvanced use PURE intrinsic optimization (NO external constraints)")
+    print(f"✓ Automatic bottleneck focus via log(min/softmin) - no manual weight tuning")
     print(f"{'='*80}\n")
 
     rng = np.random.RandomState(seed)

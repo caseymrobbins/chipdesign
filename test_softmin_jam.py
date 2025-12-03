@@ -117,14 +117,14 @@ class SoftminJAMAgent(AdvancedAgent):
         }
 
         # Build complete value vector: v = [performance, efficiency, ...all headrooms]
-        # Scale performance and efficiency UP to match their importance (they're ~100x bigger naturally)
-        # This prevents headrooms from dominating the softmin
-        PERF_SCALE = 1.0  # Keep natural scale
-        EFF_SCALE = 10.0   # Boost efficiency importance
+        # KEY INSIGHT: Headrooms (~0.4-1.0) dominate softmin compared to performance (~100)
+        # Solution: Scale headrooms DOWN to same magnitude as performance/efficiency
+        # This allows performance to compete fairly in the softmin
+        HEADROOM_SCALE = 0.01  # Scale headrooms from ~1.0 to ~0.01 (same magnitude as performance/100)
 
         all_values = np.array(
-            [perf * PERF_SCALE, efficiency * EFF_SCALE] +
-            list(weighted_headrooms.values())
+            [perf, efficiency] +
+            [h * HEADROOM_SCALE for h in weighted_headrooms.values()]
         )
 
         # Ensure all values are positive for log
