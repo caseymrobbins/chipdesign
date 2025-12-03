@@ -1292,29 +1292,25 @@ class HybridJAM(AdvancedAgent):
             # NO feasibility check - pure intrinsic optimization!
             # log(min(v)) → -∞ naturally handles infeasible states
 
-            # Get constraint headrooms (all box constraints already included)
+            # Get ALL agency domains: performance, efficiency, constraint headrooms
             headrooms = test_space.get_headrooms(include_performance=False)
-
-            # Get objectives to maximize
             perf = test_space.calculate_performance()
             constraints = test_space.calculate_constraints()
             efficiency = perf / constraints['total_power_w']
 
-            # Build constraint values vector (all "higher is better" headrooms)
-            # These are the values that MUST stay positive (box constraints included)
-            constraint_values = list(headrooms.values())
+            # CRITICAL: Performance MUST be in min() to prevent paralyzed agent!
+            # If performance outside, agent might do nothing to protect constraints
+            # v = [performance, efficiency, ...all constraint headrooms]
+            # All are "agency domains" that must stay positive
+            all_values = [perf, efficiency] + list(headrooms.values())
 
-            # INTRINSIC MULTI-OBJECTIVE REWARD:
-            # R = objectives + Σ(constraints) + λ·log(min(constraints))
-            # - Objectives: performance, efficiency (maximize)
-            # - Constraints: all headrooms (must stay positive)
-            # - Log term: ONLY on constraints (prevents violation)
-            objectives_sum = perf + efficiency
-            constraints_sum = sum(constraint_values)
-            min_constraint = min(constraint_values)
-            log_min_term = self.lambda_reg * np.log(max(min_constraint, self.epsilon))
+            # INTRINSIC MULTI-OBJECTIVE REWARD: R = Σv + λ·log(min(v))
+            # Performance inside min(): "not doing job" = catastrophe
+            sum_term = sum(all_values)
+            min_value = min(all_values)
+            log_min_term = self.lambda_reg * np.log(max(min_value, self.epsilon))
 
-            reward = objectives_sum + constraints_sum + log_min_term
+            reward = sum_term + log_min_term
 
             # Select action with highest intrinsic reward
             if reward > best_reward:

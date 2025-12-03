@@ -89,12 +89,16 @@ class SoftminJAMAgent(AdvancedAgent):
         """
         Calculate the intrinsic objective function.
 
-        R = objectives + Σ(constraints) + λ·log(softmin(constraints; β) + ε)
+        R = Σv + λ·log(softmin(v; β) + ε)
 
-        Objectives: performance, efficiency (maximize)
-        Constraints: all headrooms (must stay positive, box constraints included)
+        CRITICAL: v includes EVERYTHING (all agency domains):
+        - Performance: must do the job (prevents paralyzed agent)
+        - Efficiency: must be efficient
+        - Constraints: must satisfy all constraints
+
+        All are treated as agency domains in softmin - doing nothing → perf=0 → log(0) → -∞
         """
-        # Get objectives to maximize
+        # Get ALL agency domains
         perf = self.design_space.calculate_performance()
         constraints = self.design_space.calculate_constraints()
         efficiency = perf / constraints['total_power_w']
@@ -106,23 +110,21 @@ class SoftminJAMAgent(AdvancedAgent):
             for constraint, headroom in headrooms_dict.items()
         }
 
-        # Build constraint values vector (all "higher is better" headrooms)
-        constraint_values = np.array(list(weighted_headrooms.values()))
+        # Build complete value vector: v = [performance, efficiency, ...all headrooms]
+        # ALL agency domains go in softmin - performance is survival requirement!
+        all_values = np.array([perf, efficiency] + list(weighted_headrooms.values()))
 
-        # Ensure all constraints are positive for log
-        if np.any(constraint_values <= 0):
+        # Ensure all values are positive for log
+        if np.any(all_values <= 0):
             return -np.inf
 
-        # INTRINSIC MULTI-OBJECTIVE REWARD:
-        # R = objectives + Σ(constraints) + λ·log(softmin(constraints; β))
-        # - Objectives in sum (performance, efficiency)
-        # - Constraints in sum AND softmin (prevents violations)
-        objectives_sum = perf + efficiency
-        constraints_sum = np.sum(constraint_values)
-        softmin_val = softmin(constraint_values, beta=self.beta)
+        # INTRINSIC MULTI-OBJECTIVE REWARD: R = Σv + λ·log(softmin(v; β))
+        # Performance in softmin: agent must do job AND satisfy constraints
+        sum_term = np.sum(all_values)
+        softmin_val = softmin(all_values, beta=self.beta)
         log_softmin_term = self.lambda_weight * np.log(softmin_val + self.epsilon)
 
-        return objectives_sum + constraints_sum + log_softmin_term
+        return sum_term + log_softmin_term
 
     def select_action(self) -> Optional[DesignAction]:
         """Select action that maximizes intrinsic objective - pure optimization, no thresholds"""
