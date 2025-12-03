@@ -1134,6 +1134,8 @@ class JAMAgent(AdvancedAgent):
         if not self.design_space:
             return None
 
+        current_min_headroom = self.design_space.get_min_headroom()
+
         best_action = None
         best_score = -float('inf')
         best_performance = -float('inf')
@@ -1151,9 +1153,17 @@ class JAMAgent(AdvancedAgent):
             margin_score = np.log(max(min_headroom, self.epsilon))
             perf = test_space.calculate_performance()
 
-            # Select based on margin_score, with performance as tiebreaker
-            if margin_score > best_score or (abs(margin_score - best_score) < 1e-9 and perf > best_performance):
-                best_score = margin_score
+            # If starting headroom is very low (<5), prioritize ANY improvement
+            if current_min_headroom < 5.0:
+                # Early game: accept any action that doesn't make things worse
+                combined_score = margin_score * 0.3 + perf * 0.7  # Bias toward performance
+            else:
+                # Normal game: optimize margins
+                combined_score = margin_score
+
+            # Select based on combined score
+            if combined_score > best_score or (abs(combined_score - best_score) < 1e-9 and perf > best_performance):
+                best_score = combined_score
                 best_performance = perf
                 best_action = action
 
