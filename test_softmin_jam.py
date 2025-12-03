@@ -27,37 +27,36 @@ from dataclasses import asdict
 import json
 
 
-def softmin(values: np.ndarray, beta: float = 1.0) -> float:
+def softmin(values: np.ndarray, beta: float = 10.0) -> float:
     """
-    Compute smooth softmin approximation with numerical stability.
+    Computes the Boltzmann Softmin (Weighted Average).
+    Unlike the PDF's LogSumExp formula, this guarantees the output
+    is within the range of the inputs [0,1], allowing the subsequent
+    log() operation in the reward function to work correctly.
 
-    softmin(v; β) = Σ_i v_i * exp(-β * v_i) / Σ_i exp(-β * v_i)
-
-    As β → ∞, this approaches min(values)
-    As β → 0, this approaches mean(values)
+    Formula: Σ (v * e^-βv) / Σ (e^-βv)
 
     Args:
-        values: Array of values
+        values: Array of normalized metric values v ∈ [0,1]
         beta: Temperature parameter (higher = closer to hard min)
 
     Returns:
-        Smooth minimum approximation
+        Smooth minimum approximation (guaranteed to be in range of values)
     """
-    # Normalize to avoid numerical overflow by shifting to make min = 0
-    # This way exp(-beta * 0) = 1 for min, and exp(-beta * positive) < 1 for others
-    v_shifted = values - np.min(values)
+    # Numerical stability shift (prevents overflow)
+    v_min = np.min(values)
+    # We use v_min to shift the exponents.
+    # This keeps the largest weight (corresponding to the min value) near 1.
+    exponents = -beta * (values - v_min)
 
-    # Clip to prevent overflow even with high beta
-    exponents = -beta * v_shifted
-    exponents = np.clip(exponents, -700, 700)  # exp(700) is near float64 max
+    # Clip exponents to avoid float overflow
+    exponents = np.clip(exponents, -700, 700)
 
     weights = np.exp(exponents)
-    weights_sum = np.sum(weights)
+    numerator = np.sum(values * weights)
+    denominator = np.sum(weights)
 
-    # Weighted average
-    result = np.sum(values * weights) / weights_sum
-
-    return result
+    return numerator / denominator
 
 
 class SoftminJAMAgent(AdvancedAgent):
@@ -117,24 +116,31 @@ class SoftminJAMAgent(AdvancedAgent):
         }
 
         # Build complete value vector: v = [performance, efficiency, ...all headrooms]
-        # KEY INSIGHT: Headrooms (~0.4-1.0) dominate softmin compared to performance (~100)
-        # Solution: Scale headrooms DOWN to same magnitude as performance/efficiency
-        # This allows performance to compete fairly in the softmin
-        HEADROOM_SCALE = 0.01  # Scale headrooms from ~1.0 to ~0.01 (same magnitude as performance/100)
+        # CRITICAL: Values should be normalized to [0,1] per PDF specification
+        # Headrooms are already normalized (~0.4-1.0)
+        # Performance and efficiency need normalization to same scale
+
+        # Normalize performance and efficiency to [0,1] range
+        # Using typical ranges: performance ~0-150, efficiency ~0-15
+        perf_normalized = perf / 150.0
+        eff_normalized = efficiency / 15.0
 
         all_values = np.array(
-            [perf, efficiency] +
-            [h * HEADROOM_SCALE for h in weighted_headrooms.values()]
+            [perf_normalized, eff_normalized] +
+            list(weighted_headrooms.values())
         )
 
         # Ensure all values are positive for log
         if np.any(all_values <= 0):
             return -np.inf
 
-        # INTRINSIC MULTI-OBJECTIVE REWARD: R = Σv + λ·log(softmin(v; β))
+        # INTRINSIC MULTI-OBJECTIVE REWARD: R = Σv + λ·log(softmin(v; β) + ε)
         # Performance in softmin: agent must do job AND satisfy constraints
+        # Boltzmann softmin guarantees positive output in [min, max] range
         sum_term = np.sum(all_values)
         softmin_val = softmin(all_values, beta=self.beta)
+
+        # Log barrier: log(softmin + ε) → -∞ as softmin → 0 (constraint violation)
         log_softmin_term = self.lambda_weight * np.log(softmin_val + self.epsilon)
 
         return sum_term + log_softmin_term

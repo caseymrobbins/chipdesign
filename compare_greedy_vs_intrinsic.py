@@ -72,11 +72,12 @@ def run_single_comparison(
     # Final comparison: 3 agents only
     # 1. IndustryBest (baseline greedy approach)
     # 2. JAM (logarithmic barrier - hard min)
-    # 3. JAMAdvanced (logarithmic barrier - softmin with efficiency scaling)
+    # 3. JAMAdvanced (logarithmic barrier - softmin with corrected LogSumExp formula)
+    #    Testing λ=50, β=10.0 (more conservative, higher survival)
     agents = [
         ("IndustryBest", AdvancedGreedyPerformanceAgent()),
         ("JAM", JAMAgent()),
-        ("JAMAdvanced", SoftminJAMAgent(lambda_weight=0.01, beta=0.75)),
+        ("JAMAdvanced", SoftminJAMAgent(lambda_weight=50.0, beta=10.0)),
     ]
 
     spaces = []
