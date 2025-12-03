@@ -22,3 +22,4 @@ Agents being tested (Greedy/JAM skipped - using baseline data):
 ✓ ALL agents use PURE intrinsic optimization (NO external constraints)
 ================================================================================
 
+Completed 10/50 runs...
