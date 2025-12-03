@@ -90,7 +90,14 @@ class SoftminJAMAgent(AdvancedAgent):
         Calculate the intrinsic objective function.
 
         R = Σv + λ·log(softmin(v; β) + ε)
+
+        where v = [performance, efficiency, ...headrooms]
         """
+        # Get performance and efficiency
+        perf = self.design_space.calculate_performance()
+        constraints = self.design_space.calculate_constraints()
+        efficiency = perf / constraints['total_power_w']
+
         # Get weighted headrooms
         weights = self.design_space.limits.constraint_weights
         weighted_headrooms = {
@@ -98,15 +105,16 @@ class SoftminJAMAgent(AdvancedAgent):
             for constraint, headroom in headrooms_dict.items()
         }
 
-        headroom_values = np.array(list(weighted_headrooms.values()))
+        # Build complete value vector: v = [performance, efficiency, ...headrooms]
+        all_values = np.array([perf, efficiency] + list(weighted_headrooms.values()))
 
-        # Ensure all headrooms are positive for log
-        if np.any(headroom_values <= 0):
+        # Ensure all values are positive for log
+        if np.any(all_values <= 0):
             return -np.inf
 
         # INTRINSIC MULTI-OBJECTIVE REWARD: R = Σv + λ·log(softmin(v; β))
-        sum_term = np.sum(headroom_values)
-        softmin_val = softmin(headroom_values, beta=self.beta)
+        sum_term = np.sum(all_values)
+        softmin_val = softmin(all_values, beta=self.beta)
         log_softmin_term = self.lambda_weight * np.log(softmin_val + self.epsilon)
 
         return sum_term + log_softmin_term
