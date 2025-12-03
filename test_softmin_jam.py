@@ -118,28 +118,24 @@ class SoftminJAMAgent(AdvancedAgent):
         # ORIGINAL FORMULA: R = Σv + λ·log(softmin(v; β))
         # But with proper scaling to prevent headroom dominance
 
-        # Scale ALL values to make HEADROOMS the bottleneck (minimum)
-        # Make it WORTH IT to carry on: higher performance reward!
-        perf_scaled = perf / 20.0  # ~0-5.0 range (VERY HIGH reward for performance!)
-        eff_scaled = efficiency / 2.0  # ~0-5.0 range (VERY HIGH)
-        # Scale headrooms DOWN to make them the minimum (bottleneck!)
-        headroom_scaled = {k: v * 0.03 for k, v in weighted_headrooms.items()}  # Slightly higher for 100% survival
+        # CORRECTED FORMULA: R = Σ(constraints) + λ·log(softmin(performance_metrics))
+        # softmin ONLY contains performance priorities - NO constraints!
 
-        all_values = np.array(
-            [perf_scaled, eff_scaled] +
-            list(headroom_scaled.values())
-        )
+        # SIMPLIFIED: Maximize PERFORMANCE directly + log barrier on constraints
+        # R = performance + λ·log(min_headroom)
 
-        # Ensure all values are positive
-        if np.any(all_values <= 0):
+        # Minimum headroom for log barrier (constraint enforcement)
+        min_headroom = min(weighted_headrooms.values())
+
+        # Ensure positive
+        if perf <= 0 or min_headroom <= 0:
             return -np.inf
 
-        # Original intrinsic formula
-        sum_term = np.sum(all_values)
-        softmin_val = softmin(all_values, beta=self.beta)
-        log_softmin_term = self.lambda_weight * np.log(softmin_val + self.epsilon)
+        # Direct performance maximization with constraint barrier
+        performance_term = perf
+        constraint_term = self.lambda_weight * np.log(min_headroom + self.epsilon)
 
-        return sum_term + log_softmin_term
+        return performance_term + constraint_term
 
     def select_action(self) -> Optional[DesignAction]:
         """Select action that maximizes intrinsic objective - pure optimization, no thresholds"""

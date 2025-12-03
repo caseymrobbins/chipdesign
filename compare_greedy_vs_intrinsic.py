@@ -69,12 +69,12 @@ def run_single_comparison(
     base_space = AdvancedDesignSpace(process=ProcessTechnology.create_7nm(), seed=seed)
     base_space.initialize_actions()
 
-    # FINAL COMPARISON with optimized JAMAdvanced
-    # Scaling: perf/20, eff/2, headrooms×0.03, λ=5, β=5
+    # FINAL TEST: JAMAdvanced with priority bottlenecks
+    # Goal: Match/beat Greedy within 5 steps of any performance gain
     agents = [
         ("IndustryBest", AdvancedGreedyPerformanceAgent()),
         ("JAM", JAMAgent()),
-        ("JAMAdvanced", SoftminJAMAgent(lambda_weight=5.0, beta=5.0)),
+        ("JAMAdvanced", SoftminJAMAgent(lambda_weight=0.1, beta=5.0)),  # Minimal barrier
     ]
 
     spaces = []
