@@ -1,0 +1,119 @@
+================================================================================
+AGGRESSIVE ROBUSTNESS TUNING
+================================================================================
+Target: 10% performance reduction (107.25 → ~96.5)
+Method: High λ values to force conservative designs
+================================================================================
+
+================================================================================
+Testing λ=20.0
+================================================================================
+
+ Design Metrics:
+  Performance:  107.09
+  Power:       10.92W
+  Frequency:   0.00GHz
+  Min Headroom: 0.4779
+
+ Testing power tolerance...
+
+ Robustness:
+  Power Tolerance:  10%
+  Perf Tolerance:   40%
+
+ Performance reduction: 0.2% (target: ~10%)
+
+================================================================================
+Testing λ=50.0
+================================================================================
+
+ Design Metrics:
+  Performance:  107.09
+  Power:       10.92W
+  Frequency:   0.00GHz
+  Min Headroom: 0.4779
+
+ Testing power tolerance...
+
+ Robustness:
+  Power Tolerance:  10%
+  Perf Tolerance:   40%
+
+ Performance reduction: 0.2% (target: ~10%)
+
+================================================================================
+Testing λ=100.0
+================================================================================
+
+ Design Metrics:
+  Performance:  107.09
+  Power:       10.92W
+  Frequency:   0.00GHz
+  Min Headroom: 0.4779
+
+ Testing power tolerance...
+
+ Robustness:
+  Power Tolerance:  10%
+  Perf Tolerance:   40%
+
+ Performance reduction: 0.2% (target: ~10%)
+
+================================================================================
+Testing λ=200.0
+================================================================================
+
+ Design Metrics:
+  Performance:  105.27
+  Power:       10.09W
+  Frequency:   0.00GHz
+  Min Headroom: 0.4948
+
+ Testing power tolerance...
+
+ Robustness:
+  Power Tolerance:  20%
+  Perf Tolerance:   40%
+
+ Performance reduction: 1.8% (target: ~10%)
+
+================================================================================
+Testing λ=500.0
+================================================================================
+
+ Design Metrics:
+  Performance:  111.62
+  Power:       10.47W
+  Frequency:   0.00GHz
+  Min Headroom: 0.4858
+
+ Testing power tolerance...
+
+ Robustness:
+  Power Tolerance:  15%
+  Perf Tolerance:   35%
+
+ Performance reduction: -4.1% (target: ~10%)
+
+================================================================================
+RESULTS SUMMARY
+================================================================================
+     λ |   Perf |     Δ% |  Power |   Freq |  Headroom |  PwrTol |  PerfTol
+--------------------------------------------------------------------------------
+    20 | 107.09 |  -0.2% |  10.92W |   0.00 |    0.4779 |     10% |      40%
+    50 | 107.09 |  -0.2% |  10.92W |   0.00 |    0.4779 |     10% |      40%
+   100 | 107.09 |  -0.2% |  10.92W |   0.00 |    0.4779 |     10% |      40%
+   200 | 105.27 |  -1.8% |  10.09W |   0.00 |    0.4948 |     20% |      40%
+   500 | 111.62 |  +4.1% |  10.47W |   0.00 |    0.4858 |     15% |      35%
+
+================================================================================
+RECOMMENDATION FOR 10% REDUCTION
+================================================================================
+Best match: λ=200.0
+  Performance:      105.27 (-1.8%)
+  Power:           10.09W
+  Frequency:       0.00GHz
+  Min Headroom:    0.4948
+  Power Tolerance:  20%
+  Perf Tolerance:   40%
+================================================================================

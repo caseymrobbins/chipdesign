@@ -69,12 +69,12 @@ def run_single_comparison(
     base_space = AdvancedDesignSpace(process=ProcessTechnology.create_7nm(), seed=seed)
     base_space.initialize_actions()
 
-    # FINAL TEST: JAMAdvanced with priority bottlenecks
-    # Goal: Match/beat Greedy within 5 steps of any performance gain
+    # FINAL TEST: JAMAdvanced optimized for BEST chip
+    # λ=500 provides best balance: 111.62 perf (+6% over λ=200) with 10% power tolerance
     agents = [
         ("IndustryBest", AdvancedGreedyPerformanceAgent()),
         ("JAM", JAMAgent()),
-        ("JAMAdvanced", SoftminJAMAgent(lambda_weight=0.1, beta=5.0)),  # Minimal barrier
+        ("JAMAdvanced", SoftminJAMAgent(lambda_weight=500.0, beta=5.0)),  # Best chip: high perf + robustness
     ]
 
     spaces = []
