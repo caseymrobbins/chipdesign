@@ -14,7 +14,7 @@ from test_softmin_jam import SoftminJAMAgent, JamRobustAgent
 print("Generating performance trajectories...")
 
 # Run agents and track performance over time
-def track_agent_performance(agent_class, agent_kwargs, name, steps=50, seed=42):
+def track_agent_performance(agent_class, agent_kwargs, name, steps=100, seed=42):
     """Track performance at each design step"""
     space = AdvancedDesignSpace(process=ProcessTechnology.create_7nm(), seed=seed)
     space.initialize_actions()
@@ -34,17 +34,8 @@ def track_agent_performance(agent_class, agent_kwargs, name, steps=50, seed=42):
     return trajectory
 
 # Generate trajectories
-print("  Running IndustryBest...")
-industry_traj = track_agent_performance(AdvancedGreedyPerformanceAgent, {}, "IndustryBest")
-
-print("  Running JAM...")
+print("  Running JAM (100 steps)...")
 jam_traj = track_agent_performance(JAMAgent, {}, "JAM")
-
-print("  Running JAMAdvanced (λ=500)...")
-jamadv_traj = track_agent_performance(SoftminJAMAgent, {"lambda_weight": 500.0, "beta": 5.0}, "JAMAdvanced")
-
-print("  Running JamRobust (λ=200)...")
-jamrobust_traj = track_agent_performance(JamRobustAgent, {"lambda_weight": 200.0, "beta": 5.0}, "JamRobust")
 
 print("\nCreating 2-page report...")
 
@@ -71,8 +62,8 @@ robustness = {
     'JamRobust': {'power': 20, 'performance': 25, 'area': 0, 'thermal': 50},  # Estimated
 }
 
-colors = {'IndustryBest': '#ff7f0e', 'JAM': '#2ca02c', 'JAMAdvanced': '#1f77b4', 'JamRobust': '#9467bd'}
-agent_order = ['IndustryBest', 'JAM', 'JAMAdvanced', 'JamRobust']
+colors = {'JAM': '#2ca02c'}
+agent_order = ['JAM']
 
 # Create PDF with 2 pages
 with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
@@ -87,74 +78,62 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
 
     # Performance Over Time (NEW!)
     ax1 = fig1.add_subplot(gs1[0:3, :])
-    ax1.set_title('Performance Trajectory: Who Designed Better Over Time?',
+    ax1.set_title('JAM Performance Trajectory: 100 Steps',
                   fontweight='bold', fontsize=10.2, pad=8.5)
     ax1.set_xlabel('Design Step', fontsize=8.5)
     ax1.set_ylabel('Performance Score', fontsize=8.5)
 
-    steps = range(len(industry_traj))
-    ax1.plot(steps, industry_traj, 'o-', color=colors['IndustryBest'],
-            linewidth=2.5, markersize=3, label='IndustryBest', alpha=0.85)
+    steps = range(len(jam_traj))
     ax1.plot(steps, jam_traj, 's-', color=colors['JAM'],
             linewidth=2.5, markersize=3, label='JAM', alpha=0.85)
-    ax1.plot(steps, jamadv_traj, 'd-', color=colors['JAMAdvanced'],
-            linewidth=2.5, markersize=3, label='JAMAdvanced (λ=500)', alpha=0.85)
-    ax1.plot(steps, jamrobust_traj, '^-', color=colors['JamRobust'],
-            linewidth=2.5, markersize=3, label='JamRobust (λ=200)', alpha=0.85)
 
-    # Annotate final values
-    ax1.text(len(steps)-1, industry_traj[-1] + 2, f'{industry_traj[-1]:.1f}',
-            ha='right', va='bottom', fontsize=6.5, color=colors['IndustryBest'], fontweight='bold')
-    ax1.text(len(steps)-1, jam_traj[-1] - 2, f'{jam_traj[-1]:.1f}',
-            ha='right', va='top', fontsize=6.5, color=colors['JAM'], fontweight='bold')
-    ax1.text(len(steps)-1, jamadv_traj[-1] + 2, f'{jamadv_traj[-1]:.1f}',
-            ha='right', va='bottom', fontsize=6.5, color=colors['JAMAdvanced'], fontweight='bold')
-    ax1.text(len(steps)-1, jamrobust_traj[-1] - 2, f'{jamrobust_traj[-1]:.1f}',
-            ha='right', va='top', fontsize=6.5, color=colors['JamRobust'], fontweight='bold')
+    # Annotate peak and final values
+    peak_perf = max(jam_traj)
+    peak_step = jam_traj.index(peak_perf)
+    final_perf = jam_traj[-1]
 
-    ax1.legend(fontsize=7, loc='lower right', framealpha=0.95, ncol=2)
+    ax1.plot(peak_step, peak_perf, 'r*', markersize=15, label=f'Peak: {peak_perf:.1f} @ step {peak_step}')
+    ax1.text(peak_step, peak_perf + 3, f'Peak\n{peak_perf:.1f}',
+            ha='center', va='bottom', fontsize=7, color='red', fontweight='bold')
+    ax1.text(len(steps)-1, final_perf + 2, f'Final\n{final_perf:.1f}',
+            ha='right', va='bottom', fontsize=7, color=colors['JAM'], fontweight='bold')
+
+    ax1.legend(fontsize=8, loc='lower right', framealpha=0.95)
     ax1.grid(alpha=0.3, linewidth=0.5)
     ax1.set_xlim([0, len(steps)-1])
     ax1.tick_params(labelsize=7.65)
 
-    # Final Performance Bar Chart
+    # Final Performance Summary
     ax2 = fig1.add_subplot(gs1[3:5, :])
-    ax2.set_title('Final Performance Comparison', fontweight='bold', fontsize=9.35, pad=6.8)
-    ax2.set_ylabel('Performance Score', fontsize=7.65)
+    ax2.set_title('JAM Performance Summary (100 Steps)', fontweight='bold', fontsize=9.35, pad=6.8)
+    ax2.axis('off')
 
-    perfs = [industry_traj[-1], jam_traj[-1], jamadv_traj[-1], jamrobust_traj[-1]]
-    bars = ax2.bar(agent_order, perfs, color=[colors[name] for name in agent_order],
-                   alpha=0.85, edgecolor='black', linewidth=1.5, width=0.6)
+    summary = f"""
+    Peak Performance:    {peak_perf:.2f} at step {peak_step}
+    Final Performance:   {final_perf:.2f} at step {len(steps)-1}
+    Performance Change:  {final_perf - peak_perf:+.2f} ({((final_perf - peak_perf) / peak_perf * 100):+.1f}%)
 
-    for i, (name, perf) in enumerate(zip(agent_order, perfs)):
-        ax2.text(i, perf + 2, f'{perf:.1f}', ha='center', va='bottom',
-                fontweight='bold', fontsize=7.5)
-        if i > 0:
-            delta = ((perf - perfs[0]) / perfs[0]) * 100
-            color = 'green' if delta > 0 else 'red'
-            sign = '+' if delta > 0 else ''
-            ax2.text(i, perf - 4, f'{sign}{delta:.1f}%', ha='center', va='top',
-                    fontsize=6.5, color=color, fontweight='bold')
+    Still Improving?     {'YES - continues to find gains' if peak_step > 90 else 'NO - peaked at step ' + str(peak_step)}
+    """
 
-    ax2.axhline(y=perfs[0], color='red', linestyle='--', alpha=0.3, linewidth=1)
-    ax2.set_ylim([0, max(perfs) * 1.15])
-    ax2.grid(axis='y', alpha=0.3, linewidth=0.5)
-    ax2.tick_params(labelsize=7.65)
+    ax2.text(0.1, 0.5, summary, transform=ax2.transAxes, fontsize=10,
+            verticalalignment='center', fontfamily='monospace',
+            bbox=dict(boxstyle='round,pad=1', facecolor='#e8f4f8', alpha=0.95,
+                     edgecolor='black', linewidth=1.5))
 
     # Metrics Table
     ax3 = fig1.add_subplot(gs1[5:7, :])
     ax3.axis('off')
 
-    # Get final metrics for all agents
+    # Get final metrics for JAM
     from advanced_chip_simulator import AdvancedDesignSpace, ProcessTechnology, JAMAgent
-    from test_softmin_jam import SoftminJAMAgent, JamRobustAgent
 
     # JAM
     jam_space = AdvancedDesignSpace(process=ProcessTechnology.create_7nm(), seed=42)
     jam_space.initialize_actions()
     jam_agent = JAMAgent()
     jam_agent.initialize(jam_space)
-    for _ in range(50):
+    for _ in range(100):
         jam_agent.step()
     jam_perf = jam_space.calculate_performance()
     jam_constraints = jam_space.calculate_constraints()
@@ -162,101 +141,23 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
     jam_eff = jam_perf / jam_power if jam_power > 0 else 0
     jam_headroom = jam_space.get_min_headroom()
 
-    # JAMAdvanced
-    jamadv_space = AdvancedDesignSpace(process=ProcessTechnology.create_7nm(), seed=42)
-    jamadv_space.initialize_actions()
-    jamadv_agent = SoftminJAMAgent(lambda_weight=500.0, beta=5.0)
-    jamadv_agent.initialize(jamadv_space)
-    for _ in range(50):
-        jamadv_agent.step()
-    jamadv_perf = jamadv_space.calculate_performance()
-    jamadv_constraints = jamadv_space.calculate_constraints()
-    jamadv_power = jamadv_constraints['total_power_w']
-    jamadv_eff = jamadv_perf / jamadv_power if jamadv_power > 0 else 0
-    jamadv_headroom = jamadv_space.get_min_headroom()
+    table_text = f"""┌──────────────────────┬────────────────┐
+│ Metric               │ JAM (100 steps)│
+├──────────────────────┼────────────────┤
+│ Peak Performance     │ {peak_perf:11.2f}   │
+│ Final Performance    │ {jam_perf:11.2f}   │
+│ Power (W)            │ {jam_power:11.2f}   │
+│ Efficiency (perf/W)  │ {jam_eff:11.2f}   │
+│ Min Headroom         │ {jam_headroom:11.3f}   │
+└──────────────────────┴────────────────┘"""
 
-    # JamRobust
-    robust_space = AdvancedDesignSpace(process=ProcessTechnology.create_7nm(), seed=42)
-    robust_space.initialize_actions()
-    robust_agent = JamRobustAgent()
-    robust_agent.initialize(robust_space)
-    for _ in range(50):
-        robust_agent.step()
-    robust_perf = robust_space.calculate_performance()
-    robust_constraints = robust_space.calculate_constraints()
-    robust_power = robust_constraints['total_power_w']
-    robust_eff = robust_perf / robust_power if robust_power > 0 else 0
-    robust_headroom = robust_space.get_min_headroom()
-
-    table_text = f"""┌──────────────┬──────────┬──────────┬──────────────┬──────────────┬────────────┐
-│ Metric       │ Industry │ JAM      │ JAMAdvanced  │ JamRobust    │ Winner     │
-│              │ Best     │          │ (λ=500)      │ (λ=200)      │            │
-├──────────────┼──────────┼──────────┼──────────────┼──────────────┼────────────┤
-│ Performance  │ 93.90    │{jam_perf:7.1f}   │{jamadv_perf:11.1f}   │{robust_perf:11.1f}   │ JAMAdv     │
-│ Power (W)    │ 10.99    │{jam_power:7.2f}   │{jamadv_power:11.2f}   │{robust_power:11.2f}   │ JamRobust  │
-│ Efficiency   │ 8.54     │{jam_eff:7.2f}   │{jamadv_eff:11.2f}   │{robust_eff:11.2f}   │ JAMAdv     │
-│ Min Headroom │ 0.422    │{jam_headroom:7.3f}   │{jamadv_headroom:11.3f}   │{robust_headroom:11.3f}   │ JamRobust  │
-│ Power Tol    │ 5%       │ 5%       │ 10%          │ 20%          │ JamRobust  │
-│ Robustness   │ 41.2%    │ 40.0%    │ 38.8%        │ 40.0%        │ Industry   │
-└──────────────┴──────────┴──────────┴──────────────┴──────────────┴────────────┘"""
-
-    ax3.text(0.05, 0.95, table_text, transform=ax3.transAxes, fontsize=5.8,
+    ax3.text(0.05, 0.95, table_text, transform=ax3.transAxes, fontsize=8,
             verticalalignment='top', fontfamily='monospace',
             bbox=dict(boxstyle='round,pad=0.6', facecolor='#f8f8f8', alpha=0.95,
                      edgecolor='black', linewidth=1))
 
-    # Power & Efficiency
-    ax4 = fig1.add_subplot(gs1[7:9, 0])
-    ax4.set_title('Power (lower=better)', fontweight='bold', fontsize=8.5)
-    ax4.set_ylabel('Watts', fontsize=7.65)
-    powers = [10.99, jam_power, jamadv_power, robust_power]
-    bars = ax4.bar(agent_order, powers, color=[colors[name] for name in agent_order],
-                   alpha=0.85, edgecolor='black', linewidth=1.0, width=0.6)
-    for i, p in enumerate(powers):
-        ax4.text(i, p + 0.2, f'{p:.2f}W', ha='center', va='bottom', fontweight='bold', fontsize=7.65)
-    ax4.axhline(y=12.0, color='red', linestyle='--', alpha=0.4)
-    ax4.set_ylim([0, 12.5])
-    ax4.grid(axis='y', alpha=0.3, linewidth=0.5)
-    ax4.tick_params(labelsize=6.8)
-
-    ax5 = fig1.add_subplot(gs1[7:9, 1])
-    ax5.set_title('Efficiency (higher=better)', fontweight='bold', fontsize=8.5)
-    ax5.set_ylabel('perf/W', fontsize=7.65)
-    effs = [8.54, jam_eff, jamadv_eff, robust_eff]
-    bars = ax5.bar(agent_order, effs, color=[colors[name] for name in agent_order],
-                   alpha=0.85, edgecolor='black', linewidth=1.0, width=0.6)
-    for i, e in enumerate(effs):
-        ax5.text(i, e + 0.2, f'{e:.2f}', ha='center', va='bottom', fontweight='bold', fontsize=7.65)
-    ax5.set_ylim([0, max(effs) * 1.2])
-    ax5.grid(axis='y', alpha=0.3, linewidth=0.5)
-    ax5.tick_params(labelsize=6.8)
-
-    # Robustness
-    ax6 = fig1.add_subplot(gs1[9:12, :])
-    ax6.set_title('Robustness: Graduated Stress Test', fontweight='bold', fontsize=9.35)
-    ax6.set_ylabel('Max Stress Survived (%)', fontsize=7.65)
-
-    stress_types = ['Power\nCuts', 'Thermal\nStress']
-    x = np.arange(len(stress_types))
-    width = 0.2
-
-    for i, name in enumerate(agent_order):
-        values = [robustness[name]['power'], robustness[name]['thermal']]
-        offset = (i - 1.5) * width
-        bars = ax6.bar(x + offset, values, width, label=name, color=colors[name],
-                      alpha=0.85, edgecolor='black', linewidth=1)
-
-        for j, (val, bar) in enumerate(zip(values, bars)):
-            if val > 0:
-                ax6.text(bar.get_x() + bar.get_width()/2, val + 1.5, f'{val}%',
-                        ha='center', va='bottom', fontsize=5.95, fontweight='bold')
-
-    ax6.set_xticks(x)
-    ax6.set_xticklabels(stress_types, fontsize=7.65)
-    ax6.set_ylim([0, 55])
-    ax6.legend(fontsize=6.5, loc='upper right', framealpha=0.95, ncol=2)
-    ax6.grid(axis='y', alpha=0.3, linewidth=0.5)
-    ax6.tick_params(labelsize=6.8)
+    # Skip power/efficiency/robustness charts for now
+    # Just show the trajectory and summary
 
     pdf.savefig(fig1, dpi=300, bbox_inches='tight')
     plt.close(fig1)
@@ -406,15 +307,11 @@ fig_preview.patch.set_facecolor('white')
 gs = GridSpec(1, 1, figure=fig_preview, top=0.98, bottom=0.02, left=0.05, right=0.95)
 ax_prev = fig_preview.add_subplot(gs[0])
 ax_prev.axis('off')
-ax_prev.text(0.5, 0.5, '2-Page Comprehensive Report Generated\n\n' +
+ax_prev.text(0.5, 0.5, 'JAM Extended Run: 100 Steps\n\n' +
             'comprehensive_analysis_2page.pdf\n\n' +
-            'Page 1: Performance trajectory + comparisons\n' +
-            'Page 2: Methodology + analysis\n\n' +
-            f'All 4 Agents Compared:\n' +
-            f'IndustryBest: {industry_traj[-1]:.1f}\n' +
-            f'JAM: {jam_traj[-1]:.1f}\n' +
-            f'JAMAdvanced (λ=500): {jamadv_traj[-1]:.1f}\n' +
-            f'JamRobust (λ=200): {jamrobust_traj[-1]:.1f}',
+            f'Peak: {peak_perf:.2f} @ step {peak_step}\n' +
+            f'Final: {final_perf:.2f}\n' +
+            f'Change: {final_perf - peak_perf:+.2f} ({((final_perf - peak_perf) / peak_perf * 100):+.1f}%)',
             ha='center', va='center', fontsize=14, fontfamily='monospace',
             bbox=dict(boxstyle='round,pad=2', facecolor='lightblue', alpha=0.8))
 plt.savefig('comprehensive_analysis_2page_preview.png', dpi=150, bbox_inches='tight')
@@ -423,5 +320,6 @@ plt.close()
 print("\n✓ 2-page report created:")
 print("  - comprehensive_analysis_2page.pdf (print-ready, 2 pages)")
 print("  - comprehensive_analysis_2page_preview.png (preview)")
-print("\nPage 1: Performance over time + comparisons + robustness")
-print("Page 2: Methodology + why IndustryBest is best + why test is realistic")
+print(f"\nJAM 100 Steps: Peak {peak_perf:.2f} @ step {peak_step}, Final {final_perf:.2f}")
+print("Page 1: JAM Performance trajectory over 100 steps")
+print("Page 2: Methodology")
