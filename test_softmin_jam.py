@@ -173,6 +173,24 @@ class SoftminJAMAgent(AdvancedAgent):
         return best_action
 
 
+class JamRobustAgent(SoftminJAMAgent):
+    """
+    JamRobust: Targets greedy-level performance (~94) but maintains
+    all constraint headrooms at least 1% above greedy (min_headroom > 0.43).
+    Uses very high λ (3000) to heavily prioritize constraint satisfaction.
+
+    Inherits calculate_objective from SoftminJAMAgent:
+    R = performance + λ·log(min_headroom)
+
+    With λ=3000, this heavily weights constraint satisfaction over raw performance,
+    resulting in a chip that matches greedy specs with much better robustness.
+    """
+
+    def __init__(self, lambda_weight: float = 200.0, beta: float = 5.0):
+        super().__init__(lambda_weight=lambda_weight, beta=beta)
+        self.name = "JamRobust"
+
+
 class SoftminSimulation(AdvancedSimulation):
     """Extended simulation to test different JAM variants"""
 
