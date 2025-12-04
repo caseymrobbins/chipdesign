@@ -1,0 +1,25 @@
+{
+  "name": "JamRobust",
+  "design_performance": 105.26939619440445,
+  "design_efficiency": 10.431148431982527,
+  "design_power": 10.091831870749933,
+  "design_min_headroom": 0.9184302623156614,
+  "robustness_breakdown": [
+    {
+      "stress_type": "Power Cuts",
+      "max_tolerance": 15.0
+    },
+    {
+      "stress_type": "Performance Demand",
+      "max_tolerance": 35.0
+    },
+    {
+      "stress_type": "Area Reduction",
+      "max_tolerance": 0
+    },
+    {
+      "stress_type": "Thermal Stress",
+      "max_tolerance": 50.0
+    }
+  ]
+}
