@@ -13,35 +13,40 @@ from test_softmin_jam import SoftminJAMAgent
 
 print("Generating performance trajectories...")
 
-# Run agents and track performance over time
+# Run agents and track performance and frequency over time
 def track_agent_performance(agent_class, agent_kwargs, name, steps=40, seed=42):
-    """Track performance at each design step"""
+    """Track performance and frequency at each design step"""
     space = AdvancedDesignSpace(process=ProcessTechnology.create_7nm(), seed=seed)
     space.initialize_actions()
     agent = agent_class(**agent_kwargs)
     agent.initialize(space)
 
-    trajectory = []
+    perf_trajectory = []
+    freq_trajectory = []
     for step in range(steps):
         perf = space.calculate_performance()
-        trajectory.append(perf)
+        freq = space.params.clock_freq_ghz
+        perf_trajectory.append(perf)
+        freq_trajectory.append(freq)
         agent.step()
 
-    # Final performance
+    # Final performance and frequency
     final_perf = space.calculate_performance()
-    trajectory.append(final_perf)
+    final_freq = space.params.clock_freq_ghz
+    perf_trajectory.append(final_perf)
+    freq_trajectory.append(final_freq)
 
-    return trajectory
+    return perf_trajectory, freq_trajectory
 
 # Generate trajectories
 print("  Running IndustryBest...")
-industry_traj = track_agent_performance(AdvancedGreedyPerformanceAgent, {}, "IndustryBest")
+industry_traj, industry_freq = track_agent_performance(AdvancedGreedyPerformanceAgent, {}, "IndustryBest")
 
 print("  Running JAM...")
-jam_traj = track_agent_performance(JAMAgent, {}, "JAM")
+jam_traj, jam_freq = track_agent_performance(JAMAgent, {}, "JAM")
 
 print("  Running JAMAdvanced (λ=500)...")
-jamadv_traj = track_agent_performance(SoftminJAMAgent, {"lambda_weight": 500.0, "beta": 5.0}, "JAMAdvanced")
+jamadv_traj, jamadv_freq = track_agent_performance(SoftminJAMAgent, {"lambda_weight": 500.0, "beta": 5.0}, "JAMAdvanced")
 
 print("\nCreating 2-page report...")
 
@@ -135,10 +140,11 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
     ax3 = fig1.add_subplot(gs1[5:7, :])
     ax3.axis('off')
 
-    table_text = """┌─────────────────────┬──────────────┬──────────┬─────────────────────┬────────────────┐
+    table_text = f"""┌─────────────────────┬──────────────┬──────────┬─────────────────────┬────────────────┐
 │ Metric              │ IndustryBest │ JAM      │ JAMAdvanced (λ=500) │ Winner         │
 ├─────────────────────┼──────────────┼──────────┼─────────────────────┼────────────────┤
 │ Performance         │ 93.90        │ 109.06   │ 111.62              │ JAMAdvanced    │
+│ Frequency (GHz)     │ {industry_freq[-1]:.2f}        │ {jam_freq[-1]:.2f}     │ {jamadv_freq[-1]:.2f}               │ {'JAMAdvanced' if jamadv_freq[-1] >= max(industry_freq[-1], jam_freq[-1]) else 'JAM' if jam_freq[-1] >= industry_freq[-1] else 'IndustryBest'}    │
 │ Power (W)           │ 10.99        │ 11.37    │ 10.47               │ JAMAdvanced    │
 │ Efficiency (p/W)    │ 8.54         │ 9.59     │ 10.66               │ JAMAdvanced    │
 │ Min Headroom        │ 0.422        │ 0.540    │ 0.486               │ JAM            │
