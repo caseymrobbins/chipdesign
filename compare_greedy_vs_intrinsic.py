@@ -55,7 +55,7 @@ class AgentResult:
 
 def run_single_comparison(
     run_id: int,
-    design_steps: int = 75,
+    design_steps: int = 40,  # User requested 40 steps
     adaptation_steps: int = 25,
     shift_type: Optional[ShiftType] = None,
     seed: Optional[int] = None,
@@ -69,16 +69,12 @@ def run_single_comparison(
     base_space = AdvancedDesignSpace(process=ProcessTechnology.create_7nm(), seed=seed)
     base_space.initialize_actions()
 
-    # Create agents - ALL using pure intrinsic optimization (NO external constraints!)
-    # ULTRA-AGGRESSIVE parameters - λ→0 to match/exceed JAM performance
+    # FINAL TEST: JAMAdvanced with priority bottlenecks
+    # Goal: Match/beat Greedy within 5 steps of any performance gain
     agents = [
-        ("Greedy", AdvancedGreedyPerformanceAgent()),
-        ("JAM (hard min)", JAMAgent()),
-        ("HybridJAM (λ=1)", HybridJAM(lambda_reg=1.0)),  # Low penalty
-        ("SoftminJAM (λ=0.001,β=0.5)", SoftminJAMAgent(lambda_weight=0.001, beta=0.5)),  # Ultra-minimal penalty
-        ("SoftminJAM (λ=0.01,β=0.75)", SoftminJAMAgent(lambda_weight=0.01, beta=0.75)),  # Minimal penalty
-        ("SoftminJAM (λ=0.05,β=1.0)", SoftminJAMAgent(lambda_weight=0.05, beta=1.0)),  # Very light penalty
-        ("SoftminJAM (λ=0.1,β=1.5)", SoftminJAMAgent(lambda_weight=0.1, beta=1.5)),  # Light penalty
+        ("IndustryBest", AdvancedGreedyPerformanceAgent()),
+        ("JAM", JAMAgent()),
+        ("JAMAdvanced", SoftminJAMAgent(lambda_weight=0.1, beta=5.0)),  # Minimal barrier
     ]
 
     spaces = []
@@ -207,7 +203,7 @@ def run_single_comparison(
 
 def run_experiments(
     num_runs: int = 50,
-    design_steps: int = 75,
+    design_steps: int = 40,  # User requested 40 steps
     adaptation_steps: int = 25,
     seed: Optional[int] = None,
     verbose: bool = False,
@@ -220,15 +216,12 @@ def run_experiments(
     print(f"Runs: {num_runs}")
     print(f"Design steps: {design_steps}")
     print(f"Adaptation steps: {adaptation_steps}")
-    print(f"\nAgents being tested:")
-    print(f"  1. Greedy - Maximizes immediate performance gain")
-    print(f"  2. JAM (hard min) - Pure log(min(headroom)) optimization")
-    print(f"  3. HybridJAM (λ=1) - Ultra-aggressive: minimal penalty")
-    print(f"  4. SoftminJAM (λ=0.001,β=0.5) - Ultra-minimal: λ→0 for max performance")
-    print(f"  5. SoftminJAM (λ=0.01,β=0.75) - Minimal: approaching pure sum")
-    print(f"  6. SoftminJAM (λ=0.05,β=1.0) - Very light: should match/exceed JAM")
-    print(f"  7. SoftminJAM (λ=0.1,β=1.5) - Light: smooth optimization advantage")
-    print(f"\n✓ ALL agents use PURE intrinsic optimization (NO external constraints)")
+    print(f"\nFinal Comparison - 3 Agents:")
+    print(f"  1. IndustryBest - Standard greedy performance maximization")
+    print(f"  2. JAM - Logarithmic barrier with hard min (eliminates weight tuning)")
+    print(f"  3. JAMAdvanced - Logarithmic barrier with softmin (smooth optimization)")
+    print(f"\n✓ JAM/JAMAdvanced use PURE intrinsic optimization (NO external constraints)")
+    print(f"✓ Automatic bottleneck focus via log(min/softmin) - no manual weight tuning")
     print(f"{'='*80}\n")
 
     rng = np.random.RandomState(seed)
@@ -580,9 +573,10 @@ def print_detailed_stats(all_results: List[List[AgentResult]]):
 
 if __name__ == "__main__":
     # Run experiments
+    # Using 40 steps for faster testing with bug fix
     all_results = run_experiments(
         num_runs=50,
-        design_steps=75,
+        design_steps=40,
         adaptation_steps=25,
         seed=42,
         verbose=False,

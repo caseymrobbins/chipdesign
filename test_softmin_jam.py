@@ -27,37 +27,36 @@ from dataclasses import asdict
 import json
 
 
-def softmin(values: np.ndarray, beta: float = 1.0) -> float:
+def softmin(values: np.ndarray, beta: float = 10.0) -> float:
     """
-    Compute smooth softmin approximation with numerical stability.
+    Computes the Boltzmann Softmin (Weighted Average).
+    Unlike the PDF's LogSumExp formula, this guarantees the output
+    is within the range of the inputs [0,1], allowing the subsequent
+    log() operation in the reward function to work correctly.
 
-    softmin(v; β) = Σ_i v_i * exp(-β * v_i) / Σ_i exp(-β * v_i)
-
-    As β → ∞, this approaches min(values)
-    As β → 0, this approaches mean(values)
+    Formula: Σ (v * e^-βv) / Σ (e^-βv)
 
     Args:
-        values: Array of values
+        values: Array of normalized metric values v ∈ [0,1]
         beta: Temperature parameter (higher = closer to hard min)
 
     Returns:
-        Smooth minimum approximation
+        Smooth minimum approximation (guaranteed to be in range of values)
     """
-    # Normalize to avoid numerical overflow by shifting to make min = 0
-    # This way exp(-beta * 0) = 1 for min, and exp(-beta * positive) < 1 for others
-    v_shifted = values - np.min(values)
+    # Numerical stability shift (prevents overflow)
+    v_min = np.min(values)
+    # We use v_min to shift the exponents.
+    # This keeps the largest weight (corresponding to the min value) near 1.
+    exponents = -beta * (values - v_min)
 
-    # Clip to prevent overflow even with high beta
-    exponents = -beta * v_shifted
-    exponents = np.clip(exponents, -700, 700)  # exp(700) is near float64 max
+    # Clip exponents to avoid float overflow
+    exponents = np.clip(exponents, -700, 700)
 
     weights = np.exp(exponents)
-    weights_sum = np.sum(weights)
+    numerator = np.sum(values * weights)
+    denominator = np.sum(weights)
 
-    # Weighted average
-    result = np.sum(values * weights) / weights_sum
-
-    return result
+    return numerator / denominator
 
 
 class SoftminJAMAgent(AdvancedAgent):
@@ -116,28 +115,27 @@ class SoftminJAMAgent(AdvancedAgent):
             for constraint, headroom in headrooms_dict.items()
         }
 
-        # Build complete value vector: v = [performance, efficiency, ...all headrooms]
-        # Scale performance and efficiency UP to match their importance (they're ~100x bigger naturally)
-        # This prevents headrooms from dominating the softmin
-        PERF_SCALE = 1.0  # Keep natural scale
-        EFF_SCALE = 10.0   # Boost efficiency importance
+        # ORIGINAL FORMULA: R = Σv + λ·log(softmin(v; β))
+        # But with proper scaling to prevent headroom dominance
 
-        all_values = np.array(
-            [perf * PERF_SCALE, efficiency * EFF_SCALE] +
-            list(weighted_headrooms.values())
-        )
+        # CORRECTED FORMULA: R = Σ(constraints) + λ·log(softmin(performance_metrics))
+        # softmin ONLY contains performance priorities - NO constraints!
 
-        # Ensure all values are positive for log
-        if np.any(all_values <= 0):
+        # SIMPLIFIED: Maximize PERFORMANCE directly + log barrier on constraints
+        # R = performance + λ·log(min_headroom)
+
+        # Minimum headroom for log barrier (constraint enforcement)
+        min_headroom = min(weighted_headrooms.values())
+
+        # Ensure positive
+        if perf <= 0 or min_headroom <= 0:
             return -np.inf
 
-        # INTRINSIC MULTI-OBJECTIVE REWARD: R = Σv + λ·log(softmin(v; β))
-        # Performance in softmin: agent must do job AND satisfy constraints
-        sum_term = np.sum(all_values)
-        softmin_val = softmin(all_values, beta=self.beta)
-        log_softmin_term = self.lambda_weight * np.log(softmin_val + self.epsilon)
+        # Direct performance maximization with constraint barrier
+        performance_term = perf
+        constraint_term = self.lambda_weight * np.log(min_headroom + self.epsilon)
 
-        return sum_term + log_softmin_term
+        return performance_term + constraint_term
 
     def select_action(self) -> Optional[DesignAction]:
         """Select action that maximizes intrinsic objective - pure optimization, no thresholds"""
@@ -147,10 +145,17 @@ class SoftminJAMAgent(AdvancedAgent):
         best_action = None
         best_objective = -float('inf')
 
+        # Save original design_space
+        original_space = self.design_space
+
         for action in self.design_space.actions:
             # Simulate applying the action
-            test_space = self.design_space.clone()
+            test_space = original_space.clone()
             test_space.apply_action(action)
+
+            # Temporarily update design_space for objective calculation
+            # (calculate_objective uses self.design_space internally)
+            self.design_space = test_space
 
             # NO feasibility check - pure intrinsic optimization!
             # log(softmin(v)) → -∞ naturally handles infeasible states
@@ -161,6 +166,9 @@ class SoftminJAMAgent(AdvancedAgent):
             if objective_score > best_objective:
                 best_objective = objective_score
                 best_action = action
+
+        # Restore original design_space
+        self.design_space = original_space
 
         return best_action
 

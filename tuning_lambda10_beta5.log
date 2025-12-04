@@ -1,0 +1,91 @@
+
+================================================================================
+GREEDY vs PURE INTRINSIC OPTIMIZATION COMPARISON
+================================================================================
+Runs: 50
+Design steps: 75
+Adaptation steps: 25
+
+Final Comparison - 3 Agents:
+  1. IndustryBest - Standard greedy performance maximization
+  2. JAM - Logarithmic barrier with hard min (eliminates weight tuning)
+  3. JAMAdvanced - Logarithmic barrier with softmin (smooth optimization)
+
+✓ JAM/JAMAdvanced use PURE intrinsic optimization (NO external constraints)
+✓ Automatic bottleneck focus via log(min/softmin) - no manual weight tuning
+================================================================================
+
+Completed 10/50 runs...
+Completed 20/50 runs...
+Completed 30/50 runs...
+Completed 40/50 runs...
+Completed 50/50 runs...
+
+================================================================================
+DETAILED STATISTICS
+================================================================================
+
+Greedy
+------
+  Design Phase:
+/usr/local/lib/python3.11/dist-packages/numpy/_core/fromnumeric.py:3860: RuntimeWarning: Mean of empty slice.
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/usr/local/lib/python3.11/dist-packages/numpy/_core/_methods.py:144: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/usr/local/lib/python3.11/dist-packages/numpy/_core/_methods.py:222: RuntimeWarning: Degrees of freedom <= 0 for slice
+  ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/usr/local/lib/python3.11/dist-packages/numpy/_core/_methods.py:180: RuntimeWarning: invalid value encountered in divide
+  arrmean = um.true_divide(arrmean, div, out=arrmean,
+/usr/local/lib/python3.11/dist-packages/numpy/_core/_methods.py:214: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+    Performance:         nan ±   nan
+    Efficiency:          nan ±   nan perf/W
+    Power:               nan ±   nan W
+    Min Headroom:        nan ±   nan
+  Robustness:
+    Survival Rate:      nan% (0/0)
+
+JAM (pure log-min)
+------------------
+  Design Phase:
+    Performance:         nan ±   nan
+    Efficiency:          nan ±   nan perf/W
+    Power:               nan ±   nan W
+    Min Headroom:        nan ±   nan
+  Robustness:
+    Survival Rate:      nan% (0/0)
+
+AdaptiveJAM
+-----------
+  Design Phase:
+    Performance:         nan ±   nan
+    Efficiency:          nan ±   nan perf/W
+    Power:               nan ±   nan W
+    Min Headroom:        nan ±   nan
+  Robustness:
+    Survival Rate:      nan% (0/0)
+
+HybridJAM (λ=1000)
+------------------
+  Design Phase:
+    Performance:         nan ±   nan
+    Efficiency:          nan ±   nan perf/W
+    Power:               nan ±   nan W
+    Min Headroom:        nan ±   nan
+  Robustness:
+    Survival Rate:      nan% (0/0)
+
+
+⚠ Visualization failed: The number of FixedLocator locations (1), usually from a call to set_ticks, does not match the number of labels (7).
+(Data was saved successfully to JSON)
+
+================================================================================
+COMPARISON COMPLETE!
+================================================================================
+✓ All JAM agents use PURE intrinsic optimization (NO external constraints)
+
+Files created:
+  - greedy_vs_intrinsic.png (comprehensive visualization)
+  - greedy_vs_intrinsic_data.json (raw data)
+================================================================================
+

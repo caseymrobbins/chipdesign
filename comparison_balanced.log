@@ -6,16 +6,22 @@ Runs: 50
 Design steps: 75
 Adaptation steps: 25
 
-Agents being tested:
-  1. Greedy - Maximizes immediate performance gain
-  2. JAM (hard min) - Pure log(min(headroom)) optimization
-  3. HybridJAM (λ=1) - Ultra-aggressive: minimal penalty
-  4. SoftminJAM (λ=0.001,β=0.5) - Ultra-minimal: λ→0 for max performance
-  5. SoftminJAM (λ=0.01,β=0.75) - Minimal: approaching pure sum
-  6. SoftminJAM (λ=0.05,β=1.0) - Very light: should match/exceed JAM
-  7. SoftminJAM (λ=0.1,β=1.5) - Light: smooth optimization advantage
+Agents being tested (Greedy/JAM skipped - using baseline data):
+  Baselines (reference only):
+    - Greedy: 93.90 perf, 8.54 eff, 42% survival
+    - JAM (hard min): 110.12 perf, 9.62 eff, 42% survival
+
+  Testing:
+  1. HybridJAM (λ=0.5) - Ultra-minimal penalty
+  2. HybridJAM (λ=1) - Minimal penalty
+  3. SoftminJAM (λ=0.001,β=0.5) - Target: match JAM performance
+  4. SoftminJAM (λ=0.01,β=0.75) - Approaching pure sum
+  5. SoftminJAM (λ=0.05,β=1.0) - Should match/exceed JAM
+  6. SoftminJAM (λ=0.1,β=1.5) - Smooth optimization advantage
 
 ✓ ALL agents use PURE intrinsic optimization (NO external constraints)
 ================================================================================
 
 Completed 10/50 runs...
+Completed 20/50 runs...
+Completed 30/50 runs...

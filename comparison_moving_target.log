@@ -1,0 +1,20 @@
+
+================================================================================
+GREEDY vs PURE INTRINSIC OPTIMIZATION COMPARISON
+================================================================================
+Runs: 50
+Design steps: 75
+Adaptation steps: 25
+
+Final Comparison - 3 Agents:
+  1. IndustryBest - Standard greedy performance maximization
+  2. JAM - Logarithmic barrier with hard min (eliminates weight tuning)
+  3. JAMAdvanced - Logarithmic barrier with softmin (smooth optimization)
+
+✓ JAM/JAMAdvanced use PURE intrinsic optimization (NO external constraints)
+✓ Automatic bottleneck focus via log(min/softmin) - no manual weight tuning
+================================================================================
+
+Completed 10/50 runs...
+Completed 20/50 runs...
+Completed 30/50 runs...

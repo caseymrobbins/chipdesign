@@ -1,0 +1,1030 @@
+
+================================================================================
+DEBUG: JAM vs JAMAdvanced Performance Plateau
+================================================================================
+Design steps: 10
+Seed: 42
+================================================================================
+
+Testing Parameters:
+  JAM: Standard formula (perf * 0.8 + log(min_headroom) * 0.2)
+  JAMAdvanced: R = perf + λ·log(min_headroom), λ=0.1, β=5.0
+
+
+################################################################################
+DESIGN STEP 0
+################################################################################
+
+================================================================================
+Step 0: JAM
+================================================================================
+Current State:
+  Performance: 39.42
+  Power: 12.02W / 12.00W (100.2%)
+  Area: 38.50mm² / 50.00mm²
+  Min Headroom: -0.0220
+
+Top 5 Actions (by objective):
+  1. balanced_optimization
+     Category: safe
+     Objective: 31.5713
+     → Perf: 40.51 (Δ=+1.09)
+     → Power: 11.98W (Δ=-0.04W)
+     → Min Headroom: 0.0152 (Δ=+0.0372)
+  2. increase_frequency_aggressive
+     Category: performance
+     Objective: -inf
+     → Perf: 34.19 (Δ=-5.23)
+     → Power: 13.07W (Δ=+1.05W)
+     → Min Headroom: -1.0747 (Δ=-1.0527)
+  3. increase_frequency_moderate
+     Category: performance
+     Objective: -inf
+     → Perf: 37.02 (Δ=-2.41)
+     → Power: 12.55W (Δ=+0.53W)
+     → Min Headroom: -0.5483 (Δ=-0.5263)
+  4. increase_frequency_small
+     Category: performance
+     Objective: -inf
+     → Perf: 38.51 (Δ=-0.91)
+     → Power: 12.23W (Δ=+0.21W)
+     → Min Headroom: -0.2325 (Δ=-0.2105)
+  5. increase_frequency_tiny
+     Category: performance
+     Objective: -inf
+     → Perf: 38.97 (Δ=-0.45)
+     → Power: 12.13W (Δ=+0.11W)
+     → Min Headroom: -0.1273 (Δ=-0.1053)
+
+Worst Action (for comparison):
+  thermal_optimization
+  Category: safe
+  Objective: -inf
+  → Perf: 39.60 (Δ=+0.17)
+
+================================================================================
+Step 0: SoftminJAM(λ=0.1,β=5.0)
+================================================================================
+Current State:
+  Performance: 39.42
+  Power: 12.02W / 12.00W (100.2%)
+  Area: 38.50mm² / 50.00mm²
+  Min Headroom: -0.0220
+
+Top 5 Actions (by objective):
+  1. balanced_optimization
+     Category: safe
+     Objective: 40.2999
+     → Perf: 40.51 (Δ=+1.09)
+     → Power: 11.98W (Δ=-0.04W)
+     → Min Headroom: 0.0152 (Δ=+0.0372)
+  2. increase_frequency_aggressive
+     Category: performance
+     Objective: -inf
+     → Perf: 34.19 (Δ=-5.23)
+     → Power: 13.07W (Δ=+1.05W)
+     → Min Headroom: -1.0747 (Δ=-1.0527)
+  3. increase_frequency_moderate
+     Category: performance
+     Objective: -inf
+     → Perf: 37.02 (Δ=-2.41)
+     → Power: 12.55W (Δ=+0.53W)
+     → Min Headroom: -0.5483 (Δ=-0.5263)
+  4. increase_frequency_small
+     Category: performance
+     Objective: -inf
+     → Perf: 38.51 (Δ=-0.91)
+     → Power: 12.23W (Δ=+0.21W)
+     → Min Headroom: -0.2325 (Δ=-0.2105)
+  5. increase_frequency_tiny
+     Category: performance
+     Objective: -inf
+     → Perf: 38.97 (Δ=-0.45)
+     → Power: 12.13W (Δ=+0.11W)
+     → Min Headroom: -0.1273 (Δ=-0.1053)
+
+Worst Action (for comparison):
+  thermal_optimization
+  Category: safe
+  Objective: -inf
+  → Perf: 39.60 (Δ=+0.17)
+
+
+################################################################################
+DESIGN STEP 1
+################################################################################
+
+================================================================================
+Step 1: JAM
+================================================================================
+Current State:
+  Performance: 40.51
+  Power: 11.98W / 12.00W (99.9%)
+  Area: 38.50mm² / 50.00mm²
+  Min Headroom: 0.0152
+
+Top 5 Actions (by objective):
+  1. balanced_optimization
+     Category: safe
+     Objective: 32.7707
+     → Perf: 41.67 (Δ=+1.16)
+     → Power: 11.94W (Δ=-0.04W)
+     → Min Headroom: 0.0582 (Δ=+0.0429)
+  2. increase_l2_cache
+     Category: performance
+     Objective: 32.6242
+     → Perf: 41.83 (Δ=+1.32)
+     → Power: 11.98W (Δ=+0.00W)
+     → Min Headroom: 0.0152 (Δ=+0.0000)
+  3. decrease_voltage
+     Category: efficiency
+     Objective: 32.4957
+     → Perf: 41.20 (Δ=+0.68)
+     → Power: 11.29W (Δ=-0.69W)
+     → Min Headroom: 0.1000 (Δ=+0.0848)
+  4. decrease_voltage_small
+     Category: efficiency
+     Objective: 32.4957
+     → Perf: 41.20 (Δ=+0.68)
+     → Power: 11.52W (Δ=-0.47W)
+     → Min Headroom: 0.1000 (Δ=+0.0848)
+  5. downsize_transistors
+     Category: efficiency
+     Objective: 32.4957
+     → Perf: 41.20 (Δ=+0.68)
+     → Power: 10.44W (Δ=-1.55W)
+     → Min Headroom: 0.1000 (Δ=+0.0848)
+
+Worst Action (for comparison):
+  upsize_transistors
+  Category: performance
+  Objective: -inf
+  → Perf: 25.19 (Δ=-15.32)
+
+================================================================================
+Step 1: SoftminJAM(λ=0.1,β=5.0)
+================================================================================
+Current State:
+  Performance: 40.51
+  Power: 11.98W / 12.00W (99.9%)
+  Area: 38.50mm² / 50.00mm²
+  Min Headroom: 0.0152
+
+Top 5 Actions (by objective):
+  1. increase_l2_cache
+     Category: performance
+     Objective: 41.6159
+     → Perf: 41.83 (Δ=+1.32)
+     → Power: 11.98W (Δ=+0.00W)
+     → Min Headroom: 0.0152 (Δ=+0.0000)
+  2. balanced_optimization
+     Category: safe
+     Objective: 41.5980
+     → Perf: 41.67 (Δ=+1.16)
+     → Power: 11.94W (Δ=-0.04W)
+     → Min Headroom: 0.0582 (Δ=+0.0429)
+  3. downsize_transistors
+     Category: efficiency
+     Objective: 41.1912
+     → Perf: 41.20 (Δ=+0.68)
+     → Power: 10.44W (Δ=-1.55W)
+     → Min Headroom: 0.1000 (Δ=+0.0848)
+  4. decrease_voltage
+     Category: efficiency
+     Objective: 41.1912
+     → Perf: 41.20 (Δ=+0.68)
+     → Power: 11.29W (Δ=-0.69W)
+     → Min Headroom: 0.1000 (Δ=+0.0848)
+  5. decrease_voltage_small
+     Category: efficiency
+     Objective: 41.1912
+     → Perf: 41.20 (Δ=+0.68)
+     → Power: 11.52W (Δ=-0.47W)
+     → Min Headroom: 0.1000 (Δ=+0.0848)
+
+Worst Action (for comparison):
+  upsize_transistors
+  Category: performance
+  Objective: -inf
+  → Perf: 25.19 (Δ=-15.32)
+
+
+################################################################################
+DESIGN STEP 2
+################################################################################
+
+================================================================================
+Step 2: JAM
+================================================================================
+Current State:
+  Performance: 41.67
+  Power: 11.94W / 12.00W (99.5%)
+  Area: 38.50mm² / 50.00mm²
+  Min Headroom: 0.0582
+
+Top 5 Actions (by objective):
+  1. decrease_voltage
+     Category: efficiency
+     Objective: 33.9677
+     → Perf: 42.86 (Δ=+1.19)
+     → Power: 11.25W (Δ=-0.69W)
+     → Min Headroom: 0.2020 (Δ=+0.1438)
+  2. decrease_voltage_small
+     Category: efficiency
+     Objective: 33.9677
+     → Perf: 42.86 (Δ=+1.19)
+     → Power: 11.48W (Δ=-0.46W)
+     → Min Headroom: 0.2020 (Δ=+0.1438)
+  3. downsize_transistors
+     Category: efficiency
+     Objective: 33.9677
+     → Perf: 42.86 (Δ=+1.19)
+     → Power: 10.40W (Δ=-1.54W)
+     → Min Headroom: 0.2020 (Δ=+0.1438)
+  4. increase_clock_gating
+     Category: efficiency
+     Objective: 33.9677
+     → Perf: 42.86 (Δ=+1.19)
+     → Power: 11.52W (Δ=-0.42W)
+     → Min Headroom: 0.2020 (Δ=+0.1438)
+  5. thermal_optimization
+     Category: safe
+     Objective: 33.9677
+     → Perf: 42.86 (Δ=+1.19)
+     → Power: 10.86W (Δ=-1.09W)
+     → Min Headroom: 0.2020 (Δ=+0.1438)
+
+Worst Action (for comparison):
+  upsize_transistors
+  Category: performance
+  Objective: -inf
+  → Perf: 26.10 (Δ=-15.57)
+
+================================================================================
+Step 2: SoftminJAM(λ=0.1,β=5.0)
+================================================================================
+Current State:
+  Performance: 41.20
+  Power: 10.44W / 12.00W (87.0%)
+  Area: 38.12mm² / 50.00mm²
+  Min Headroom: 0.1000
+
+Top 5 Actions (by objective):
+  1. increase_frequency_aggressive
+     Category: performance
+     Objective: 47.9944
+     → Perf: 48.00 (Δ=+6.80)
+     → Power: 11.35W (Δ=+0.91W)
+     → Min Headroom: 0.4022 (Δ=+0.3022)
+  2. increase_frequency_moderate
+     Category: performance
+     Objective: 45.4132
+     → Perf: 45.42 (Δ=+4.22)
+     → Power: 10.90W (Δ=+0.46W)
+     → Min Headroom: 0.3550 (Δ=+0.2550)
+  3. increase_frequency_small
+     Category: performance
+     Objective: 42.8553
+     → Perf: 42.86 (Δ=+1.66)
+     → Power: 10.62W (Δ=+0.18W)
+     → Min Headroom: 0.2020 (Δ=+0.1020)
+  4. balanced_optimization
+     Category: safe
+     Objective: 42.8553
+     → Perf: 42.86 (Δ=+1.66)
+     → Power: 10.40W (Δ=-0.04W)
+     → Min Headroom: 0.2020 (Δ=+0.1020)
+  5. increase_l2_cache
+     Category: performance
+     Objective: 42.5293
+     → Perf: 42.53 (Δ=+1.34)
+     → Power: 10.44W (Δ=+0.00W)
+     → Min Headroom: 0.1000 (Δ=+0.0000)
+
+Worst Action (for comparison):
+  upsize_transistors
+  Category: performance
+  Objective: -inf
+  → Perf: 39.69 (Δ=-1.50)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+DIVERGENCE DETECTED at step 2
+  JAM Performance: 42.92
+  JAMAdvanced Performance: 38.87
+  Difference: 4.04
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+################################################################################
+DESIGN STEP 3
+################################################################################
+
+================================================================================
+Step 3: JAM
+================================================================================
+Current State:
+  Performance: 42.92
+  Power: 11.89W / 12.00W (99.1%)
+  Area: 38.50mm² / 50.00mm²
+  Min Headroom: 0.1070
+
+Top 5 Actions (by objective):
+  1. decrease_voltage
+     Category: efficiency
+     Objective: 35.4360
+     → Perf: 44.59 (Δ=+1.67)
+     → Power: 11.21W (Δ=-0.69W)
+     → Min Headroom: 0.3060 (Δ=+0.1990)
+  2. decrease_voltage_small
+     Category: efficiency
+     Objective: 35.4360
+     → Perf: 44.59 (Δ=+1.67)
+     → Power: 11.43W (Δ=-0.46W)
+     → Min Headroom: 0.3060 (Δ=+0.1990)
+  3. downsize_transistors
+     Category: efficiency
+     Objective: 35.4360
+     → Perf: 44.59 (Δ=+1.67)
+     → Power: 10.36W (Δ=-1.53W)
+     → Min Headroom: 0.3060 (Δ=+0.1990)
+  4. increase_clock_gating
+     Category: efficiency
+     Objective: 35.4360
+     → Perf: 44.59 (Δ=+1.67)
+     → Power: 11.46W (Δ=-0.43W)
+     → Min Headroom: 0.3060 (Δ=+0.1990)
+  5. thermal_optimization
+     Category: safe
+     Objective: 35.4360
+     → Perf: 44.59 (Δ=+1.67)
+     → Power: 10.80W (Δ=-1.09W)
+     → Min Headroom: 0.3060 (Δ=+0.1990)
+
+Worst Action (for comparison):
+  upsize_transistors
+  Category: performance
+  Objective: -inf
+  → Perf: 27.10 (Δ=-15.82)
+
+================================================================================
+Step 3: SoftminJAM(λ=0.1,β=5.0)
+================================================================================
+Current State:
+  Performance: 38.87
+  Power: 10.44W / 12.00W (87.0%)
+  Area: 33.12mm² / 50.00mm²
+  Min Headroom: 0.1000
+
+Top 5 Actions (by objective):
+  1. increase_frequency_aggressive
+     Category: performance
+     Objective: 44.9133
+     → Perf: 44.92 (Δ=+6.04)
+     → Power: 11.35W (Δ=+0.91W)
+     → Min Headroom: 0.3572 (Δ=+0.2572)
+  2. increase_frequency_moderate
+     Category: performance
+     Objective: 42.8546
+     → Perf: 42.86 (Δ=+3.98)
+     → Power: 10.90W (Δ=+0.46W)
+     → Min Headroom: 0.3550 (Δ=+0.2550)
+  3. increase_frequency_small
+     Category: performance
+     Objective: 40.4409
+     → Perf: 40.44 (Δ=+1.57)
+     → Power: 10.62W (Δ=+0.18W)
+     → Min Headroom: 0.2020 (Δ=+0.1020)
+  4. balanced_optimization
+     Category: safe
+     Objective: 40.4409
+     → Perf: 40.44 (Δ=+1.57)
+     → Power: 10.40W (Δ=-0.04W)
+     → Min Headroom: 0.2020 (Δ=+0.1020)
+  5. increase_l2_cache
+     Category: performance
+     Objective: 40.1756
+     → Perf: 40.18 (Δ=+1.31)
+     → Power: 10.44W (Δ=+0.00W)
+     → Min Headroom: 0.1000 (Δ=+0.0000)
+
+Worst Action (for comparison):
+  upsize_transistors
+  Category: performance
+  Objective: -inf
+  → Perf: 37.45 (Δ=-1.42)
+
+
+################################################################################
+DESIGN STEP 4
+################################################################################
+
+================================================================================
+Step 4: JAM
+================================================================================
+Current State:
+  Performance: 44.59
+  Power: 10.36W / 12.00W (86.3%)
+  Area: 38.12mm² / 50.00mm²
+  Min Headroom: 0.3060
+
+Top 5 Actions (by objective):
+  1. increase_frequency_aggressive
+     Category: performance
+     Objective: 39.7869
+     → Perf: 49.96 (Δ=+5.37)
+     → Power: 11.26W (Δ=+0.91W)
+     → Min Headroom: 0.4045 (Δ=+0.0984)
+  2. increase_issue_width
+     Category: trap
+     Objective: 38.3070
+     → Perf: 48.59 (Δ=+4.00)
+     → Power: 11.94W (Δ=+1.58W)
+     → Min Headroom: 0.0592 (Δ=-0.2468)
+  3. increase_frequency_moderate
+     Category: performance
+     Objective: 38.0599
+     → Perf: 47.79 (Δ=+3.20)
+     → Power: 10.81W (Δ=+0.45W)
+     → Min Headroom: 0.4163 (Δ=+0.1103)
+  4. increase_frequency_small
+     Category: performance
+     Objective: 36.9368
+     → Perf: 46.39 (Δ=+1.80)
+     → Power: 10.54W (Δ=+0.18W)
+     → Min Headroom: 0.4122 (Δ=+0.1061)
+  5. balanced_optimization
+     Category: safe
+     Objective: 36.9368
+     → Perf: 46.39 (Δ=+1.80)
+     → Power: 10.31W (Δ=-0.05W)
+     → Min Headroom: 0.4122 (Δ=+0.1061)
+
+Worst Action (for comparison):
+  dvfs_performance_boost
+  Category: trap
+  Objective: -inf
+  → Perf: 37.26 (Δ=-7.33)
+
+================================================================================
+Step 4: SoftminJAM(λ=0.1,β=5.0)
+================================================================================
+Current State:
+  Performance: 36.62
+  Power: 10.44W / 12.00W (87.0%)
+  Area: 28.12mm² / 50.00mm²
+  Min Headroom: 0.1000
+
+Top 5 Actions (by objective):
+  1. increase_frequency_aggressive
+     Category: performance
+     Objective: 41.8265
+     → Perf: 41.83 (Δ=+5.21)
+     → Power: 11.35W (Δ=+0.91W)
+     → Min Headroom: 0.2962 (Δ=+0.1962)
+  2. increase_frequency_moderate
+     Category: performance
+     Objective: 40.0481
+     → Perf: 40.05 (Δ=+3.43)
+     → Power: 10.90W (Δ=+0.46W)
+     → Min Headroom: 0.3125 (Δ=+0.2125)
+  3. increase_frequency_small
+     Category: performance
+     Objective: 38.0951
+     → Perf: 38.10 (Δ=+1.48)
+     → Power: 10.62W (Δ=+0.18W)
+     → Min Headroom: 0.2020 (Δ=+0.1020)
+  4. balanced_optimization
+     Category: safe
+     Objective: 38.0951
+     → Perf: 38.10 (Δ=+1.48)
+     → Power: 10.40W (Δ=-0.04W)
+     → Min Headroom: 0.2020 (Δ=+0.1020)
+  5. increase_l2_cache
+     Category: performance
+     Objective: 37.8879
+     → Perf: 37.89 (Δ=+1.27)
+     → Power: 10.44W (Δ=+0.00W)
+     → Min Headroom: 0.1000 (Δ=+0.0000)
+
+Worst Action (for comparison):
+  upsize_transistors
+  Category: performance
+  Objective: -inf
+  → Perf: 35.28 (Δ=-1.34)
+
+
+################################################################################
+DESIGN STEP 5
+################################################################################
+
+================================================================================
+Step 5: JAM
+================================================================================
+Current State:
+  Performance: 49.96
+  Power: 11.26W / 12.00W (93.9%)
+  Area: 38.12mm² / 50.00mm²
+  Min Headroom: 0.4045
+
+Top 5 Actions (by objective):
+  1. increase_l2_cache
+     Category: performance
+     Objective: 41.2604
+     → Perf: 51.79 (Δ=+1.83)
+     → Power: 11.26W (Δ=+0.00W)
+     → Min Headroom: 0.4260 (Δ=+0.0216)
+  2. balanced_optimization
+     Category: safe
+     Objective: 40.5974
+     → Perf: 50.97 (Δ=+1.01)
+     → Power: 11.21W (Δ=-0.05W)
+     → Min Headroom: 0.4058 (Δ=+0.0014)
+  3. increase_frequency_small
+     Category: performance
+     Objective: 40.5443
+     → Perf: 50.91 (Δ=+0.95)
+     → Power: 11.46W (Δ=+0.20W)
+     → Min Headroom: 0.3992 (Δ=-0.0052)
+  4. increase_frequency_moderate
+     Category: performance
+     Objective: 40.3817
+     → Perf: 50.84 (Δ=+0.88)
+     → Power: 11.76W (Δ=+0.50W)
+     → Min Headroom: 0.2374 (Δ=-0.1670)
+  5. increase_l1_cache
+     Category: performance
+     Objective: 40.2529
+     → Perf: 50.54 (Δ=+0.58)
+     → Power: 11.26W (Δ=+0.00W)
+     → Min Headroom: 0.4120 (Δ=+0.0076)
+
+Worst Action (for comparison):
+  upsize_transistors
+  Category: performance
+  Objective: -inf
+  → Perf: 36.59 (Δ=-13.37)
+
+================================================================================
+Step 5: SoftminJAM(λ=0.1,β=5.0)
+================================================================================
+Current State:
+  Performance: 36.62
+  Power: 9.10W / 12.00W (75.8%)
+  Area: 27.83mm² / 50.00mm²
+  Min Headroom: 0.1000
+
+Top 5 Actions (by objective):
+  1. increase_frequency_aggressive
+     Category: performance
+     Objective: 42.2089
+     → Perf: 42.21 (Δ=+5.59)
+     → Power: 9.89W (Δ=+0.80W)
+     → Min Headroom: 0.3446 (Δ=+0.2446)
+  2. increase_issue_width
+     Category: trap
+     Objective: 41.8472
+     → Perf: 41.85 (Δ=+5.23)
+     → Power: 10.48W (Δ=+1.39W)
+     → Min Headroom: 0.1000 (Δ=+0.0000)
+  3. dvfs_performance_boost
+     Category: trap
+     Objective: 41.0435
+     → Perf: 41.05 (Δ=+4.43)
+     → Power: 11.32W (Δ=+2.22W)
+     → Min Headroom: 0.2933 (Δ=+0.1933)
+  4. increase_frequency_moderate
+     Category: performance
+     Objective: 40.3688
+     → Perf: 40.37 (Δ=+3.75)
+     → Power: 9.49W (Δ=+0.40W)
+     → Min Headroom: 0.3550 (Δ=+0.2550)
+  5. increase_frequency_small
+     Category: performance
+     Objective: 38.0951
+     → Perf: 38.10 (Δ=+1.48)
+     → Power: 9.25W (Δ=+0.16W)
+     → Min Headroom: 0.2020 (Δ=+0.1020)
+
+Worst Action (for comparison):
+  reduce_l3_cache
+  Category: area
+  Objective: -inf
+  → Perf: 19.13 (Δ=-17.49)
+
+
+################################################################################
+DESIGN STEP 6
+################################################################################
+
+================================================================================
+Step 6: JAM
+================================================================================
+Current State:
+  Performance: 51.79
+  Power: 11.26W / 12.00W (93.9%)
+  Area: 41.12mm² / 50.00mm²
+  Min Headroom: 0.4260
+
+Top 5 Actions (by objective):
+  1. increase_l2_cache
+     Category: performance
+     Objective: 42.7194
+     → Perf: 53.60 (Δ=+1.81)
+     → Power: 11.26W (Δ=+0.00W)
+     → Min Headroom: 0.4447 (Δ=+0.0186)
+  2. balanced_optimization
+     Category: safe
+     Objective: 42.0996
+     → Perf: 52.84 (Δ=+1.05)
+     → Power: 11.21W (Δ=-0.05W)
+     → Min Headroom: 0.4273 (Δ=+0.0013)
+  3. increase_frequency_small
+     Category: performance
+     Objective: 42.0490
+     → Perf: 52.78 (Δ=+0.99)
+     → Power: 11.46W (Δ=+0.20W)
+     → Min Headroom: 0.4212 (Δ=-0.0048)
+  4. increase_l1_cache
+     Category: performance
+     Objective: 41.7210
+     → Perf: 52.36 (Δ=+0.57)
+     → Power: 11.26W (Δ=+0.00W)
+     → Min Headroom: 0.4325 (Δ=+0.0065)
+  5. increase_frequency_moderate
+     Category: performance
+     Objective: 41.7029
+     → Perf: 52.49 (Δ=+0.70)
+     → Power: 11.76W (Δ=+0.50W)
+     → Min Headroom: 0.2374 (Δ=-0.1886)
+
+Worst Action (for comparison):
+  upsize_transistors
+  Category: performance
+  Objective: -inf
+  → Perf: 37.77 (Δ=-14.01)
+
+================================================================================
+Step 6: SoftminJAM(λ=0.1,β=5.0)
+================================================================================
+Current State:
+  Performance: 36.62
+  Power: 7.93W / 12.00W (66.1%)
+  Area: 27.56mm² / 50.00mm²
+  Min Headroom: 0.1000
+
+Top 5 Actions (by objective):
+  1. increase_frequency_aggressive
+     Category: performance
+     Objective: 42.5448
+     → Perf: 42.55 (Δ=+5.93)
+     → Power: 8.62W (Δ=+0.69W)
+     → Min Headroom: 0.3872 (Δ=+0.2872)
+  2. increase_issue_width
+     Category: trap
+     Objective: 41.8472
+     → Perf: 41.85 (Δ=+5.23)
+     → Power: 9.13W (Δ=+1.20W)
+     → Min Headroom: 0.1000 (Δ=+0.0000)
+  3. dvfs_performance_boost
+     Category: trap
+     Objective: 41.4216
+     → Perf: 41.43 (Δ=+4.81)
+     → Power: 9.86W (Δ=+1.94W)
+     → Min Headroom: 0.3420 (Δ=+0.2420)
+  4. increase_frequency_moderate
+     Category: performance
+     Objective: 40.3689
+     → Perf: 40.37 (Δ=+3.75)
+     → Power: 8.27W (Δ=+0.35W)
+     → Min Headroom: 0.3550 (Δ=+0.2550)
+  5. increase_frequency_small
+     Category: performance
+     Objective: 38.0951
+     → Perf: 38.10 (Δ=+1.48)
+     → Power: 8.07W (Δ=+0.14W)
+     → Min Headroom: 0.2020 (Δ=+0.1020)
+
+Worst Action (for comparison):
+  reduce_l3_cache
+  Category: area
+  Objective: -inf
+  → Perf: 17.25 (Δ=-19.37)
+
+
+################################################################################
+DESIGN STEP 7
+################################################################################
+
+================================================================================
+Step 7: JAM
+================================================================================
+Current State:
+  Performance: 53.60
+  Power: 11.26W / 12.00W (93.9%)
+  Area: 44.12mm² / 50.00mm²
+  Min Headroom: 0.4447
+
+Top 5 Actions (by objective):
+  1. increase_l2_cache
+     Category: performance
+     Objective: 44.1666
+     → Perf: 55.40 (Δ=+1.80)
+     → Power: 11.26W (Δ=+0.00W)
+     → Min Headroom: 0.4609 (Δ=+0.0163)
+  2. balanced_optimization
+     Category: safe
+     Objective: 43.5871
+     → Perf: 54.69 (Δ=+1.08)
+     → Power: 11.21W (Δ=-0.05W)
+     → Min Headroom: 0.4458 (Δ=+0.0012)
+  3. increase_frequency_small
+     Category: performance
+     Objective: 43.5387
+     → Perf: 54.63 (Δ=+1.03)
+     → Power: 11.46W (Δ=+0.20W)
+     → Min Headroom: 0.4401 (Δ=-0.0045)
+  4. increase_l1_cache
+     Category: performance
+     Objective: 43.1757
+     → Perf: 54.17 (Δ=+0.57)
+     → Power: 11.26W (Δ=+0.00W)
+     → Min Headroom: 0.4503 (Δ=+0.0057)
+  5. increase_frequency_tiny
+     Category: performance
+     Objective: 43.1292
+     → Perf: 54.12 (Δ=+0.51)
+     → Power: 11.36W (Δ=+0.10W)
+     → Min Headroom: 0.4424 (Δ=-0.0023)
+
+Worst Action (for comparison):
+  upsize_transistors
+  Category: performance
+  Objective: -inf
+  → Perf: 38.96 (Δ=-14.64)
+
+================================================================================
+Step 7: SoftminJAM(λ=0.1,β=5.0)
+================================================================================
+Current State:
+  Performance: 36.62
+  Power: 8.72W / 12.00W (72.7%)
+  Area: 27.56mm² / 50.00mm²
+  Min Headroom: 0.1000
+
+Top 5 Actions (by objective):
+  1. increase_frequency_aggressive
+     Category: performance
+     Objective: 42.2967
+     → Perf: 42.30 (Δ=+5.68)
+     → Power: 9.49W (Δ=+0.77W)
+     → Min Headroom: 0.3557 (Δ=+0.2557)
+  2. increase_issue_width
+     Category: trap
+     Objective: 41.8472
+     → Perf: 41.85 (Δ=+5.23)
+     → Power: 10.05W (Δ=+1.33W)
+     → Min Headroom: 0.1000 (Δ=+0.0000)
+  3. dvfs_performance_boost
+     Category: trap
+     Objective: 41.1424
+     → Perf: 41.15 (Δ=+4.53)
+     → Power: 10.86W (Δ=+2.13W)
+     → Min Headroom: 0.3060 (Δ=+0.2060)
+  4. increase_frequency_moderate
+     Category: performance
+     Objective: 40.3689
+     → Perf: 40.37 (Δ=+3.75)
+     → Power: 9.10W (Δ=+0.38W)
+     → Min Headroom: 0.3550 (Δ=+0.2550)
+  5. increase_frequency_small
+     Category: performance
+     Objective: 38.0951
+     → Perf: 38.10 (Δ=+1.48)
+     → Power: 8.87W (Δ=+0.15W)
+     → Min Headroom: 0.2020 (Δ=+0.1020)
+
+Worst Action (for comparison):
+  reduce_l3_cache
+  Category: area
+  Objective: -inf
+  → Perf: 17.25 (Δ=-19.37)
+
+
+################################################################################
+DESIGN STEP 8
+################################################################################
+
+================================================================================
+Step 8: JAM
+================================================================================
+Current State:
+  Performance: 55.40
+  Power: 11.26W / 12.00W (93.9%)
+  Area: 47.12mm² / 50.00mm²
+  Min Headroom: 0.4609
+
+Top 5 Actions (by objective):
+  1. balanced_optimization
+     Category: safe
+     Objective: 45.0628
+     → Perf: 56.52 (Δ=+1.12)
+     → Power: 11.21W (Δ=-0.05W)
+     → Min Headroom: 0.4620 (Δ=+0.0011)
+  2. increase_frequency_small
+     Category: performance
+     Objective: 45.0162
+     → Perf: 56.47 (Δ=+1.06)
+     → Power: 11.46W (Δ=+0.20W)
+     → Min Headroom: 0.4567 (Δ=-0.0042)
+  3. increase_l1_cache
+     Category: performance
+     Objective: 44.6195
+     → Perf: 55.97 (Δ=+0.56)
+     → Power: 11.26W (Δ=+0.00W)
+     → Min Headroom: 0.4659 (Δ=+0.0050)
+  4. increase_frequency_tiny
+     Category: performance
+     Objective: 44.5916
+     → Perf: 55.93 (Δ=+0.53)
+     → Power: 11.36W (Δ=+0.10W)
+     → Min Headroom: 0.4588 (Δ=-0.0021)
+  5. downsize_transistors
+     Category: efficiency
+     Objective: 44.4114
+     → Perf: 55.69 (Δ=+0.29)
+     → Power: 9.81W (Δ=-1.45W)
+     → Min Headroom: 0.4896 (Δ=+0.0287)
+
+Worst Action (for comparison):
+  upsize_transistors
+  Category: performance
+  Objective: -inf
+  → Perf: 40.15 (Δ=-15.25)
+
+================================================================================
+Step 8: SoftminJAM(λ=0.1,β=5.0)
+================================================================================
+Current State:
+  Performance: 36.62
+  Power: 9.60W / 12.00W (80.0%)
+  Area: 27.56mm² / 50.00mm²
+  Min Headroom: 0.1000
+
+Top 5 Actions (by objective):
+  1. increase_frequency_aggressive
+     Category: performance
+     Objective: 42.0233
+     → Perf: 42.03 (Δ=+5.41)
+     → Power: 10.44W (Δ=+0.84W)
+     → Min Headroom: 0.3211 (Δ=+0.2211)
+  2. increase_issue_width
+     Category: trap
+     Objective: 41.8472
+     → Perf: 41.85 (Δ=+5.23)
+     → Power: 11.06W (Δ=+1.46W)
+     → Min Headroom: 0.1000 (Δ=+0.0000)
+  3. increase_frequency_moderate
+     Category: performance
+     Objective: 40.2290
+     → Perf: 40.23 (Δ=+3.61)
+     → Power: 10.02W (Δ=+0.42W)
+     → Min Headroom: 0.3365 (Δ=+0.2365)
+  4. dvfs_performance_boost
+     Category: trap
+     Objective: 39.0724
+     → Perf: 39.16 (Δ=+2.54)
+     → Power: 11.95W (Δ=+2.35W)
+     → Min Headroom: 0.0503 (Δ=-0.0497)
+  5. increase_frequency_small
+     Category: performance
+     Objective: 38.0951
+     → Perf: 38.10 (Δ=+1.48)
+     → Power: 9.76W (Δ=+0.17W)
+     → Min Headroom: 0.2020 (Δ=+0.1020)
+
+Worst Action (for comparison):
+  reduce_l3_cache
+  Category: area
+  Objective: -inf
+  → Perf: 17.25 (Δ=-19.37)
+
+
+################################################################################
+DESIGN STEP 9
+################################################################################
+
+================================================================================
+Step 9: JAM
+================================================================================
+Current State:
+  Performance: 56.52
+  Power: 11.21W / 12.00W (93.4%)
+  Area: 47.12mm² / 50.00mm²
+  Min Headroom: 0.4620
+
+Top 5 Actions (by objective):
+  1. balanced_optimization
+     Category: safe
+     Objective: 45.9782
+     → Perf: 57.67 (Δ=+1.14)
+     → Power: 11.15W (Δ=-0.06W)
+     → Min Headroom: 0.4633 (Δ=+0.0012)
+  2. increase_frequency_small
+     Category: performance
+     Objective: 45.9298
+     → Perf: 57.61 (Δ=+1.09)
+     → Power: 11.41W (Δ=+0.20W)
+     → Min Headroom: 0.4578 (Δ=-0.0042)
+  3. increase_frequency_moderate
+     Category: performance
+     Objective: 45.7608
+     → Perf: 57.51 (Δ=+0.99)
+     → Power: 11.71W (Δ=+0.50W)
+     → Min Headroom: 0.2927 (Δ=-0.1693)
+  4. increase_l1_cache
+     Category: performance
+     Objective: 45.5245
+     → Perf: 57.10 (Δ=+0.57)
+     → Power: 11.21W (Δ=+0.00W)
+     → Min Headroom: 0.4670 (Δ=+0.0049)
+  5. increase_frequency_tiny
+     Category: performance
+     Objective: 45.4965
+     → Perf: 57.06 (Δ=+0.54)
+     → Power: 11.31W (Δ=+0.10W)
+     → Min Headroom: 0.4599 (Δ=-0.0021)
+
+Worst Action (for comparison):
+  upsize_transistors
+  Category: performance
+  Objective: -inf
+  → Perf: 41.59 (Δ=-14.94)
+
+================================================================================
+Step 9: SoftminJAM(λ=0.1,β=5.0)
+================================================================================
+Current State:
+  Performance: 36.62
+  Power: 10.56W / 12.00W (88.0%)
+  Area: 27.56mm² / 50.00mm²
+  Min Headroom: 0.1000
+
+Top 5 Actions (by objective):
+  1. increase_frequency_aggressive
+     Category: performance
+     Objective: 41.7219
+     → Perf: 41.73 (Δ=+5.11)
+     → Power: 11.49W (Δ=+0.93W)
+     → Min Headroom: 0.2830 (Δ=+0.1830)
+  2. increase_frequency_moderate
+     Category: performance
+     Objective: 39.9533
+     → Perf: 39.96 (Δ=+3.34)
+     → Power: 11.03W (Δ=+0.47W)
+     → Min Headroom: 0.2999 (Δ=+0.1999)
+  3. increase_frequency_small
+     Category: performance
+     Objective: 38.0951
+     → Perf: 38.10 (Δ=+1.48)
+     → Power: 10.75W (Δ=+0.19W)
+     → Min Headroom: 0.2020 (Δ=+0.1020)
+  4. balanced_optimization
+     Category: safe
+     Objective: 38.0951
+     → Perf: 38.10 (Δ=+1.48)
+     → Power: 10.52W (Δ=-0.04W)
+     → Min Headroom: 0.2020 (Δ=+0.1020)
+  5. increase_l2_cache
+     Category: performance
+     Objective: 37.8880
+     → Perf: 37.89 (Δ=+1.27)
+     → Power: 10.56W (Δ=+0.00W)
+     → Min Headroom: 0.1000 (Δ=+0.0000)
+
+Worst Action (for comparison):
+  upsize_transistors
+  Category: performance
+  Objective: -inf
+  → Perf: 34.29 (Δ=-2.33)
+
+
+================================================================================
+FINAL RESULTS
+================================================================================
+
+JAM:
+  Performance: 57.67
+  Power: 11.15W (92.9%)
+  Min Headroom: 0.4633
+
+JAMAdvanced:
+  Performance: 36.62
+  Power: 11.62W (96.8%)
+  Min Headroom: 0.1000
+
+Performance Gap: 21.05 (36.5%)
+
+Divergence first detected at step: 2
+
+================================================================================
+
