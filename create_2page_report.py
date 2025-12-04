@@ -13,35 +13,40 @@ from test_softmin_jam import SoftminJAMAgent
 
 print("Generating performance trajectories...")
 
-# Run agents and track performance over time
+# Run agents and track performance and frequency over time
 def track_agent_performance(agent_class, agent_kwargs, name, steps=40, seed=42):
-    """Track performance at each design step"""
+    """Track performance and frequency at each design step"""
     space = AdvancedDesignSpace(process=ProcessTechnology.create_7nm(), seed=seed)
     space.initialize_actions()
     agent = agent_class(**agent_kwargs)
     agent.initialize(space)
 
-    trajectory = []
+    perf_trajectory = []
+    freq_trajectory = []
     for step in range(steps):
         perf = space.calculate_performance()
-        trajectory.append(perf)
+        freq = space.params.clock_freq_ghz
+        perf_trajectory.append(perf)
+        freq_trajectory.append(freq)
         agent.step()
 
-    # Final performance
+    # Final performance and frequency
     final_perf = space.calculate_performance()
-    trajectory.append(final_perf)
+    final_freq = space.params.clock_freq_ghz
+    perf_trajectory.append(final_perf)
+    freq_trajectory.append(final_freq)
 
-    return trajectory
+    return perf_trajectory, freq_trajectory
 
 # Generate trajectories
 print("  Running IndustryBest...")
-industry_traj = track_agent_performance(AdvancedGreedyPerformanceAgent, {}, "IndustryBest")
+industry_traj, industry_freq = track_agent_performance(AdvancedGreedyPerformanceAgent, {}, "IndustryBest")
 
 print("  Running JAM...")
-jam_traj = track_agent_performance(JAMAgent, {}, "JAM")
+jam_traj, jam_freq = track_agent_performance(JAMAgent, {}, "JAM")
 
 print("  Running JAMAdvanced (λ=500)...")
-jamadv_traj = track_agent_performance(SoftminJAMAgent, {"lambda_weight": 500.0, "beta": 5.0}, "JAMAdvanced")
+jamadv_traj, jamadv_freq = track_agent_performance(SoftminJAMAgent, {"lambda_weight": 500.0, "beta": 5.0}, "JAMAdvanced")
 
 print("\nCreating 2-page report...")
 
@@ -79,15 +84,7 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
     fig1 = plt.figure(figsize=(8.5, 11))
     fig1.patch.set_facecolor('white')
 
-    # Title
-    fig1.text(0.5, 0.97, 'Chip Design Optimization: Performance Analysis',
-             ha='center', fontsize=18, fontweight='bold')
-    fig1.text(0.5, 0.955, 'JAMAdvanced (λ=500) vs Industry Best vs JAM',
-             ha='center', fontsize=12, style='italic')
-    fig1.text(0.5, 0.945, '50 runs × 40 design steps | 7nm Process | 12W Power Budget',
-             ha='center', fontsize=9, color='gray')
-
-    gs1 = GridSpec(12, 2, figure=fig1, hspace=0.8, wspace=0.4, top=0.93, bottom=0.05, left=0.08, right=0.95)
+    gs1 = GridSpec(12, 2, figure=fig1, hspace=0.8, wspace=0.4, top=0.98, bottom=0.02, left=0.08, right=0.95)
 
     # Performance Over Time (NEW!)
     ax1 = fig1.add_subplot(gs1[0:3, :])
@@ -143,10 +140,11 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
     ax3 = fig1.add_subplot(gs1[5:7, :])
     ax3.axis('off')
 
-    table_text = """┌─────────────────────┬──────────────┬──────────┬─────────────────────┬────────────────┐
+    table_text = f"""┌─────────────────────┬──────────────┬──────────┬─────────────────────┬────────────────┐
 │ Metric              │ IndustryBest │ JAM      │ JAMAdvanced (λ=500) │ Winner         │
 ├─────────────────────┼──────────────┼──────────┼─────────────────────┼────────────────┤
 │ Performance         │ 93.90        │ 109.06   │ 111.62              │ JAMAdvanced    │
+│ Frequency (GHz)     │ {industry_freq[-1]:.2f}        │ {jam_freq[-1]:.2f}     │ {jamadv_freq[-1]:.2f}               │ {'JAMAdvanced' if jamadv_freq[-1] >= max(industry_freq[-1], jam_freq[-1]) else 'JAM' if jam_freq[-1] >= industry_freq[-1] else 'IndustryBest'}    │
 │ Power (W)           │ 10.99        │ 11.37    │ 10.47               │ JAMAdvanced    │
 │ Efficiency (p/W)    │ 8.54         │ 9.59     │ 10.66               │ JAMAdvanced    │
 │ Min Headroom        │ 0.422        │ 0.540    │ 0.486               │ JAM            │
@@ -191,13 +189,12 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
     ax6.set_title('Robustness: Graduated Stress Test', fontweight='bold', fontsize=9.35)
     ax6.set_ylabel('Max Stress Survived (%)', fontsize=7.65)
 
-    stress_types = ['Power\nCuts', 'Performance\nRequirements', 'Area\nCuts', 'Thermal\nStress']
+    stress_types = ['Power\nCuts', 'Area\nCuts', 'Thermal\nStress']
     x = np.arange(len(stress_types))
     width = 0.25
 
     for i, name in enumerate(agent_order):
-        values = [robustness[name]['power'], robustness[name]['performance'],
-                 robustness[name]['area'], robustness[name]['thermal']]
+        values = [robustness[name]['power'], robustness[name]['area'], robustness[name]['thermal']]
         offset = (i - 1) * width
         bars = ax6.bar(x + offset, values, width, label=name, color=colors[name],
                       alpha=0.85, edgecolor='black', linewidth=1)
@@ -214,9 +211,6 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
     ax6.grid(axis='y', alpha=0.3, linewidth=0.5)
     ax6.tick_params(labelsize=6.8)
 
-    fig1.text(0.5, 0.02, 'Page 1 of 2 | Performance Data & Comparisons',
-             ha='center', fontsize=9, color='gray', style='italic')
-
     pdf.savefig(fig1, dpi=300, bbox_inches='tight')
     plt.close(fig1)
 
@@ -226,13 +220,7 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
     fig2 = plt.figure(figsize=(8.5, 11))
     fig2.patch.set_facecolor('white')
 
-    # Title
-    fig2.text(0.5, 0.97, 'Methodology & Analysis',
-             ha='center', fontsize=18, fontweight='bold')
-    fig2.text(0.5, 0.955, 'Why This Test is Realistic & Industry Best Explained',
-             ha='center', fontsize=12, style='italic')
-
-    gs2 = GridSpec(1, 1, figure=fig2, top=0.94, bottom=0.04, left=0.06, right=0.94)
+    gs2 = GridSpec(1, 1, figure=fig2, top=0.98, bottom=0.02, left=0.06, right=0.94)
     ax = fig2.add_subplot(gs2[0])
     ax.axis('off')
 
@@ -310,22 +298,22 @@ vs. UNREALISTIC BINARY TEST (original 42% identical survival):
 JAM vs JAMAdvanced: OPTIMIZATION METHODOLOGY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-JAM (Constraint-Aware Optimization with Hard Minimum):
-  • Uses hard minimum constraint enforcement with weighted combination approach
+JAM (Constraint-Aware Optimization):
+  • Uses weighted combination approach with constraint enforcement
   • Result: 109.06 perf, 11.37W power, 5% power tolerance
   • Strength: High performance from weighted combination
-  • Limitation: Hard min creates sharp barrier → aggressive near limits → low tolerance
+  • Limitation: Sharp constraint boundaries → aggressive near limits → low tolerance
 
-JAMAdvanced (Constraint-Aware Optimization with Smooth Minimum):
+JAMAdvanced (Enhanced Constraint-Aware Optimization):
   Parameters: λ=500 (safety weight), β=5.0 (smoothness parameter)
-  • Uses smooth minimum with weighted averaging based on exponential decay
+  • Uses smooth weighted averaging based on exponential decay
   • Result: 111.62 perf (+2.3% over JAM!), 10.47W, 10% power tolerance (2× better!)
   • Strength: Smooth optimization landscape + best performance + good robustness
   • Innovation: λ parameter tunes safety-performance trade-off
 
-SMOOTH MINIMUM ADVANTAGES:
+JAMADVANCED ADVANTAGES:
   1. Smooth gradients: Agent sees "how close" to each constraint (not just pass/fail)
-  2. Differentiable: No discontinuities → smoother convergence, fewer local minima
+  2. Differentiable: No discontinuities → smoother convergence, fewer local optima
   3. Tunable: λ controls conservativeness (higher = more safety margin)
   4. Bounded: Output guaranteed in valid range for stable optimization
 
@@ -350,9 +338,6 @@ BEST FOR:
             verticalalignment='top', fontfamily='monospace', linespacing=1.2,
             bbox=dict(boxstyle='round,pad=0.8', facecolor='#fffef0', alpha=0.98,
                      edgecolor='black', linewidth=1.5))
-
-    fig2.text(0.5, 0.01, 'Page 2 of 2 | Methodology & Analysis | JAMAdvanced Configuration: λ=500, β=5.0',
-             ha='center', fontsize=8, color='gray', style='italic')
 
     pdf.savefig(fig2, dpi=300, bbox_inches='tight')
     plt.close(fig2)
