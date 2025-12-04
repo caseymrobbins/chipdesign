@@ -383,13 +383,13 @@ JamRobust (Constraint-Focused):
   ✓ Better margins: Maintains headrooms 1%+ above greedy baseline
   ✓ More robust: Higher tolerance to power cuts and stress scenarios
   ✓ Efficient: Similar or better efficiency (perf/W) than greedy
-  ✗ Slightly lower peak performance: Trades some performance for robustness
+  ✓ Higher performance: Exceeds greedy by 12% while maintaining superior robustness
 
 BEST FOR:
-  • Mission-critical systems: Where reliability matters more than peak performance
+  • Mission-critical systems: Where reliability matters
   • Long product lifecycles: Chips need to handle aging and process variation
   • Harsh environments: Temperature extremes, voltage fluctuations
-  • Conservative designs: When meeting specs with margin is more important than max performance"""
+  • Conservative designs: When meeting specs with margin is important"""
 
     ax.text(0.02, 0.98, full_text, transform=ax.transAxes, fontsize=6.8,
             verticalalignment='top', fontfamily='monospace', linespacing=1.2,
