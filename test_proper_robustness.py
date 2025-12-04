@@ -112,9 +112,9 @@ if __name__ == "__main__":
     # Test each agent
     agents_config = [
         ("IndustryBest", AdvancedGreedyPerformanceAgent, {}),
-        # ("JAM", JAMAgent, {}),
-        # ("JAMAdvanced", SoftminJAMAgent, {"lambda_weight": 0.1, "beta": 5.0}),
-        # ("JamRobust", JamRobustAgent, {}),
+        ("JAM", JAMAgent, {}),
+        ("JAMAdvanced", SoftminJAMAgent, {"lambda_weight": 0.1, "beta": 5.0}),
+        ("JamRobust", JamRobustAgent, {}),
     ]
 
     all_results = {}
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ROBUSTNESS SCORES (Average stress level at failure)")
     print("="*80)
-    for agent_name in ["IndustryBest"]:
+    for agent_name in ["IndustryBest", "JAM", "JAMAdvanced", "JamRobust"]:
         score = scores[agent_name]
         print(f"{agent_name:20s}: {score:.1%} stress tolerance")
 
@@ -166,7 +166,7 @@ if __name__ == "__main__":
         ax.set_ylim([-0.1, 1.1])
         ax.grid(alpha=0.3)
 
-        for agent_name in ["IndustryBest"]:
+        for agent_name in ["IndustryBest", "JAM", "JAMAdvanced", "JamRobust"]:
             stress_data = all_results[agent_name][shift_type.value]
             stress_levels = [s[0] for s in stress_data]
             survival = [1 if s[1] else 0 for s in stress_data]
