@@ -15,7 +15,7 @@ from advanced_chip_simulator import (
     ProcessTechnology,
     ShiftType,
 )
-from test_softmin_jam import SoftminJAMAgent
+from test_softmin_jam import SoftminJAMAgent, JamRobustAgent
 import matplotlib.pyplot as plt
 
 
@@ -114,6 +114,7 @@ if __name__ == "__main__":
         ("IndustryBest", AdvancedGreedyPerformanceAgent, {}),
         ("JAM", JAMAgent, {}),
         ("JAMAdvanced", SoftminJAMAgent, {"lambda_weight": 0.1, "beta": 5.0}),
+        ("JamRobust", JamRobustAgent, {}),
     ]
 
     all_results = {}
@@ -131,7 +132,7 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ROBUSTNESS SCORES (Average stress level at failure)")
     print("="*80)
-    for agent_name in ["IndustryBest", "JAM", "JAMAdvanced"]:
+    for agent_name in ["IndustryBest", "JAM", "JAMAdvanced", "JamRobust"]:
         score = scores[agent_name]
         print(f"{agent_name:20s}: {score:.1%} stress tolerance")
 
@@ -153,7 +154,8 @@ if __name__ == "__main__":
     colors = {
         'IndustryBest': '#ff7f0e',
         'JAM': '#2ca02c',
-        'JAMAdvanced': '#1f77b4'
+        'JAMAdvanced': '#1f77b4',
+        'JamRobust': '#d62728'
     }
 
     for idx, shift_type in enumerate(shift_types):
@@ -164,7 +166,7 @@ if __name__ == "__main__":
         ax.set_ylim([-0.1, 1.1])
         ax.grid(alpha=0.3)
 
-        for agent_name in ["IndustryBest", "JAM", "JAMAdvanced"]:
+        for agent_name in ["IndustryBest", "JAM", "JAMAdvanced", "JamRobust"]:
             stress_data = all_results[agent_name][shift_type.value]
             stress_levels = [s[0] for s in stress_data]
             survival = [1 if s[1] else 0 for s in stress_data]
