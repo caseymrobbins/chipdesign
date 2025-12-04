@@ -14,7 +14,7 @@ from test_softmin_jam import JamRobustAgent
 print("Generating performance trajectories...")
 
 # Run agents and track performance over time
-def track_agent_performance(agent_class, agent_kwargs, name, steps=25, seed=42):
+def track_agent_performance(agent_class, agent_kwargs, name, steps=50, seed=42):
     """Track performance at each design step"""
     space = AdvancedDesignSpace(process=ProcessTechnology.create_7nm(), seed=seed)
     space.initialize_actions()
@@ -137,7 +137,7 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
     robust_space.initialize_actions()
     robust_agent = JamRobustAgent()
     robust_agent.initialize(robust_space)
-    for _ in range(25):
+    for _ in range(50):
         robust_agent.step()
 
     robust_perf = robust_space.calculate_performance()
