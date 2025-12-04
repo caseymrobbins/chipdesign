@@ -236,12 +236,12 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
     ax6.set_title('Robustness: Graduated Stress Test', fontweight='bold', fontsize=9.35)
     ax6.set_ylabel('Max Stress Survived (%)', fontsize=7.65)
 
-    stress_types = ['Power\nCuts', 'Area\nCuts\n(Die Size)', 'Thermal\nStress']
+    stress_types = ['Power\nCuts', 'Thermal\nStress']
     x = np.arange(len(stress_types))
     width = 0.2
 
     for i, name in enumerate(agent_order):
-        values = [robustness[name]['power'], robustness[name]['area'], robustness[name]['thermal']]
+        values = [robustness[name]['power'], robustness[name]['thermal']]
         offset = (i - 1.5) * width
         bars = ax6.bar(x + offset, values, width, label=name, color=colors[name],
                       alpha=0.85, edgecolor='black', linewidth=1)
