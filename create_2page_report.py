@@ -132,11 +132,6 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
     ax1.grid(alpha=0.3, linewidth=0.5)
     ax1.tick_params(labelsize=7)
 
-    # Peak Performance Comparison Table
-    ax2 = fig1.add_subplot(gs1[4:7, :])
-    ax2.axis('off')
-    ax2.set_title('Performance & Efficiency Metrics (50 Steps)', fontweight='bold', fontsize=9, pad=5)
-
     # Get final metrics for each agent
     metrics = {}
     for agent_name, agent_class, kwargs in [
@@ -165,25 +160,70 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
             'headroom': headroom
         }
 
-    table_text = """┌────────────────┬───────────┬─────────┬───────────┬────────────┬─────────────┐
-│ Agent          │ Peak Perf │ @ Step  │ Power (W) │ Efficiency │ Min Headroom│
-├────────────────┼───────────┼─────────┼───────────┼────────────┼─────────────┤"""
+    # Four Comparison Graphs (2x2 grid)
 
-    for agent_name in agent_order:
-        m = metrics[agent_name]
-        table_text += f"""
-│ {agent_name:14s} │ {m['peak']:9.2f} │ {m['peak_step']:7d} │ {m['power']:9.2f} │ {m['eff']:10.2f} │ {m['headroom']:11.3f} │"""
+    # Graph 1: Peak Performance
+    ax2a = fig1.add_subplot(gs1[4:7, 0])
+    ax2a.set_title('Peak Performance', fontweight='bold', fontsize=9, pad=5)
+    ax2a.set_ylabel('Performance Score', fontsize=8)
+    bars_perf = ax2a.bar(agent_order, [metrics[a]['peak'] for a in agent_order],
+                         color=[colors[a] for a in agent_order], alpha=0.7, edgecolor='black')
+    for bar in bars_perf:
+        height = bar.get_height()
+        ax2a.text(bar.get_x() + bar.get_width()/2., height + 1,
+                 f'{height:.1f}', ha='center', va='bottom', fontsize=7, fontweight='bold')
+    ax2a.set_ylim([0, max([metrics[a]['peak'] for a in agent_order]) * 1.15])
+    ax2a.grid(axis='y', alpha=0.3)
+    ax2a.tick_params(labelsize=7)
+    ax2a.set_xticklabels(agent_order, rotation=15, ha='right')
 
-    table_text += """
-└────────────────┴───────────┴─────────┴───────────┴────────────┴─────────────┘"""
+    # Graph 2: Power Consumption
+    ax2b = fig1.add_subplot(gs1[4:7, 1])
+    ax2b.set_title('Power Consumption', fontweight='bold', fontsize=9, pad=5)
+    ax2b.set_ylabel('Power (W)', fontsize=8)
+    bars_power = ax2b.bar(agent_order, [metrics[a]['power'] for a in agent_order],
+                          color=[colors[a] for a in agent_order], alpha=0.7, edgecolor='black')
+    for bar in bars_power:
+        height = bar.get_height()
+        ax2b.text(bar.get_x() + bar.get_width()/2., height + 0.05,
+                 f'{height:.2f}W', ha='center', va='bottom', fontsize=7, fontweight='bold')
+    ax2b.set_ylim([0, max([metrics[a]['power'] for a in agent_order]) * 1.15])
+    ax2b.grid(axis='y', alpha=0.3)
+    ax2b.tick_params(labelsize=7)
+    ax2b.set_xticklabels(agent_order, rotation=15, ha='right')
 
-    ax2.text(0.05, 0.95, table_text, transform=ax2.transAxes, fontsize=6.8,
-            verticalalignment='top', fontfamily='monospace',
-            bbox=dict(boxstyle='round,pad=0.5', facecolor='#f8f8f8', alpha=0.95,
-                     edgecolor='black', linewidth=1))
+    # Graph 3: Efficiency (Perf/Watt)
+    ax2c = fig1.add_subplot(gs1[7:10, 0])
+    ax2c.set_title('Efficiency (Perf/Watt)', fontweight='bold', fontsize=9, pad=5)
+    ax2c.set_ylabel('Performance per Watt', fontsize=8)
+    bars_eff = ax2c.bar(agent_order, [metrics[a]['eff'] for a in agent_order],
+                        color=[colors[a] for a in agent_order], alpha=0.7, edgecolor='black')
+    for bar in bars_eff:
+        height = bar.get_height()
+        ax2c.text(bar.get_x() + bar.get_width()/2., height + 0.1,
+                 f'{height:.2f}', ha='center', va='bottom', fontsize=7, fontweight='bold')
+    ax2c.set_ylim([0, max([metrics[a]['eff'] for a in agent_order]) * 1.15])
+    ax2c.grid(axis='y', alpha=0.3)
+    ax2c.tick_params(labelsize=7)
+    ax2c.set_xticklabels(agent_order, rotation=15, ha='right')
+
+    # Graph 4: Final Performance
+    ax2d = fig1.add_subplot(gs1[7:10, 1])
+    ax2d.set_title('Final Performance (Step 50)', fontweight='bold', fontsize=9, pad=5)
+    ax2d.set_ylabel('Performance Score', fontsize=8)
+    bars_final = ax2d.bar(agent_order, [metrics[a]['final'] for a in agent_order],
+                          color=[colors[a] for a in agent_order], alpha=0.7, edgecolor='black')
+    for bar in bars_final:
+        height = bar.get_height()
+        ax2d.text(bar.get_x() + bar.get_width()/2., height + 1,
+                 f'{height:.1f}', ha='center', va='bottom', fontsize=7, fontweight='bold')
+    ax2d.set_ylim([0, max([metrics[a]['final'] for a in agent_order]) * 1.15])
+    ax2d.grid(axis='y', alpha=0.3)
+    ax2d.tick_params(labelsize=7)
+    ax2d.set_xticklabels(agent_order, rotation=15, ha='right')
 
     # Robustness Scores
-    ax3 = fig1.add_subplot(gs1[7:9, :])
+    ax3 = fig1.add_subplot(gs1[10:12, :])
     ax3.set_title('Overall Robustness (Graduated Stress Test)', fontweight='bold', fontsize=9, pad=5)
     ax3.set_xlabel('Agent', fontsize=8)
     ax3.set_ylabel('Stress Tolerance (%)', fontsize=8)
@@ -206,31 +246,8 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
     ax3.grid(axis='y', alpha=0.3)
     ax3.tick_params(labelsize=7)
 
-    # Key Finding Box
-    ax4 = fig1.add_subplot(gs1[9:11, :])
-    ax4.axis('off')
-
-    finding = """KEY FINDING: JAM Agents Outperform Industry Standard in Chip Quality
-
-JAM-based agents produce SUPERIOR chips compared to industry greedy optimization:
-
-  JAMAdvanced:   +14% higher performance, -3% lower power consumption
-  JamRobust:     Equal robustness (41.2%), +100% better power tolerance
-
-Chip Quality Comparison (Same Constraints, 50 Steps):
-  JAMAdvanced (λ=0.1):  107.2 performance @ 10.70W  ← BEST QUALITY
-  Industry Greedy:       93.9 performance @ 10.99W  ← Baseline
-
-Conclusion: JAM optimization produces objectively better chips than
-            the industry standard greedy approach."""
-
-    ax4.text(0.05, 0.5, finding, transform=ax4.transAxes, fontsize=7.5,
-            verticalalignment='center', fontfamily='monospace', linespacing=1.3,
-            bbox=dict(boxstyle='round,pad=0.8', facecolor='#fff3cd', alpha=0.95,
-                     edgecolor='#ff6b6b', linewidth=2))
-
     # Robustness Detail Breakdown
-    ax5 = fig1.add_subplot(gs1[11:15, :])
+    ax5 = fig1.add_subplot(gs1[12:16, :])
     ax5.set_title('Robustness Breakdown by Stress Type', fontweight='bold', fontsize=9, pad=5)
 
     stress_types = ['Power\nTolerance', 'Thermal\nStress']
