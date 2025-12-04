@@ -1,0 +1,309 @@
+================================================================================
+TUNING JAMAdvanced: Performance vs Robustness Trade-off
+================================================================================
+Goal: ~10% performance reduction (107.25 → ~96.5)
+Target: Higher robustness + better frequency
+================================================================================
+
+================================================================================
+Testing λ=0.5
+================================================================================
+
+Testing robustness and design quality...
+  JAMAdvanced | tighten_power        | stress=5% | ✓ SURVIVED
+  JAMAdvanced | tighten_power        | stress=10% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=15% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=20% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=25% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=30% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=35% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=40% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=45% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=50% | ✗ FAILED
+  JAMAdvanced | increase_performance | stress=5% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=10% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=15% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=20% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=25% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=30% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=35% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=40% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=45% | ✗ FAILED
+  JAMAdvanced | increase_performance | stress=50% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=5% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=10% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=15% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=20% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=25% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=30% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=35% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=40% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=45% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=50% | ✗ FAILED
+  JAMAdvanced | tighten_thermal      | stress=5% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=10% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=15% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=20% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=25% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=30% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=35% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=40% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=45% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=50% | ✓ SURVIVED
+
+📊 Results for λ=0.5:
+  Performance:      109.06
+  Power:           11.37W
+  Min Headroom:    0.4688
+  Robustness:      40.0%
+  Power Tolerance:  10%
+  Perf Tolerance:   45%
+  Performance reduction: -1.7% (target: ~10%)
+
+================================================================================
+Testing λ=1.0
+================================================================================
+
+Testing robustness and design quality...
+  JAMAdvanced | tighten_power        | stress=5% | ✓ SURVIVED
+  JAMAdvanced | tighten_power        | stress=10% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=15% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=20% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=25% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=30% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=35% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=40% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=45% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=50% | ✗ FAILED
+  JAMAdvanced | increase_performance | stress=5% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=10% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=15% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=20% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=25% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=30% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=35% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=40% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=45% | ✗ FAILED
+  JAMAdvanced | increase_performance | stress=50% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=5% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=10% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=15% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=20% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=25% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=30% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=35% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=40% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=45% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=50% | ✗ FAILED
+  JAMAdvanced | tighten_thermal      | stress=5% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=10% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=15% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=20% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=25% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=30% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=35% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=40% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=45% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=50% | ✓ SURVIVED
+
+📊 Results for λ=1.0:
+  Performance:      109.06
+  Power:           11.37W
+  Min Headroom:    0.4688
+  Robustness:      40.0%
+  Power Tolerance:  10%
+  Perf Tolerance:   45%
+  Performance reduction: -1.7% (target: ~10%)
+
+================================================================================
+Testing λ=2.0
+================================================================================
+
+Testing robustness and design quality...
+  JAMAdvanced | tighten_power        | stress=5% | ✓ SURVIVED
+  JAMAdvanced | tighten_power        | stress=10% | ✓ SURVIVED
+  JAMAdvanced | tighten_power        | stress=15% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=20% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=25% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=30% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=35% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=40% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=45% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=50% | ✗ FAILED
+  JAMAdvanced | increase_performance | stress=5% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=10% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=15% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=20% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=25% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=30% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=35% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=40% | ✗ FAILED
+  JAMAdvanced | increase_performance | stress=45% | ✗ FAILED
+  JAMAdvanced | increase_performance | stress=50% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=5% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=10% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=15% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=20% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=25% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=30% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=35% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=40% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=45% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=50% | ✗ FAILED
+  JAMAdvanced | tighten_thermal      | stress=5% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=10% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=15% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=20% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=25% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=30% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=35% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=40% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=45% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=50% | ✓ SURVIVED
+
+📊 Results for λ=2.0:
+  Performance:      107.14
+  Power:           10.78W
+  Min Headroom:    0.4808
+  Robustness:      40.0%
+  Power Tolerance:  15%
+  Perf Tolerance:   40%
+  Performance reduction: 0.1% (target: ~10%)
+
+================================================================================
+Testing λ=5.0
+================================================================================
+
+Testing robustness and design quality...
+  JAMAdvanced | tighten_power        | stress=5% | ✓ SURVIVED
+  JAMAdvanced | tighten_power        | stress=10% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=15% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=20% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=25% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=30% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=35% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=40% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=45% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=50% | ✗ FAILED
+  JAMAdvanced | increase_performance | stress=5% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=10% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=15% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=20% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=25% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=30% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=35% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=40% | ✗ FAILED
+  JAMAdvanced | increase_performance | stress=45% | ✗ FAILED
+  JAMAdvanced | increase_performance | stress=50% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=5% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=10% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=15% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=20% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=25% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=30% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=35% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=40% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=45% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=50% | ✗ FAILED
+  JAMAdvanced | tighten_thermal      | stress=5% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=10% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=15% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=20% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=25% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=30% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=35% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=40% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=45% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=50% | ✓ SURVIVED
+
+📊 Results for λ=5.0:
+  Performance:      107.09
+  Power:           10.92W
+  Min Headroom:    0.4779
+  Robustness:      38.8%
+  Power Tolerance:  10%
+  Perf Tolerance:   40%
+  Performance reduction: 0.2% (target: ~10%)
+
+================================================================================
+Testing λ=10.0
+================================================================================
+
+Testing robustness and design quality...
+  JAMAdvanced | tighten_power        | stress=5% | ✓ SURVIVED
+  JAMAdvanced | tighten_power        | stress=10% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=15% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=20% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=25% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=30% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=35% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=40% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=45% | ✗ FAILED
+  JAMAdvanced | tighten_power        | stress=50% | ✗ FAILED
+  JAMAdvanced | increase_performance | stress=5% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=10% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=15% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=20% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=25% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=30% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=35% | ✓ SURVIVED
+  JAMAdvanced | increase_performance | stress=40% | ✗ FAILED
+  JAMAdvanced | increase_performance | stress=45% | ✗ FAILED
+  JAMAdvanced | increase_performance | stress=50% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=5% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=10% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=15% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=20% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=25% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=30% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=35% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=40% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=45% | ✗ FAILED
+  JAMAdvanced | reduce_area          | stress=50% | ✗ FAILED
+  JAMAdvanced | tighten_thermal      | stress=5% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=10% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=15% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=20% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=25% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=30% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=35% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=40% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=45% | ✓ SURVIVED
+  JAMAdvanced | tighten_thermal      | stress=50% | ✓ SURVIVED
+
+📊 Results for λ=10.0:
+  Performance:      107.09
+  Power:           10.92W
+  Min Headroom:    0.4779
+  Robustness:      38.8%
+  Power Tolerance:  10%
+  Perf Tolerance:   40%
+  Performance reduction: 0.2% (target: ~10%)
+
+================================================================================
+SUMMARY - λ Parameter Sweep
+================================================================================
+     λ |   Perf |  Power |  Headroom |  Rob% |  PwrTol |  PerfTol
+--------------------------------------------------------------------------------
+   0.5 | 109.06 |  11.37W |    0.4688 | 40.0% |     10% |      45%
+   1.0 | 109.06 |  11.37W |    0.4688 | 40.0% |     10% |      45%
+   2.0 | 107.14 |  10.78W |    0.4808 | 40.0% |     15% |      40%
+   5.0 | 107.09 |  10.92W |    0.4779 | 38.8% |     10% |      40%
+  10.0 | 107.09 |  10.92W |    0.4779 | 38.8% |     10% |      40%
+
+================================================================================
+RECOMMENDATION
+================================================================================
+Target performance: ~96.5 (10% reduction)
+
+Best match: λ=5.0
+  Performance:      107.09 (-0.2%)
+  Power:           10.92W
+  Min Headroom:    0.4779 (vs 0.748 before)
+  Robustness:      38.8% (vs 40.0% before)
+  Power Tolerance:  10% (vs 10% before)
+  Perf Tolerance:   40% (vs 35% before)
+
+✓ Update compare_greedy_vs_intrinsic.py:
+  SoftminJAMAgent(lambda_weight=5.0, beta=5.0)
+================================================================================
