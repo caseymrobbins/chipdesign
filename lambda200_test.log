@@ -1,0 +1,82 @@
+================================================================================
+Testing JAMAdvanced with λ=200 (Robustness-Focused)
+================================================================================
+
+1. Performance Test (3 runs)...
+
+================================================================================
+GREEDY vs PURE INTRINSIC OPTIMIZATION COMPARISON
+================================================================================
+Runs: 3
+Design steps: 40
+Adaptation steps: 25
+
+Final Comparison - 3 Agents:
+  1. IndustryBest - Standard greedy performance maximization
+  2. JAM - Logarithmic barrier with hard min (eliminates weight tuning)
+  3. JAMAdvanced - Logarithmic barrier with softmin (smooth optimization)
+
+✓ JAM/JAMAdvanced use PURE intrinsic optimization (NO external constraints)
+✓ Automatic bottleneck focus via log(min/softmin) - no manual weight tuning
+================================================================================
+
+
+   Performance:     105.27
+   Power:          10.09W
+   Min Headroom:   0.9184
+   Efficiency:     10.43 perf/W
+
+2. Robustness Test...
+  JAMAdvanced_λ200 | tighten_power        | stress=5% | ✓ SURVIVED
+  JAMAdvanced_λ200 | tighten_power        | stress=10% | ✓ SURVIVED
+  JAMAdvanced_λ200 | tighten_power        | stress=15% | ✓ SURVIVED
+  JAMAdvanced_λ200 | tighten_power        | stress=20% | ✗ FAILED
+  JAMAdvanced_λ200 | tighten_power        | stress=25% | ✗ FAILED
+  JAMAdvanced_λ200 | tighten_power        | stress=30% | ✗ FAILED
+  JAMAdvanced_λ200 | tighten_power        | stress=35% | ✗ FAILED
+  JAMAdvanced_λ200 | tighten_power        | stress=40% | ✗ FAILED
+  JAMAdvanced_λ200 | tighten_power        | stress=45% | ✗ FAILED
+  JAMAdvanced_λ200 | tighten_power        | stress=50% | ✗ FAILED
+  JAMAdvanced_λ200 | increase_performance | stress=5% | ✓ SURVIVED
+  JAMAdvanced_λ200 | increase_performance | stress=10% | ✓ SURVIVED
+  JAMAdvanced_λ200 | increase_performance | stress=15% | ✓ SURVIVED
+  JAMAdvanced_λ200 | increase_performance | stress=20% | ✓ SURVIVED
+  JAMAdvanced_λ200 | increase_performance | stress=25% | ✓ SURVIVED
+  JAMAdvanced_λ200 | increase_performance | stress=30% | ✓ SURVIVED
+  JAMAdvanced_λ200 | increase_performance | stress=35% | ✓ SURVIVED
+  JAMAdvanced_λ200 | increase_performance | stress=40% | ✗ FAILED
+  JAMAdvanced_λ200 | increase_performance | stress=45% | ✗ FAILED
+  JAMAdvanced_λ200 | increase_performance | stress=50% | ✗ FAILED
+  JAMAdvanced_λ200 | reduce_area          | stress=5% | ✗ FAILED
+  JAMAdvanced_λ200 | reduce_area          | stress=10% | ✗ FAILED
+  JAMAdvanced_λ200 | reduce_area          | stress=15% | ✗ FAILED
+  JAMAdvanced_λ200 | reduce_area          | stress=20% | ✗ FAILED
+  JAMAdvanced_λ200 | reduce_area          | stress=25% | ✗ FAILED
+  JAMAdvanced_λ200 | reduce_area          | stress=30% | ✗ FAILED
+  JAMAdvanced_λ200 | reduce_area          | stress=35% | ✗ FAILED
+  JAMAdvanced_λ200 | reduce_area          | stress=40% | ✗ FAILED
+  JAMAdvanced_λ200 | reduce_area          | stress=45% | ✗ FAILED
+  JAMAdvanced_λ200 | reduce_area          | stress=50% | ✗ FAILED
+  JAMAdvanced_λ200 | tighten_thermal      | stress=5% | ✓ SURVIVED
+  JAMAdvanced_λ200 | tighten_thermal      | stress=10% | ✓ SURVIVED
+  JAMAdvanced_λ200 | tighten_thermal      | stress=15% | ✓ SURVIVED
+  JAMAdvanced_λ200 | tighten_thermal      | stress=20% | ✓ SURVIVED
+  JAMAdvanced_λ200 | tighten_thermal      | stress=25% | ✓ SURVIVED
+  JAMAdvanced_λ200 | tighten_thermal      | stress=30% | ✓ SURVIVED
+  JAMAdvanced_λ200 | tighten_thermal      | stress=35% | ✓ SURVIVED
+  JAMAdvanced_λ200 | tighten_thermal      | stress=40% | ✓ SURVIVED
+  JAMAdvanced_λ200 | tighten_thermal      | stress=45% | ✓ SURVIVED
+  JAMAdvanced_λ200 | tighten_thermal      | stress=50% | ✓ SURVIVED
+
+   Overall Robustness: 41.2%
+   Power Tolerance:    20%
+   Perf Tolerance:     40%
+
+================================================================================
+SUMMARY
+================================================================================
+✓ Performance:      ~105.27 (1.8% reduction from 107.25)
+✓ Power Tolerance:  20% (2× improvement from 10%)
+✓ Overall Robust:   41.2%
+✓ Configuration:    λ=200, β=5.0
+================================================================================
