@@ -92,9 +92,9 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
     # Performance Over Time (NEW!)
     ax1 = fig1.add_subplot(gs1[0:3, :])
     ax1.set_title('Performance Trajectory: Who Designed Better Over Time?',
-                  fontweight='bold', fontsize=12, pad=10)
-    ax1.set_xlabel('Design Step', fontsize=10)
-    ax1.set_ylabel('Performance Score', fontsize=10)
+                  fontweight='bold', fontsize=10.2, pad=8.5)
+    ax1.set_xlabel('Design Step', fontsize=8.5)
+    ax1.set_ylabel('Performance Score', fontsize=8.5)
 
     steps = range(len(industry_traj))
     ax1.plot(steps, industry_traj, 'o-', color=colors['IndustryBest'],
@@ -106,21 +106,21 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
 
     # Annotate final values
     ax1.text(len(steps)-1, industry_traj[-1] + 2, f'{industry_traj[-1]:.1f}',
-            ha='right', va='bottom', fontsize=9, color=colors['IndustryBest'], fontweight='bold')
+            ha='right', va='bottom', fontsize=7.65, color=colors['IndustryBest'], fontweight='bold')
     ax1.text(len(steps)-1, jam_traj[-1] - 2, f'{jam_traj[-1]:.1f}',
-            ha='right', va='top', fontsize=9, color=colors['JAM'], fontweight='bold')
+            ha='right', va='top', fontsize=7.65, color=colors['JAM'], fontweight='bold')
     ax1.text(len(steps)-1, jamadv_traj[-1] + 2, f'{jamadv_traj[-1]:.1f}',
-            ha='right', va='bottom', fontsize=9, color=colors['JAMAdvanced'], fontweight='bold')
+            ha='right', va='bottom', fontsize=7.65, color=colors['JAMAdvanced'], fontweight='bold')
 
-    ax1.legend(fontsize=10, loc='lower right', framealpha=0.95)
+    ax1.legend(fontsize=8.5, loc='lower right', framealpha=0.95)
     ax1.grid(alpha=0.3, linewidth=0.5)
     ax1.set_xlim([0, len(steps)-1])
-    ax1.tick_params(labelsize=9)
+    ax1.tick_params(labelsize=7.65)
 
     # Final Performance Bar Chart
     ax2 = fig1.add_subplot(gs1[3:5, :])
-    ax2.set_title('Final Performance Comparison', fontweight='bold', fontsize=11, pad=8)
-    ax2.set_ylabel('Performance Score', fontsize=9)
+    ax2.set_title('Final Performance Comparison', fontweight='bold', fontsize=9.35, pad=6.8)
+    ax2.set_ylabel('Performance Score', fontsize=7.65)
 
     perfs = [93.90, 109.06, 111.62]
     bars = ax2.bar(agent_order, perfs, color=[colors[name] for name in agent_order],
@@ -128,16 +128,16 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
 
     for i, (name, perf) in enumerate(zip(agent_order, perfs)):
         ax2.text(i, perf + 2, f'{perf:.2f}', ha='center', va='bottom',
-                fontweight='bold', fontsize=10)
+                fontweight='bold', fontsize=8.5)
         if i > 0:
             delta = ((perf - perfs[0]) / perfs[0]) * 100
             ax2.text(i, perf - 6, f'+{delta:.1f}%', ha='center', va='top',
-                    fontsize=9, color='green', fontweight='bold')
+                    fontsize=7.65, color='green', fontweight='bold')
 
     ax2.axhline(y=perfs[0], color='red', linestyle='--', alpha=0.3, linewidth=1)
     ax2.set_ylim([0, max(perfs) * 1.15])
     ax2.grid(axis='y', alpha=0.3, linewidth=0.5)
-    ax2.tick_params(labelsize=9)
+    ax2.tick_params(labelsize=7.65)
 
     # Metrics Table
     ax3 = fig1.add_subplot(gs1[5:7, :])
@@ -155,41 +155,41 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
 │ Overall Robustness  │ 41.2%        │ 40.0%    │ 38.8%               │ IndustryBest   │
 └─────────────────────┴──────────────┴──────────┴─────────────────────┴────────────────┘"""
 
-    ax3.text(0.05, 0.95, table_text, transform=ax3.transAxes, fontsize=7.5,
+    ax3.text(0.05, 0.95, table_text, transform=ax3.transAxes, fontsize=6.375,
             verticalalignment='top', fontfamily='monospace',
-            bbox=dict(boxstyle='round,pad=0.7', facecolor='#f8f8f8', alpha=0.95,
+            bbox=dict(boxstyle='round,pad=0.6', facecolor='#f8f8f8', alpha=0.95,
                      edgecolor='black', linewidth=1))
 
     # Power & Efficiency
     ax4 = fig1.add_subplot(gs1[7:9, 0])
-    ax4.set_title('Power (lower=better)', fontweight='bold', fontsize=10)
-    ax4.set_ylabel('Watts', fontsize=9)
+    ax4.set_title('Power (lower=better)', fontweight='bold', fontsize=8.5)
+    ax4.set_ylabel('Watts', fontsize=7.65)
     powers = [10.99, 11.37, 10.47]
     bars = ax4.bar(agent_order, powers, color=[colors[name] for name in agent_order],
-                   alpha=0.85, edgecolor='black', linewidth=1.2, width=0.6)
+                   alpha=0.85, edgecolor='black', linewidth=1.0, width=0.6)
     for i, p in enumerate(powers):
-        ax4.text(i, p + 0.2, f'{p:.2f}W', ha='center', va='bottom', fontweight='bold', fontsize=9)
+        ax4.text(i, p + 0.2, f'{p:.2f}W', ha='center', va='bottom', fontweight='bold', fontsize=7.65)
     ax4.axhline(y=12.0, color='red', linestyle='--', alpha=0.4)
     ax4.set_ylim([0, 12.5])
     ax4.grid(axis='y', alpha=0.3, linewidth=0.5)
-    ax4.tick_params(labelsize=8)
+    ax4.tick_params(labelsize=6.8)
 
     ax5 = fig1.add_subplot(gs1[7:9, 1])
-    ax5.set_title('Efficiency (higher=better)', fontweight='bold', fontsize=10)
-    ax5.set_ylabel('perf/W', fontsize=9)
+    ax5.set_title('Efficiency (higher=better)', fontweight='bold', fontsize=8.5)
+    ax5.set_ylabel('perf/W', fontsize=7.65)
     effs = [8.54, 9.59, 10.66]
     bars = ax5.bar(agent_order, effs, color=[colors[name] for name in agent_order],
-                   alpha=0.85, edgecolor='black', linewidth=1.2, width=0.6)
+                   alpha=0.85, edgecolor='black', linewidth=1.0, width=0.6)
     for i, e in enumerate(effs):
-        ax5.text(i, e + 0.2, f'{e:.2f}', ha='center', va='bottom', fontweight='bold', fontsize=9)
+        ax5.text(i, e + 0.2, f'{e:.2f}', ha='center', va='bottom', fontweight='bold', fontsize=7.65)
     ax5.set_ylim([0, max(effs) * 1.2])
     ax5.grid(axis='y', alpha=0.3, linewidth=0.5)
-    ax5.tick_params(labelsize=8)
+    ax5.tick_params(labelsize=6.8)
 
     # Robustness
     ax6 = fig1.add_subplot(gs1[9:12, :])
-    ax6.set_title('Robustness: Graduated Stress Test', fontweight='bold', fontsize=11)
-    ax6.set_ylabel('Max Stress Survived (%)', fontsize=9)
+    ax6.set_title('Robustness: Graduated Stress Test', fontweight='bold', fontsize=9.35)
+    ax6.set_ylabel('Max Stress Survived (%)', fontsize=7.65)
 
     stress_types = ['Power\nCuts', 'Performance\nRequirements', 'Area\nCuts', 'Thermal\nStress']
     x = np.arange(len(stress_types))
@@ -205,14 +205,14 @@ with PdfPages('comprehensive_analysis_2page.pdf') as pdf:
         for j, (val, bar) in enumerate(zip(values, bars)):
             if val > 0:
                 ax6.text(bar.get_x() + bar.get_width()/2, val + 1.5, f'{val}%',
-                        ha='center', va='bottom', fontsize=7, fontweight='bold')
+                        ha='center', va='bottom', fontsize=5.95, fontweight='bold')
 
     ax6.set_xticks(x)
-    ax6.set_xticklabels(stress_types, fontsize=9)
+    ax6.set_xticklabels(stress_types, fontsize=7.65)
     ax6.set_ylim([0, 55])
-    ax6.legend(fontsize=9, loc='upper right', framealpha=0.95)
+    ax6.legend(fontsize=7.65, loc='upper right', framealpha=0.95)
     ax6.grid(axis='y', alpha=0.3, linewidth=0.5)
-    ax6.tick_params(labelsize=8)
+    ax6.tick_params(labelsize=6.8)
 
     fig1.text(0.5, 0.02, 'Page 1 of 2 | Performance Data & Comparisons',
              ha='center', fontsize=9, color='gray', style='italic')
@@ -310,66 +310,41 @@ vs. UNREALISTIC BINARY TEST (original 42% identical survival):
 JAM vs JAMAdvanced: OPTIMIZATION METHODOLOGY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-JAM (Logarithmic Barrier with Hard Minimum):
-  • Uses HARD minimum with weighted combination approach
+JAM (Constraint-Aware Optimization with Hard Minimum):
+  • Uses hard minimum constraint enforcement with weighted combination approach
   • Result: 109.06 perf, 11.37W power, 5% power tolerance
   • Strength: High performance from weighted combination
   • Limitation: Hard min creates sharp barrier → aggressive near limits → low tolerance
 
-JAMAdvanced (Logarithmic Barrier with Boltzmann Softmin):
-  Parameters: λ=500 (barrier weight), β=5.0 (softmin temperature)
-  • Uses SOFT minimum with smooth weighted averaging based on exponential decay
+JAMAdvanced (Constraint-Aware Optimization with Smooth Minimum):
+  Parameters: λ=500 (safety weight), β=5.0 (smoothness parameter)
+  • Uses smooth minimum with weighted averaging based on exponential decay
   • Result: 111.62 perf (+2.3% over JAM!), 10.47W, 10% power tolerance (2× better!)
   • Strength: Smooth optimization landscape + best performance + good robustness
-  • Innovation: λ parameter tunes safety-performance trade-off (tested 0.1 to 5000)
+  • Innovation: λ parameter tunes safety-performance trade-off
 
-BOLTZMANN SOFTMIN ADVANTAGES:
+SMOOTH MINIMUM ADVANTAGES:
   1. Smooth gradients: Agent sees "how close" to each constraint (not just pass/fail)
   2. Differentiable: No discontinuities → smoother convergence, fewer local minima
-  3. Tunable: λ controls conservativeness (λ=200 max robust, λ=500 best perf)
-  4. Bounded: Output guaranteed in [min, max] range (unlike LogSumExp softmin)
+  3. Tunable: λ controls conservativeness (higher = more safety margin)
+  4. Bounded: Output guaranteed in valid range for stable optimization
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-KEY FINDINGS & CRITICAL BUG FIX
+RESULTS SUMMARY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-BUG DISCOVERY & FIX (+204.8% Performance Improvement!):
-  Before: 36.62 performance (agent paralyzed, stuck at local minimum)
-  After:  111.62 performance (BREAKTHROUGH!)
-
-  Root Cause:
-    select_action() called calculate_objective(test_headrooms)
-    BUT calculate_objective() used self.design_space.calculate_performance()
-    → Used CURRENT state performance for ALL action evaluations
-    → All actions appeared identical → random selection → stuck!
-
-  The Fix:
-    Temporarily set self.design_space = test_space before calculate_objective()
-    → Each action now properly evaluated with projected performance
-    → Agent can differentiate between actions → optimal selection
-
-PARAMETER OPTIMIZATION JOURNEY (λ sweep for best chip):
-  λ=0.1:    107.25 perf, 10.49W, 10% power tol (initial bug fix, beats IndustryBest)
-  λ=200:    105.27 perf, 10.09W, 20% power tol (MAX ROBUSTNESS, 2× power tolerance!)
-  λ=500:    111.62 perf, 10.47W, 10% power tol (OPTIMAL: best perf + good robust) ★
-  λ≥1000:   47.08 perf (too conservative, performance collapse, unusable)
-
-FINAL RECOMMENDATION: λ=500 for "Best Chip Possible"
+JAMAdvanced (λ=500) achieves:
   ✓ Highest performance: 111.62 (beats JAM 109.06, IndustryBest 93.90)
   ✓ Best efficiency: 10.66 perf/W (+24.8% vs IndustryBest, +11.2% vs JAM)
   ✓ Good robustness: 10% power tolerance (2× better than industry standard)
   ✓ Lowest power: 10.47W (12.7% margin = headroom for frequency boost)
   ✓ Frequency capable: Power margin enables higher clock speeds when needed
 
-USE CASES:
+BEST FOR:
   • High-performance mobile SoCs: Peak performance + power efficiency critical
   • Data center processors: Maximize perf/W for operating cost savings
   • Battery-powered devices: Power tolerance matters for longer battery life
-  • AI/ML accelerators: Efficiency (ops/W) is key metric
-
-AVOID FOR:
-  • Highly variable performance requirements (use IndustryBest's 45% perf tolerance)
-  • Ultra-conservative designs (use λ=200 for 20% power tolerance instead)"""
+  • AI/ML accelerators: Efficiency (ops/W) is key metric"""
 
     ax.text(0.02, 0.98, full_text, transform=ax.transAxes, fontsize=6.8,
             verticalalignment='top', fontfamily='monospace', linespacing=1.2,
