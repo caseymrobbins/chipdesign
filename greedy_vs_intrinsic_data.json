@@ -20,10 +20,19 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
       "survived": false,
       "final_performance": 0.0
     }
@@ -49,10 +58,19 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
       "survived": false,
       "final_performance": 0.0
     }
@@ -78,97 +96,19 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": true,
-      "final_performance": 93.89717371278499
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": true,
-      "final_performance": 110.11574783068835
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": true,
-      "final_performance": 112.4842225613929
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": false,
       "final_performance": 0.0
     },
     {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
       "survived": false,
       "final_performance": 0.0
     }
@@ -194,12 +134,21 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": true,
-      "final_performance": 109.24175053573975
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
     }
   ],
   [
@@ -223,242 +172,19 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": false,
       "final_performance": 0.0
     },
     {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": true,
-      "final_performance": 93.89717371278499
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": true,
-      "final_performance": 110.11574783068835
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": true,
-      "final_performance": 112.4842225613929
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": true,
-      "final_performance": 93.89717371278499
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": true,
-      "final_performance": 110.11574783068835
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": true,
-      "final_performance": 112.4842225613929
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": true,
-      "final_performance": 93.89717371278499
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": true,
-      "final_performance": 110.11574783068835
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": true,
-      "final_performance": 109.24175053573975
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": true,
-      "final_performance": 93.89717371278499
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": true,
-      "final_performance": 110.11574783068835
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": true,
-      "final_performance": 112.4842225613929
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": true,
-      "final_performance": 93.89717371278499
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": true,
-      "final_performance": 110.11574783068835
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": true,
-      "final_performance": 109.24175053573975
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": true,
-      "final_performance": 93.89717371278499
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": true,
-      "final_performance": 110.11574783068835
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": true,
-      "final_performance": 109.24175053573975
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
       "survived": false,
       "final_performance": 0.0
     }
@@ -484,10 +210,19 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
       "survived": false,
       "final_performance": 0.0
     }
@@ -513,128 +248,21 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": true,
-      "final_performance": 112.4842225613929
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": false,
-      "final_performance": 0.0
+      "final_performance": 111.61845901769074
     },
     {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
       "survived": true,
-      "final_performance": 93.89717371278499
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": true,
-      "final_performance": 110.11574783068835
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": true,
-      "final_performance": 109.24175053573975
+      "final_performance": 105.26939619440445
     }
   ],
   [
@@ -658,10 +286,57 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
       "survived": false,
       "final_performance": 0.0
     }
@@ -687,12 +362,21 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": true,
-      "final_performance": 112.4842225613929
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
     }
   ],
   [
@@ -716,12 +400,21 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": true,
-      "final_performance": 109.24175053573975
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
     }
   ],
   [
@@ -745,128 +438,21 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": true,
-      "final_performance": 109.24175053573975
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": false,
-      "final_performance": 0.0
+      "final_performance": 111.61845901769074
     },
     {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
     }
   ],
   [
@@ -890,41 +476,21 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": true,
-      "final_performance": 109.24175053573975
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": false,
-      "final_performance": 0.0
+      "final_performance": 111.61845901769074
     },
     {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
     }
   ],
   [
@@ -948,12 +514,21 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": true,
-      "final_performance": 109.24175053573975
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
     }
   ],
   [
@@ -977,12 +552,21 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": true,
-      "final_performance": 112.4842225613929
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
     }
   ],
   [
@@ -1006,10 +590,19 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
       "survived": false,
       "final_performance": 0.0
     }
@@ -1035,10 +628,19 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
       "survived": false,
       "final_performance": 0.0
     }
@@ -1064,12 +666,21 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": true,
-      "final_performance": 109.24175053573975
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
     }
   ],
   [
@@ -1093,41 +704,21 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": false,
       "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": true,
-      "final_performance": 93.89717371278499
     },
     {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": true,
-      "final_performance": 110.11574783068835
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": true,
-      "final_performance": 109.24175053573975
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
     }
   ],
   [
@@ -1151,41 +742,21 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": false,
       "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": true,
-      "final_performance": 93.89717371278499
     },
     {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": true,
-      "final_performance": 110.11574783068835
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": true,
-      "final_performance": 109.24175053573975
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
     }
   ],
   [
@@ -1209,10 +780,19 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
       "survived": false,
       "final_performance": 0.0
     }
@@ -1238,12 +818,21 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": true,
-      "final_performance": 112.4842225613929
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
     }
   ],
   [
@@ -1267,97 +856,19 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": false,
       "final_performance": 0.0
     },
     {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
-      "survived": false,
-      "final_performance": 0.0
-    }
-  ],
-  [
-    {
-      "name": "IndustryBest",
-      "design_performance": 93.89717371278499,
-      "design_efficiency": 8.54400888343095,
-      "design_power": 10.989826320859285,
-      "design_min_headroom": 0.4216779952068976,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAM",
-      "design_performance": 109.05877298771311,
-      "design_efficiency": 9.592239660214489,
-      "design_power": 11.369479584632739,
-      "design_min_headroom": 0.5400974759384781,
-      "survived": false,
-      "final_performance": 0.0
-    },
-    {
-      "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
       "survived": false,
       "final_performance": 0.0
     }
@@ -1383,12 +894,97 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
       "survived": true,
-      "final_performance": 112.4842225613929
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": true,
+      "final_performance": 93.89717371278499
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": true,
+      "final_performance": 110.11574783068835
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": true,
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": true,
+      "final_performance": 93.89717371278499
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": true,
+      "final_performance": 110.11574783068835
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": true,
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
     }
   ],
   [
@@ -1412,10 +1008,19 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
       "survived": false,
       "final_performance": 0.0
     }
@@ -1441,10 +1046,855 @@
     },
     {
       "name": "JAMAdvanced",
-      "design_performance": 107.25314075973692,
-      "design_efficiency": 10.220783217401838,
-      "design_power": 10.493632286137176,
-      "design_min_headroom": 0.7474996338134816,
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": true,
+      "final_performance": 93.89717371278499
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": true,
+      "final_performance": 110.11574783068835
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": true,
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": true,
+      "final_performance": 93.89717371278499
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": true,
+      "final_performance": 110.11574783068835
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": true,
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": true,
+      "final_performance": 93.89717371278499
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": true,
+      "final_performance": 110.11574783068835
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": true,
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": true,
+      "final_performance": 93.89717371278499
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": true,
+      "final_performance": 110.11574783068835
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": true,
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": true,
+      "final_performance": 93.89717371278499
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": true,
+      "final_performance": 110.11574783068835
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": true,
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": true,
+      "final_performance": 93.89717371278499
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": true,
+      "final_performance": 110.11574783068835
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": true,
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": true,
+      "final_performance": 93.89717371278499
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": true,
+      "final_performance": 110.11574783068835
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": true,
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": true,
+      "final_performance": 93.89717371278499
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": true,
+      "final_performance": 110.11574783068835
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": true,
+      "final_performance": 111.61845901769074
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": true,
+      "final_performance": 105.26939619440445
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
+      "survived": false,
+      "final_performance": 0.0
+    }
+  ],
+  [
+    {
+      "name": "IndustryBest",
+      "design_performance": 93.89717371278499,
+      "design_efficiency": 8.54400888343095,
+      "design_power": 10.989826320859285,
+      "design_min_headroom": 0.4216779952068976,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAM",
+      "design_performance": 109.05877298771311,
+      "design_efficiency": 9.592239660214489,
+      "design_power": 11.369479584632739,
+      "design_min_headroom": 0.5400974759384781,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMAdvanced",
+      "design_performance": 111.61845901769074,
+      "design_efficiency": 10.657265685909488,
+      "design_power": 10.473461233613342,
+      "design_min_headroom": 0.9223262587191631,
+      "survived": false,
+      "final_performance": 0.0
+    },
+    {
+      "name": "JAMRobust",
+      "design_performance": 105.26939619440445,
+      "design_efficiency": 10.431148431982527,
+      "design_power": 10.091831870749933,
+      "design_min_headroom": 0.9184302623156614,
       "survived": false,
       "final_performance": 0.0
     }

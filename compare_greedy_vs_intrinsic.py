@@ -26,7 +26,7 @@ from advanced_chip_simulator import (
     ProcessTechnology,
     ShiftType,
 )
-from test_softmin_jam import SoftminJAMAgent
+from test_softmin_jam import SoftminJAMAgent, JamRobustAgent
 import json
 
 # Set style
@@ -75,6 +75,7 @@ def run_single_comparison(
         ("IndustryBest", AdvancedGreedyPerformanceAgent()),
         ("JAM", JAMAgent()),
         ("JAMAdvanced", SoftminJAMAgent(lambda_weight=500.0, beta=5.0)),  # Best chip: high perf + robustness
+        ("JAMRobust", JamRobustAgent(lambda_weight=200.0, beta=5.0)),  # Robust configuration
     ]
 
     spaces = []
@@ -216,11 +217,12 @@ def run_experiments(
     print(f"Runs: {num_runs}")
     print(f"Design steps: {design_steps}")
     print(f"Adaptation steps: {adaptation_steps}")
-    print(f"\nFinal Comparison - 3 Agents:")
+    print(f"\nFinal Comparison - 4 Agents:")
     print(f"  1. IndustryBest - Standard greedy performance maximization")
     print(f"  2. JAM - Logarithmic barrier with hard min (eliminates weight tuning)")
     print(f"  3. JAMAdvanced - Logarithmic barrier with softmin (smooth optimization)")
-    print(f"\n✓ JAM/JAMAdvanced use PURE intrinsic optimization (NO external constraints)")
+    print(f"  4. JAMRobust - Robust configuration prioritizing constraint satisfaction")
+    print(f"\n✓ JAM/JAMAdvanced/JAMRobust use PURE intrinsic optimization (NO external constraints)")
     print(f"✓ Automatic bottleneck focus via log(min/softmin) - no manual weight tuning")
     print(f"{'='*80}\n")
 
